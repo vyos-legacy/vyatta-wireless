@@ -1,0 +1,3 @@
+help: Show specified wireless interface information
+allowed: ${vyatta_sbindir}/vyatta-interfaces.pl --show wireless
+run: ${vyatta_bindir}/vyatta-show-interfaces.pl --intf="$4"

@@ -1,0 +1,144 @@
+#!/usr/bin/perl
+#
+# Module: vyatta-hostapd-config
+# 
+# **** License ****
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation.
+# 
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# A copy of the GNU General Public License is available as
+# `/usr/share/common-licenses/GPL' in the Debian GNU/Linux distribution
+# or on the World Wide Web at `http://www.gnu.org/copyleft/gpl.html'.
+# You can also obtain it by writing to the Free Software Foundation,
+# Free Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+# MA 02110-1301, USA.
+# 
+# This code was originally developed by Vyatta, Inc.
+# Portions created by Vyatta are Copyright (C) 2007 Vyatta, Inc.
+# All Rights Reserved.
+# 
+# Author: Stephen Hemminger
+# Date: August 2009
+# Description: Script to setup hostapd configuration
+# 
+# **** End License ****
+#
+
+use lib "/opt/vyatta/share/perl5/";
+use Vyatta::Config;
+use Vyatta::Misc;
+use File::Compare;
+use strict;
+use warnings;
+
+my $debug = $ENV{'DEBUG'};
+
+sub authOpen {
+    print "auth_algs=1\n";
+    print "wpa=0\n";
+}
+
+sub authWEP {
+    my ($wlan, $cfg) = @_;
+    my $key = $cfg->returnValue("key");
+    die "Missing WEP key for $wlan\n" unless $key;
+    
+    print <<EOF
+auth_algs=2
+wep_key_len_broadcast=5
+wep_key_len_unicast=5
+wep_default_key=0
+wep_key0=$key
+EOF
+    
+}
+
+sub authWPA_PSK {
+    my ($wlan, $cfg) = @_;
+    my $phrase = $cfg->returnValue("passphrase");
+    die "Missing passphrase for $wlan\n" unless $phrase;
+
+    print <<EOF
+auth_algs=1
+wpa=3
+wpa_passphrase=$phrase
+wpa_key_mgmt=WPA-PSK
+wpa_pairwise=TKIP
+rsn_pairwise=CCMP
+EOF
+}
+
+my %auth_types = (
+    'open'	=> \&authOpen,
+    'wep'	=> \&authWEP,
+    'wpa-psk'	=> \&authWPA_PSK,
+);
+
+my $wlan=$ARGV[0];
+die "Usage: $0 wlanX\n" unless ( defined $wlan && $wlan =~ /^wlan\d+$/ );
+
+my $cfgname="/opt/vyatta/etc/hostapd/$wlan";
+my $tmpname="/tmp/hostapd.$wlan.$$";
+
+my $vcfg = new Vyatta::Config;
+$vcfg->setLevel("interfaces wireless $wlan");
+
+my $ssid = $vcfg->returnValue('ssid');
+die "ssid for $wlan is not set\n" unless $ssid;
+
+my $hw_mode = $vcfg->returnValue('hw_mode');
+
+# Redirect standard out to memory file
+my $out;
+unless ($debug) {
+    open my $out, '+>', $tmpname;
+    select $out;
+}
+
+print <<EOF;
+interface=$wlan
+driver=nl80211\n
+dump_file=/tmp/hostapd.dump
+ieee8021x=1
+hw_mode=$hw_mode
+EOF
+
+if ($hw_mode eq 'n') {
+    print "ieee80211n=1\n";
+}
+
+my $name = $vcfg->returnValue('description');
+print "device_name=$name\n" if $name;
+
+printf "ignore_broadcast_ssid=%d\n",
+    ($vcfg->exists('disable-broadcast') ? 1 : 0);
+
+# TODO allow configuring ACL
+print "macaddr_acl=0\n";
+
+my $security= $vcfg->returnValue("security");
+die "Security setting not defined" unless $security;
+
+my $auth = $auth_types{$security};
+die "Unknown security type $security" unless $auth;
+
+$auth->($wlan, $vcfg);
+
+if ($out) {
+    close $out;
+    select STDOUT;
+    
+    if (-f $cfgname && compare ($tmpname, $cfgname) == 0) {
+	unlink ($tmpname);
+	exit 0;
+    }
+    die "File copy $tmpname to $cfgname failed: $!\n"
+	if copy ($tmpname, $cfgname) == 0;
+}
+exit 0;

@@ -1,0 +1,4 @@
+type: txt
+help: Wireless access-point service set identifier (SSID)
+syntax:expression: pattern $VAR(@) "^[[:print:]]{1,32}$"
+

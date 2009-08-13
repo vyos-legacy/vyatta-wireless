@@ -1,0 +1,13 @@
+type: txt
+help: Wireless device type
+default: "access-point"
+
+# TODO add mesh, adhoc, wds, station
+allowed: echo "access-point monitor"
+syntax:expression: $VAR(@) in "access-point", "monitor"
+
+comp_help: Operating mode of the device:
+  access-point Forwards packets between other nodes
+  adhoc        Ad-hoc Network composed of many hosts without access point
+  station      Connects to another access point
+  monitor      Passively monitor all packets on the frequency/channel

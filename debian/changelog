@@ -1,0 +1,5 @@
+vyatta-wireless (0.1) unstable; urgency=low
+
+  * Initial Release.
+
+ -- Stephen Hemminger <shemminger@vyatta.com>  Sat, 25 Oct 2008 10:18:51 -0700
