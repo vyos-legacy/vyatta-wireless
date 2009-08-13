@@ -4,6 +4,8 @@ opdir = $(datadir)/vyatta-op/templates
 sbin_SCRIPTS = scripts/vyatta-hostapd
 sbin_SCRIPTS += scripts/vyatta-hostapd-config
 
+bin_SCRIPTS = scripts/vyatta-show-wireless.pl
+
 cpiop = find  . ! -regex '\(.*~\|.*\.bak\|.*\.swp\|.*\#.*\#\)' -print0 | \
 	cpio -0pd
 
