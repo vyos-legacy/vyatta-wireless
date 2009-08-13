@@ -103,8 +103,8 @@ unless ($debug) {
 
 print <<EOF;
 interface=$wlan
-driver=nl80211\n
-dump_file=/tmp/hostapd.dump
+driver=nl80211
+dump_file=/tmp/hostapd.dump.$wlan
 ieee8021x=1
 hw_mode=$hw_mode
 EOF
