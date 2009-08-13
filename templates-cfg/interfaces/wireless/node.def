@@ -18,20 +18,19 @@ create: if [ ! -d /sys/class/net/$VAR(@) ]; then
 		add $VAR(@) type $IWTYPE || exit 1
 	fi
 	sudo ip link set $VAR(@) up
-	/opt/vyatta/sbin/vyatta-link-detect $VAR(@) on
+	${vyatta_sbindir}/vyatta-link-detect $VAR(@) on
 
 delete: [ -d /sys/class/net/$VAR(@) ] || exit 0
-	sudo vyatta-hostapd stop $VAR(@)
+	sudo ${vyatta_sbindir}/vyatta-hostapd stop $VAR(@)
         sudo ip link set $VAR(@) down
 	sudo iw dev $VAR(@) del
 
 # configure and start access point if necessary
-end:  if [ "$VAR(./mode)" = "access-point" ] && \
-         [ ${COMMIT_ACTION} = 'SET' -o ${COMMIT_ACTION} = 'ACTIVE' ]
-      then
-           vyatta-hostapd-config $VAR(@)
-	   if [ ${COMMIT_ACTION} = 'SET' ]
-	   then vyatta-hostapd start $VAR(@)
-	   else vyatta-hostapd reload $VAR(@)
-	   fi
-      fi
+end: if [ "$VAR(./mode)" = "access-point" ] &&
+        [ ${COMMIT_ACTION} = 'SET' -o ${COMMIT_ACTION} = 'ACTIVE' ]
+     then
+	 ${vyatta_sbindir}/vyatta-hostapd-config $VAR(@)
+	 if [ ${COMMIT_ACTION} = 'SET' ]
+	 then ${vyatta_sbindir}/vyatta-hostapd start $VAR(@)
+	 else ${vyatta_sbindir}/vyatta-hostapd reload $VAR(@)
+     fi
