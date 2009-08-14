@@ -4,8 +4,7 @@ default: "g"
 allowed: echo "a b g n"
 syntax:expression: $VAR(@) in "a", "b", "g", "n"
 comp_help: possible completions (not all devices support all modes)
-a	802.11a - 54 Mbits/sec
-b	802.11b - 11 Mbits/sec
-g	802.11g - 54 Mbits/sec
-n	802.11n - 600 Mbits/sec
-
+  a	802.11a - 54 Mbits/sec
+  b	802.11b - 11 Mbits/sec
+  g	802.11g - 54 Mbits/sec
+  n	802.11n - 600 Mbits/sec
