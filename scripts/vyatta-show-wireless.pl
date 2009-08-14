@@ -28,62 +28,15 @@ use Getopt::Long;
 use strict;
 use warnings;
 
-my ( $brief, $show_intf );
-my ( $list_phy, $list_chan, $list_mode);
-
 sub usage {
     print <<EOF;
 Usage: $0 --brief
        $0 --show=<interface>
-       $0 --list-phy
-       $0 --list-chan=<interface>
-       $0 --list-mode=<interface>
 EOF
     exit 1;
 }
 
-# get list of available phyX on system
-sub get_phy {
-    open my $iwcmd, '-|'
-	or exec qw(iw phy)
-	or die "iw command failed: $!";
-    
-    my @phys;
-    while (<$iwcmd>) {
-	chomp;
-	my ( $tag, $phy ) = split;
-	next unless ( $tag eq 'Wiphy');
-	push @phys, $phy;
-    }
-    close $iwcmd;
-    return @phys;
-}
-
-# get list of channels available by device
-sub get_chan {
-    my $phy = shift;
-    my @args = ('iw', 'phy', $phy, 'info');
-
-    open my $iwcmd, '-|'
-	or exec @args
-	or die "iw command failed: $!";
-
-    my @chans;
-    while (<$iwcmd>) {
-	next unless /Frequencies:/;
-
-	while (<$iwcmd>) {
-	    next if m/\(disabled\)/;
-	    last unless m/\* \d+ MHz \[(\d+)\]/;
-	    push @chans, $1;
-	}
-	last;
-    }
-    close $iwcmd;
-    return @chans;
-}
-
-
+# Make a hash of device names and current type (AP, station, ...)
 sub get_device_map {
     my %wlans;
 
@@ -102,39 +55,43 @@ sub get_device_map {
     return \%wlans;
 }
 
-sub get_intf_ssid {
-    
-}
-
-sub get_intf_chan {
-}
-
-
 sub show_brief {
+    my $wlans = get_device_map();
+
     my $format = "%-12s %-18s %-20s %-6s\n";
     printf $format, "Interface","Type","SSID","Channel";
-
-    my $wlans = get_device_map();
 
     foreach my $intf (sort keys %$wlans) {
 	# TODO convert to config names
 	my $type = $$wlans{$intf};
-	my $ssid = get_intf_ssid($intf);
-	my $chan = get_intf_chan($intf);
+	my ($ssid, $chan);
+
+# TODO
+	if ($type eq 'AP') {
+	    ($ssid, $chan) = hostap_params($intf);
+	} else {
+	    $ssid = get_intf_ssid($intf);
+	    $chan = get_intf_chan($intf);
+	}
 
 	printf $format, $intf, $type, $ssid, $chan;
     }
 }
 
+sub show_intf {
+}
+
+my ( $brief, $show );
+
 GetOptions(
     'brief'	  => \$brief,
-    'show=s'	  => \$show_intf,
-
-    'list-phy'	  => \$list_phy,
-    'list-chan=s' => \$list_chan,
+    'show=s'	  => \$show,
 ) or usage();
 
-show_brief()		if $brief;
 
-print join(' ',get_phy()), "\n" 	if $list_phy;
-print join(' ', get_chan(@_)), "\n"	if $list_chan;
+show_brief() if ($brief);
+show_intf($show)  if ($show);
+
+
+
+

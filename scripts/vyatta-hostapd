@@ -46,21 +46,16 @@ DESC="Access point mangement for $2"
 
 case "$1" in
   start)
-	log_daemon_msg "Starting $DESC"
-	/opt/vyatta/sbin/vyatta-hostapd-config.pl $2 $DAEMON_CONF
-	start-stop-daemon --start --oknodo --quiet \
+	/opt/vyatta/sbin/vyatta-wireless.pl --dev=$2 --hostap > $DAEMON_CONF \
+	    && start-stop-daemon --start --oknodo --quiet \
 		--exec $DAEMON --pidfile $PIDFILE -- $DAEMON_OPTS > /dev/null
 	;;
   stop)
-	log_daemon_msg "Stopping $DESC"
 	start-stop-daemon --stop --oknodo --quiet --pidfile $PIDFILE
-	log_end_msg "$?"
 	;;
   reload)
-	/opt/vyatta/sbin/vyatta-hostapd-config.pl $2 $DAEMON_CONF
-  	log_daemon_msg "Reloading $DESC"
-	start-stop-daemon --stop --signal HUP --pidfile $PIDFILE
-	log_end_msg "$?"
+	/opt/vyatta/sbin/vyatta-wireless.pl --dev=$2 --hostap > $DAEMON_CONF \
+	    && start-stop-daemon --stop --signal HUP --pidfile $PIDFILE
 	;;
   restart|force-reload)
   	$0 stop

@@ -6,31 +6,21 @@ syntax:expression: pattern $VAR(@) "^wlan[0-9]+$" ; \
 	 "Must be (wlan0 - wlan999)"
 
 create: if [ ! -d /sys/class/net/$VAR(@) ]; then
-	    if [ -z $VAR(./physical-device) ]; then
-	        echo "wireless $VAR(@) physical-device: you must specify physical-device for wireless interface"
-		exit 1
-	    fi
-	    IWTYPE=$VAR(./mode)
-	    if [ $IWTYPE = "access-point" ]; then
-	      IWTYPE="__ap"
-	    fi
-	    sudo iw dev $VAR(./physical-device) interface \
-		add $VAR(@) type $IWTYPE || exit 1
+	    ${vyatta_sbindir}/vyatta-wireless.pl --dev=$VAR(@) --create || exit 1
 	fi
 	sudo ip link set $VAR(@) up
 	${vyatta_sbindir}/vyatta-link-detect $VAR(@) on
 
 delete: [ -d /sys/class/net/$VAR(@) ] || exit 0
-	sudo ${vyatta_sbindir}/vyatta-hostapd stop $VAR(@)
+	if [ "$(./mode)" = "access-point" ]; then
+	    sudo ${vyatta_sbindir}/vyatta-hostapd stop $VAR(@)
+	fi			fi
         sudo ip link set $VAR(@) down
-	sudo iw dev $VAR(@) del
+	${vyatta_sbindir}/vyatta-wireless.pl --dev=$VAR(@) --delete
 
-# configure and start access point if necessary
-end: if [ "$VAR(./mode)" = "access-point" ] &&
-        [ ${COMMIT_ACTION} = 'SET' -o ${COMMIT_ACTION} = 'ACTIVE' ]
-     then
-	 ${vyatta_sbindir}/vyatta-hostapd-config $VAR(@)
-	 if [ ${COMMIT_ACTION} = 'SET' ]
-	 then ${vyatta_sbindir}/vyatta-hostapd start $VAR(@)
-	 else ${vyatta_sbindir}/vyatta-hostapd reload $VAR(@)
+end: if [ "$VAR(./mode)" = "access-point" ]; then
+         case ${COMMIT_ACTION} in
+     	 SET)    ${vyatta_sbindir}/vyatta-hostapd start $VAR(@) ;;
+	 ACTIVE) ${vyatta_sbindir}/vyatta-hostapd reload $VAR(@) ;;
+         esac
      fi
