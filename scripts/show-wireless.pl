@@ -1,7 +1,5 @@
 #! /usr/bin/perl
-#
-# Module: vyatta-show-wireless.pl
-#
+
 # **** License ****
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -18,7 +16,6 @@
 #
 # Author: Stephen Hemminger
 # Date: August 2009
-# Description: Script to display bonding information
 #
 # **** End License ****
 
@@ -66,6 +63,7 @@ sub show_brief {
 	my $type = $$wlans{$intf};
 	my ($ssid, $chan);
 
+    die "not done yet\n";
 # TODO
 	if ($type eq 'AP') {
 	    ($ssid, $chan) = hostap_params($intf);
@@ -79,6 +77,8 @@ sub show_brief {
 }
 
 sub show_intf {
+# TODO
+    die "not done yet\n";
 }
 
 my ( $brief, $show );

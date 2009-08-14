@@ -1,14 +1,11 @@
 type: txt
 help: Wireless device type
 default: "access-point"
+syntax:expression: $VAR(@) in "access-point", "station", "monitor"
+commit:expression:exec \
+    "/opt/vyatta/sbin/wireless-config.pl --dev=$VAR(../@) --check-type=$VAR(@)"
 
-allowed: ${vyatta_sbindir}/vyatta-wireless.pl --dev=$VAR(../@) --show-type
-syntax:expression:exec \
-    "${vyatta_sbindir}/vyatta-wireless.pl --dev=$VAR(../@) --check-type=$VAR(@)"
-
-update: if [ $VAR(@) != "access-point" ]
-	then sudo iw dev $VAR(../@) set type $VAR(@)
-	fi
+update: /opt/vyatta/sbin/wireless-config.pl --dev=$VAR(../@) --set-type-$VAR(@)
 
 comp_help: Operating mode of the device:
   access-point  Forwards packets between other nodes

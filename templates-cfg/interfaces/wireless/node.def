@@ -6,21 +6,19 @@ syntax:expression: pattern $VAR(@) "^wlan[0-9]+$" ; \
 	 "Must be (wlan0 - wlan999)"
 
 create: if [ ! -d /sys/class/net/$VAR(@) ]; then
-	    ${vyatta_sbindir}/vyatta-wireless.pl --dev=$VAR(@) --create || exit 1
+	    /opt/vyatta/sbin/wireless-config.pl --dev=$VAR(@) --create || exit 1
 	fi
 	sudo ip link set $VAR(@) up
-	${vyatta_sbindir}/vyatta-link-detect $VAR(@) on
+	/opt/vyatta/sbin/vyatta-link-detect $VAR(@) on
 
 delete: [ -d /sys/class/net/$VAR(@) ] || exit 0
-	if [ "$(./type/@)" = "access-point" ]; then
-	    sudo ${vyatta_sbindir}/vyatta-hostapd stop $VAR(@)
-	fi			fi
+	sudo /opt/vyatta/sbin/hostapd-init stop $VAR(@)
         sudo ip link set $VAR(@) down
-	${vyatta_sbindir}/vyatta-wireless.pl --dev=$VAR(@) --delete
+	/opt/vyatta/sbin/wireless-config.pl --dev=$VAR(@) --delete
 
 end: if [ "$VAR(./type/@)" = "access-point" ]; then
          case ${COMMIT_ACTION} in
-     	 SET)    ${vyatta_sbindir}/vyatta-hostapd start $VAR(@) ;;
-	 ACTIVE) ${vyatta_sbindir}/vyatta-hostapd reload $VAR(@) ;;
+     	 SET)    /opt/vyatta/sbin/hostapd-init start $VAR(@) ;;
+	 ACTIVE) /opt/vyatta/sbin/hostapd-init reload $VAR(@) ;;
          esac
      fi

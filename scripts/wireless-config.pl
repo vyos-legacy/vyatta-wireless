@@ -49,12 +49,21 @@ my %mode2iw = (
     'mesh' 		=> 'mesh point',
 );
 
+sub get_phy {
+    my $intf = shift;
+    my $config = new Vyatta::Config;
+    $config->setLevel("interfaces wireless $intf");
+
+    return $config->returnValue("physical-device");
+}
 
 # get list of channels available by device
 sub get_chan {
-    my $phy = shift;
-    my @args = ('iw', 'phy', $phy, 'info');
+    my $intf = shift;
+    my $phy = get_phy($intf);
+    exit 0 unless $phy;
 
+    my @args = ('iw', 'phy', $phy, 'info');
     open my $iwcmd, '-|'
 	or exec @args
 	or die "iw command failed: $!";
@@ -77,8 +86,9 @@ sub get_chan {
 # get list of supported types: AP, ...
 sub get_type {
     my $intf = shift;
+    my $phy = get_phy($intf);
+    exit 0 unless $phy;
 
-    my $phy = shift;
     my @args = ('iw', 'phy', $phy, 'info');
 
     open my $iwcmd, '-|'
@@ -175,11 +185,11 @@ my ( $create_dev, $delete_dev, $hostap );
 
 GetOptions(
     'dev=s'		  => \$dev,
-    'show-type'   	  => \$list_type,
+    'list-type'   	  => \$list_type,
     'check-type=s'	  => \$check_type,
     'set-type=s'	  => \$set_type,
 
-    'show-chan'		  => \$list_chan,
+    'list-chan'		  => \$list_chan,
     'check-chan=s'	  => \$check_chan,
 
     'create'		  => \$create_dev,

@@ -2,9 +2,14 @@ multi:
 type: txt
 help: Set an IP address for this interface
 syntax:expression: exec "/opt/vyatta/sbin/vyatta-interfaces.pl --valid-addr $VAR(@) --dev $VAR(../@)"\
-     ; "Invalid IP address/prefix [$VAR(@)] for interface $VAR(../@)"
+    ; "Invalid IP address/prefix [$VAR(@)] for interface $VAR(../@)"
+commit:expression: $VAR(../type/@) != "monitor"  \
+    ; "Can not assign address to device in monitor mode"
+
 create:sudo /opt/vyatta/sbin/vyatta-interfaces.pl --eth-addr-update $VAR(@) --dev $VAR(../@)
+
 delete:sudo /opt/vyatta/sbin/vyatta-interfaces.pl --eth-addr-delete $VAR(@) --dev $VAR(../@)
+
 allowed: echo "dhcp <>"
 comp_help:Possible completions:
   <x.x.x.x/x>		Set the IP address and prefix length

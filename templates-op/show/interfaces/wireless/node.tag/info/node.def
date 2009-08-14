@@ -1,2 +1,2 @@
 help: Show specified wireless interface information
-run: ${vyatta_bindir}/vyatta-show-wireless.pl "$4"
+run: ${vyatta_bindir}/show-wireless.pl "$4"

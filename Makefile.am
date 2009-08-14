@@ -1,13 +1,11 @@
 cfgdir = $(datadir)/vyatta-cfg/templates
 opdir = $(datadir)/vyatta-op/templates
-share_perl5dir = /opt/vyatta/share/perl5/Vyatta/Wireless
 
-sbin_SCRIPTS = scripts/vyatta-hostapd
+sbin_SCRIPTS  = scripts/wireless-config.pl
+sbin_SCRIPTS += scripts/wireless-hostapd.pl
+sbin_SCRIPTS += scripts/hostapd-init
 
-bin_SCRIPTS = scripts/vyatta-show-wireless.pl
-
-share_perl5_DATA = lib/Vyatta/Wireless/Hostapd.pm
-
+bin_SCRIPTS = scripts/show-wireless.pl
 
 cpiop = find  . ! -regex '\(.*~\|.*\.bak\|.*\.swp\|.*\#.*\#\)' -print0 | \
 	cpio -0pd

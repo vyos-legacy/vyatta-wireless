@@ -1,9 +1,9 @@
 type: u32
 help: Set wireless channel
-syntax:expression: $VAR(@) > 0 && $VAR(@) < 15; "Channel must be between 1 and 14"
-allowed: if [ -n "$VAR(../physical-device)" ]
-	 then ${vyatta_bindir}/vyatta-show-wireless.pl --list-chan $VAR(../physical-device)
-	 fi
+syntax:expression: $VAR(@) > 0 && $VAR(@) < 15 ; "Channel must be between 1 and 14"
+commit:expression:exec \
+    "/opt/vyatta/sbin/wireless-config.pl --dev=$VAR(../@) --check-chan=$VAR(@)"
+allowed: /opt/vyatta/sbin/wireless-config.pl --dev=$VAR(../@) --list-chan
 
 update: if [ "$VAR(../type/@)" != "access-point" ]
 	then sudo iw dev $VAR(../@) set channel $VAR(@)

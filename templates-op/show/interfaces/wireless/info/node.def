@@ -1,2 +1,2 @@
 help: Show wireless interface configuration
-run: ${vyatta_bindir}/vyatta-show-wireless.pl --brief
+run: ${vyatta_bindir}/show-wireless.pl --brief
