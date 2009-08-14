@@ -2,12 +2,17 @@ type: txt
 help: Wireless device type
 default: "access-point"
 
-# TODO add mesh, adhoc, wds, station
-allowed: echo "access-point monitor"
-syntax:expression: $VAR(@) in "access-point", "monitor"
+allowed: ${vyatta_sbindir}/vyatta-wireless.pl --dev=$VAR(../@) --show-type
+syntax:expression:exec \
+    "${vyatta_sbindir}/vyatta-wireless.pl --dev=$VAR(../@) --check-type=$VAR(@)"
+
+update: if [ "$VAR(../type)" != "access-point" ]
+	then sudo iw dev $VAR(../@) set channel $VAR(@)
+	fi
 
 comp_help: Operating mode of the device:
-  access-point Forwards packets between other nodes
-  adhoc        Ad-hoc Network composed of many hosts without access point
-  station      Connects to another access point
-  monitor      Passively monitor all packets on the frequency/channel
+  access-point  Forwards packets between other nodes
+  adhoc		Ad-hoc Network composed of many hosts without access point
+  station   	Connects to another access point
+  mesh		Dynamic mesh
+  monitor       Passively monitor all packets on the frequency/channel
