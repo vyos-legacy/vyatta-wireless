@@ -5,7 +5,7 @@ allowed: if [ -n "$VAR(../physical-device)" ]
 	 then ${vyatta_bindir}/vyatta-show-wireless.pl --list-chan $VAR(../physical-device)
 	 fi
 
-update: if [ "$VAR(../type)" != "access-point" ]
+update: if [ "$VAR(../type/@)" != "access-point" ]
 	then sudo iw dev $VAR(../@) set channel $VAR(@)
 	fi
 

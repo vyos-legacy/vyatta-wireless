@@ -1,0 +1,5 @@
+help: Set Wifi Protected Access (WPA) parameters
+commit:expression: ($VAR(passphrase/@) != "") && ($VAR(radius-server/@) != "") \
+	; "wireless $VAR(../@): can not specify both passphrase and radius-server"
+commit:expression: ($VAR(passphrase/@) = "") && ($VAR(radius-server/@) = "") \
+	; "wireless $VAR(../@): must specify passphrase or radius-server"

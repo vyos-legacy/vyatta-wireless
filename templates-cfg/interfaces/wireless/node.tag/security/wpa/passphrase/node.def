@@ -1,0 +1,4 @@
+type: txt
+help: Set WPA personal shared pass phrase
+syntax:expression: pattern $VAR(@) "^[[:print:]]{8,63}$" \
+		   ; "Invalid WPA pass phrase $VAR(@)"

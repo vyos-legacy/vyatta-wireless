@@ -12,13 +12,13 @@ create: if [ ! -d /sys/class/net/$VAR(@) ]; then
 	${vyatta_sbindir}/vyatta-link-detect $VAR(@) on
 
 delete: [ -d /sys/class/net/$VAR(@) ] || exit 0
-	if [ "$(./mode)" = "access-point" ]; then
+	if [ "$(./type/@)" = "access-point" ]; then
 	    sudo ${vyatta_sbindir}/vyatta-hostapd stop $VAR(@)
 	fi			fi
         sudo ip link set $VAR(@) down
 	${vyatta_sbindir}/vyatta-wireless.pl --dev=$VAR(@) --delete
 
-end: if [ "$VAR(./mode)" = "access-point" ]; then
+end: if [ "$VAR(./type/@)" = "access-point" ]; then
          case ${COMMIT_ACTION} in
      	 SET)    ${vyatta_sbindir}/vyatta-hostapd start $VAR(@) ;;
 	 ACTIVE) ${vyatta_sbindir}/vyatta-hostapd reload $VAR(@) ;;

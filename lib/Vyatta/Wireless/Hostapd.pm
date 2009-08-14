@@ -28,7 +28,7 @@
 # **** End License ****
 #
 
-package Vyatta::Wireless:Hostapd;
+package Vyatta::Wireless::Hostapd;
 
 use strict;
 use warnings;
@@ -54,20 +54,88 @@ sub new {
 	    unless $value;
 	$self->{$field} = $value;
     }
-    $self->{disable_broadcast} = $config->exists();
-
-    foreach my $field (qw(key passphrase descriptio)) {
-	$self->{$field} = $config->returnValue($field);
-    }
+    $self->{disable_broadcast} = $config->exists('disable-broadcast-ssid');
+    $self->{description}       = $config->returnValue('description');
+    
+    my @security = ( "auth_algs=1" );
+    if ($config->exists("security")) {
+	@security = get_security($name, $config);
+    } 
+    $self->{security} = \@security;
 
     return bless $self, $class;
 }    
 
-sub print_cfg {
-    my $self = shift
+sub get_security {
+    my ($name, $config) = @_;
+    $config->setLevel("interface wireless $name security");
 
-    print "# Hostapd configuration\n"
-    print "interface=", $self->{name}, "\n";
+    if ($config->exists('wep')) {
+	return wep_config ($name, $config);
+    } elsif ($config->exists('wpa')) {
+	return wpa_config ($name, $config);
+    } else {
+	die "wireless $name: security defined but missing wpa or wep\n";
+    }
+}
+
+sub wep_config {
+    my ($name, $config) = @_;
+    my $key = $config->returnValue("wep key");
+    die "wireless $name: missing WEP key\n" unless $key;
+	    
+    # TODO allow open/shared to be configured
+    return ("auth_algs=2", 
+	    "wep_key_len_broadcast=5",
+	    "wep_key_len_unicast=5",
+	    "wep_default_key=0",
+	    "wep_key0=$key");
+}
+	
+sub wpa_config {
+    my ($name, $config) = @_;
+    my $phrase = $config->returnValue("wpa passphrase");
+    my @radius = $config->listNodes("wpa radius-server");
+
+    # By default, use both WPA and WPA2
+    my @lines = ("wpa=3" , "wpa_pairwise=TKIP CCMP" );
+    if ($phrase) {
+	push @lines, ( "auth_algs=1",
+		       "wpa_passphrase=$phrase",
+		       "wpa_key_mgmt=WPA-PSK" );
+    } elsif (@radius) {
+	push @lines, ("ieee8021x=1",
+		      "wpa_key_mgmt=WPA-EAP");
+
+	# TODO figure out how to prioritize server for primary
+	my $first = 1;
+	foreach my $server (@radius) {
+	    $config->setLevel("interface wireless $name"
+			      . "security wpa radius-server $server");
+	    my $port = $config->returnValue("port");
+	    my $secret = $config->returnValue("secret");
+	    push @lines, ("auth_server_addr=$server",
+			  "auth_server_port=$port",
+			  "auth_server_shared_secret=$secret");
+	    if ($first) {
+		push @lines, ("acct_server_addr=$server",
+			      "acct_server_port=$port",
+			      "acct_server_shared_secret=$secret");;
+		$first = undef;
+	    }
+	}
+    } else {
+	die "wireless $name: securit wpa but no server or key\n";
+    }
+    return @lines;
+}
+
+sub print_cfg {
+    my $self = shift;
+    my $wlan = $self->{name};
+
+    print "# Hostapd configuration\n";
+    print "interface=$wlan\n";
     print "driver=nl80211\n";
     print "hw_mode=",$self->{hw_mode},"\n";
     print "ieee80211n=1\n" if ($self->{hw_mode} eq 'n');
@@ -76,33 +144,18 @@ sub print_cfg {
     my $gid = getgrnam('vyatta-cfg');
     if ($gid) {
 	print "ctrl_interface=/var/run/vyatta/hostapd/$wlan\n";
-	print "ctrl_interface_group=$grp\n";
+	print "ctrl_interface_group=$gid\n";
     }
-    print "device_name=$name\n" if $name;
+
+    my $descript = $self->{description};
+    print "device_name=$wlan\n" if $descript;
     printf "ignore_broadcast_ssid=%d\n", $self->{disable_broadcast};
 
     # TODO allow configuring ACL
     print "macaddr_acl=0\n";
 
-    if ($self->{security} eq 'open') {
-	print "auth_algs=1\n";
-	print "wpa=0\n";
-    } elsif ($self->{security} eq 'wep') {
-	my $key = $self->{key};
-	die "Missing WEP key for $wlan\n" unless $key;
-
-	print "auth_algs=2\n";
-	print "wep_key_len_broadcast=5\nwep_key_len_unicast=5\n";
-	print "wep_default_key=0\nwep_key0=$key\n";
-    } elsif ($self->{security} eq 'wpa') {
-	my $phrase = $cfg->returnValue("passphrase");
-	die "Missing passphrase for $wlan\n" unless $phrase;
-
-	print "auth_algs=1\nwpa=3\nwpa_passphrase=$phrase\n";
-	print "wpa_key_mgmt=WPA-PSK\nwpa_pairwise=TKIP\nrsn_pairwise=CCMP\n";
-    } else {
-	die "Unsupported security option: ", $self->{security};
-    }
+    my @lines = @$self->{security};
+    print join("\n", @lines);
 }
 
 1;

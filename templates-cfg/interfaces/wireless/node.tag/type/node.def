@@ -6,8 +6,8 @@ allowed: ${vyatta_sbindir}/vyatta-wireless.pl --dev=$VAR(../@) --show-type
 syntax:expression:exec \
     "${vyatta_sbindir}/vyatta-wireless.pl --dev=$VAR(../@) --check-type=$VAR(@)"
 
-update: if [ "$VAR(../type)" != "access-point" ]
-	then sudo iw dev $VAR(../@) set channel $VAR(@)
+update: if [ $VAR(@) != "access-point" ]
+	then sudo iw dev $VAR(../@) set type $VAR(@)
 	fi
 
 comp_help: Operating mode of the device:
