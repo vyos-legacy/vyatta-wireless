@@ -1,4 +1,4 @@
 type: txt
 help: Set WEP encryption key
-syntax:expression: patern $VAR(@) "^[[:xdigit:]]{10,26,32}$"
+syntax:expression: pattern $VAR(@) "^[[:xdigit:]]{10,26,32}$" \
 		   ; "Invalid WEP key $VAR(@)"
