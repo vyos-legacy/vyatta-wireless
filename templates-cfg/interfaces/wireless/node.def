@@ -16,8 +16,8 @@ delete: [ -d /sys/class/net/$VAR(@) ] || exit 0
 end:if [ ${COMMIT_ACTION} = 'SET' -o ${COMMIT_ACTION} = 'ACTIVE' ]; then
         if [ "$VAR(./type/@)" = "access-point" ]; then
             case ${COMMIT_ACTION} in
-     	    SET)    /opt/vyatta/sbin/hostapd-init start $VAR(@) ;;
-	    ACTIVE) /opt/vyatta/sbin/hostapd-init reload $VAR(@) ;;
+     	    SET)    sudo /opt/vyatta/sbin/hostapd-init start $VAR(@) ;;
+	    ACTIVE) sudo /opt/vyatta/sbin/hostapd-init reload $VAR(@) ;;
             esac
 	else
 	    sudo ip link set $VAR(@) down
