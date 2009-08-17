@@ -1,3 +1,27 @@
+vyatta-wireless (0.1.1) unstable; urgency=low
+
+  * Don't need wpasupplicant yet
+  * Add show wireless command for operational mode
+  * Update copyright date
+  * Fix duplicate allowed tag
+  * Fix config file generator
+  * Add sbin path to template for wireless node
+  * Rework how modes/hostap is configured
+  * Determine types available from hardware
+  * remove some parameters that won't work yet
+  * ignore more files
+  * Update to handle security parmeters better.
+  * Refactor wireless commands
+  * Fix comp_help syntax
+  * Fix typos in templates
+  * Rename hw_mode to just mode
+  * Fix templates
+  * use sysfs to find phy
+  * More changes for configuration
+  * Need to set type and other parameters when link is down
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Mon, 17 Aug 2009 15:24:29 -0700
+
 vyatta-wireless (0.1) unstable; urgency=low
 
   * Initial Release.
