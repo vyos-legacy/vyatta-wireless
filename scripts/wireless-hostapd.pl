@@ -35,34 +35,44 @@ use lib "/opt/vyatta/share/perl5/";
 use Vyatta::Config;
 use Vyatta::Misc;
 
+sub getValue {
+    my ($config, $name) = @_;
+    my $level = $config->setLevel();
+    
+    my $val = $config->returnValue($name);
+    die "Missing '$name' for : $level\n"	unless $val;
+    return $val;
+}
+
 # Generate a hostapd.conf file based on Vyatta config
 die "Usage: $0 wlanX\n"
-  unless ( $#ARGV eq 1 && $ARGV[0] =~ /^wlan\d+$/ );
+  unless ( $#ARGV eq 0 && $ARGV[0] =~ /^wlan\d+$/ );
 
 my $wlan   = $ARGV[0];
 my $config = new Vyatta::Config;
-$config->setLevel("interface wireless $wlan");
+$config->setLevel("interfaces wireless $wlan");
 
-my $ssid = $config->returnValue("ssid");
-die "wireless $wlan: missing ssid\n" unless $ssid;
+my $ssid = getValue($config, 'ssid');
+my $chan = getValue($config, 'channel');
+my $hw_mode = getValue($config, 'mode');
 
 # Generate preamble
 print "# Hostapd configuration\n";
 print "interface=$wlan\n";
 print "driver=nl80211\n";
+print "ssid=$ssid\n";
 
+print "channel=$chan\n";
+print "hw_mode=$hw_mode\n";
+print "ieee80211n=1\n" if ( $hw_mode eq 'n' );
+
+print"dump_file=/var/log/vyatta/hostapd.$wlan\n";
 # TODO do we need this?
 #my $gid = getgrnam('vyatta-cfg');
 #if ($gid) {
 #    print "ctrl_interface=/var/run/vyatta/hostapd/$wlan\n";
 #    print "ctrl_interface_group=$gid\n";
 #}
-print"dump_file=/var/log/vyatta/hostapd.$wlan\n";
-
-my $hw_mode = $config->returnValue("mode");
-die "wireless $wlan: missing mode" unless $hw_mode;
-print "hw_mode=$hw_mode\n";
-print "ieee80211n=1\n" if ( $hw_mode eq 'n' );
 
 print "ignore_broadcast_ssid=1\n"
   if ( $config->exists('disable-broadcast-ssid') );
@@ -75,8 +85,7 @@ print "macaddr_acl=0\n";
 
 $config->setLevel("interface wireless $wlan security");
 if ( $config->exists('wep') ) {
-    my $key = $config->returnValue("wep key");
-    die "wireless $wlan: missing WEP key\n" unless $key;
+    my $key = getValue($config, 'wep key');
 
     # TODO allow open/shared to be configured
     print <<EOF
@@ -113,8 +122,7 @@ EOF
                 print "acct_server_shared_secret=$secret\n";
             }
         }
-    }
-    else {
+    } else {
         die "wireless $wlan: security wpa but no server or key\n";
     }
 } else {
