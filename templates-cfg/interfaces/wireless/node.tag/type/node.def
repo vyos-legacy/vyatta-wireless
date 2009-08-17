@@ -1,15 +1,9 @@
 type: txt
-help: Wireless device type
-syntax:expression: $VAR(@) in "access-point", "station", "monitor" \
-    ; "type must be access-point, station or monitor"
-commit:expression:exec "\
-    /opt/vyatta/sbin/wireless-config.pl --dev $VAR(../@) --check-type $VAR(@)"
-
-update: /opt/vyatta/sbin/wireless-config.pl --dev $VAR(../@) --set-type $VAR(@)
-
-comp_help: Operating mode of the device:
-  access-point\tForwards packets between other nodes
-  adhoc\t\tAd-hoc Network composed of many hosts without access point
+help: Set the wireless device type for this interface
+syntax:expression:$VAR(@) in "access-point", "station", "monitor" ; "type must be access-point, station or monitor"
+commit:expression:exec "/opt/vyatta/sbin/wireless-config.pl --dev=$VAR(../@) --check-type $VAR(@)"
+update:/opt/vyatta/sbin/wireless-config.pl --dev=$VAR(../@) --set-type $VAR(@)
+comp_help:Possible completions:
+  access-point\tAccess-point forwards packets between other nodes
   station\t\tConnects to another access point
-  mesh\t\tDynamic mesh
   monitor\t\tPassively monitor all packets on the frequency/channel

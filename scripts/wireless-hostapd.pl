@@ -52,11 +52,12 @@ print "interface=$wlan\n";
 print "driver=nl80211\n";
 
 # TODO do we need this?
-my $gid = getgrnam('vyatta-cfg');
-if ($gid) {
-    print "ctrl_interface=/var/run/vyatta/hostapd/$wlan\n";
-    print "ctrl_interface_group=$gid\n";
-}
+#my $gid = getgrnam('vyatta-cfg');
+#if ($gid) {
+#    print "ctrl_interface=/var/run/vyatta/hostapd/$wlan\n";
+#    print "ctrl_interface_group=$gid\n";
+#}
+print"dump_file=/var/log/vyatta/hostapd.$wlan\n";
 
 my $hw_mode = $config->returnValue("mode");
 die "wireless $wlan: missing mode" unless $hw_mode;

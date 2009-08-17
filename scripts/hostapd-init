@@ -36,23 +36,34 @@ if [ $# -ne 2 ]; then
     exit 1
 fi
 
-PIDFILE=/var/run/vyatta/hostapd/$2.pid
-DAEMON_CONF=/opt/vyatta/etc/hostapd/$2
-DAEMON_OPTS="-B -P $PIDFILE $DAEMON_CONF"
+pid_dir=/var/run/vyatta/hostapd
+log_dir=/var/log/vyatta/hostapd
+
+for dir in $pid_dir $log_dir ; do
+    if [ ! -d $dir ]; then
+	mkdir -p $dir
+	chmod 755 $dir
+    fi
+done
+
+pid_file=$pid_dir/$2.pid
+config=$pid_dir/$2.cfg
+
+DAEMON_OPTS="-B -P $pid_file $config"
 DESC="Access point mangement for $2"
 
 case "$1" in
   start)
-	/opt/vyatta/sbin/vyatta-wireless.pl --dev=$2 --hostap > $DAEMON_CONF \
+	/opt/vyatta/sbin/wireless-hostapd.pl --dev=$2 --hostap > $config \
 	    && start-stop-daemon --start --oknodo --quiet \
-		--exec $DAEMON --pidfile $PIDFILE -- $DAEMON_OPTS > /dev/null
+		--exec $DAEMON --pidfile $pid_file -- $DAEMON_OPTS > /dev/null
 	;;
   stop)
-	start-stop-daemon --stop --oknodo --quiet --pidfile $PIDFILE
+	start-stop-daemon --stop --oknodo --quiet --pidfile $pid_file
 	;;
   reload)
-	/opt/vyatta/sbin/vyatta-wireless.pl --dev=$2 --hostap > $DAEMON_CONF \
-	    && start-stop-daemon --stop --signal HUP --pidfile $PIDFILE
+	/opt/vyatta/sbin/vyatta-wireless.pl --dev=$2 --hostap > $config \
+	    && start-stop-daemon --stop --signal HUP --pidfile $pid_file
 	;;
   restart|force-reload)
   	$0 stop
