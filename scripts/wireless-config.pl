@@ -124,6 +124,12 @@ sub list_chan {
     print join(' ', get_chan(@_)), "\n";
 }
 
+sub check_chan {
+    my ($dev, $ch) = @_;
+    my $match = grep { $ch eq $_ } get_chan($dev);
+    die "Channel $ch is not availabe for $dev\n" unless ($match > 0);
+}
+
 sub list_type {
     print join(' ', get_type(@_)), "\n";
 }
@@ -131,7 +137,7 @@ sub list_type {
 sub check_type {
     my ($dev, $type) = @_;
     my $match = grep { $type eq $_ } get_type($dev);
-    die "$type is not a known type for $dev\n" unless ($match > 0);
+    die "Type $type is not a available for $dev\n" unless ($match > 0);
 }
 
 sub set_type {
