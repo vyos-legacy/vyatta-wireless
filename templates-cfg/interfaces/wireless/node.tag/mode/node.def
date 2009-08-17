@@ -1,10 +1,10 @@
 type: txt
-help: Wireless radio mode
+help: Set wireless radio mode
 default: "g"
 allowed: echo "a b g n"
-syntax:expression: $VAR(@) in "a", "b", "g", "n"
+syntax:expression: $VAR(@) in "a", "b", "g", "n" ; "mode must be a, b, g or n"
 comp_help: possible completions (not all devices support all modes)
-  a	802.11a - 54 Mbits/sec
-  b	802.11b - 11 Mbits/sec
-  g	802.11g - 54 Mbits/sec
-  n	802.11n - 600 Mbits/sec
+  a\t\t802.11a - 54 Mbits/sec
+  b\t\t802.11b - 11 Mbits/sec
+  g\t\t802.11g - 54 Mbits/sec (default)
+  n\t\t802.11n - 600 Mbits/sec
