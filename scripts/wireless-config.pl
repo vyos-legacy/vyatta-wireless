@@ -1,7 +1,5 @@
 #! /usr/bin/perl
-#
-# Module: vyatta-wireless.pl
-#
+
 # **** License ****
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -49,12 +47,13 @@ my %mode2iw = (
     'mesh' 		=> 'mesh point',
 );
 
+# Convert from device (wlan0) to underlying phy (phy0)
+# This is gross, no other API for getting the info
 sub get_phy {
     my $intf = shift;
-    my $config = new Vyatta::Config;
-    $config->setLevel("interfaces wireless $intf");
 
-    return $config->returnValue("physical-device");
+    my $link = readlink ("/sys/class/net/$intf/phy80211");
+    return $1 if ( $link  =~ m#/(phy\d+)$# ); 
 }
 
 # get list of channels available by device
