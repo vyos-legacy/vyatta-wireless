@@ -37,11 +37,11 @@ my %iw2mode = (
     'mesh point' => 'mesh',
 );
 
+# Only modes valid on command line are listed
+# access-point mode is controlled by hostapd, not here.
 my %mode2iw = (
     'adhoc'		=> 'IBSS',
     'station'		=> 'managed',
-    'access-point'	=> '__ap',
-#    'vlan-access-point'	=> '__ap_vlan',
 #    'wds'		=> 'wds',
     'monitor'		=> 'monitor',
     'mesh' 		=> 'mesh point',
@@ -138,7 +138,7 @@ sub set_type {
     my ($dev, $t) = @_;
     my $type = $mode2iw{$t};
     die "$t is not a known type\n" unless $type;
-
+    
     exec 'sudo', 'iw', 'dev',  $dev, 'set', 'type', $type;
     die "exec iw failed: $!";
 }

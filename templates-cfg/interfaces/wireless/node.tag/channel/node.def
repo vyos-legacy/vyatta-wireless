@@ -4,9 +4,6 @@ syntax:expression: $VAR(@) > 0 && $VAR(@) < 15 ; "Channel must be between 1 and 
 commit:expression:exec \
     "/opt/vyatta/sbin/wireless-config.pl --dev=$VAR(../@) --check-chan=$VAR(@)"
 
-update: if [ "$VAR(../type/@)" != "access-point" ]
-	then sudo iw dev $VAR(../@) set channel $VAR(@)
-	fi
 
 comp_help: possible completions
   <1-14> Channel (not all maybe available depending on geography and hardware)
