@@ -58,8 +58,8 @@ if ($gid) {
     print "ctrl_interface_group=$gid\n";
 }
 
-my $hw_mode = $config->returnValue("hw_mode");
-die "wireless $wlan: missing hw_mode\n" unless $hw_mode;
+my $hw_mode = $config->returnValue("mode");
+die "wireless $wlan: missing mode" unless $hw_mode;
 print "hw_mode=$hw_mode\n";
 print "ieee80211n=1\n" if ( $hw_mode eq 'n' );
 
