@@ -1,3 +1,21 @@
+vyatta-wireless (0.1.2) unstable; urgency=low
+
+  * Get rid of vyatta- in command names
+  * Fix hostapd config file generation
+  * Need to run hostapd as root
+  * Add check for valid channel values
+  * Configiure N mode properly
+  * Bring interface up before starting hostapd
+  * Add allowed completion for type
+  * Use standard syntax for help on ssid
+  * Check that SSID is set
+  * add radius server accounting for wpa enterprise
+  * Add template for country code
+  * Fix invalid ssid message
+  * Update hostapd config generator
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Thu, 20 Aug 2009 16:06:39 -0700
+
 vyatta-wireless (0.1.1) unstable; urgency=low
 
   * Don't need wpasupplicant yet
