@@ -35,14 +35,6 @@ use lib "/opt/vyatta/share/perl5/";
 use Vyatta::Config;
 use Vyatta::Misc;
 
-sub getValue {
-    my ($config, $name) = @_;
-    my $level = $config->setLevel();
-    
-    my $val = $config->returnValue($name);
-    die "Missing '$name' for : $level\n"	unless $val;
-    return $val;
-}
 
 # Generate a hostapd.conf file based on Vyatta config
 die "Usage: $0 wlanX\n"
@@ -50,19 +42,32 @@ die "Usage: $0 wlanX\n"
 
 my $wlan   = $ARGV[0];
 my $config = new Vyatta::Config;
-$config->setLevel("interfaces wireless $wlan");
+my $level  = "interfaces wireless $wlan";
+$config->setLevel($level);
 
-my $ssid = getValue($config, 'ssid');
-my $chan = getValue($config, 'channel');
-my $hw_mode = getValue($config, 'mode');
+# Mandatory value
+my $ssid = $config->returnValue('ssid');
+die "$level : missing SSID\n" unless $ssid;
 
-# Generate preamble
+my $hw_mode = $config->returnValue('mode');
+my $chan = $config->returnValue('channel');
+my $country = $config->returnValue('country');
+
 print "# Hostapd configuration\n";
 print "interface=$wlan\n";
 print "driver=nl80211\n";
-print "ssid=$ssid\n";
 
-print "channel=$chan\n";
+print "logger_syslog=-1";
+print "logger_syslog_level=3";	# TOD make configurable
+
+print "ssid=$ssid\n";
+print "channel=$chan\n" if $chan;
+
+if ($country) {
+    print "country_code=$country\n";
+    print "ieee80211d=1\n";	# TODO make optional?
+}
+
 if ( $hw_mode eq 'n' ) {
     print "hw_mode=g\n";
     print "ieee80211n=1\n" 
