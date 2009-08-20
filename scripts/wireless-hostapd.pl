@@ -63,8 +63,12 @@ print "driver=nl80211\n";
 print "ssid=$ssid\n";
 
 print "channel=$chan\n";
-print "hw_mode=$hw_mode\n";
-print "ieee80211n=1\n" if ( $hw_mode eq 'n' );
+if ( $hw_mode eq 'n' ) {
+    print "hw_mode=g\n";
+    print "ieee80211n=1\n" 
+} else {
+    print "hw_mode=$hw_mode\n";
+}
 
 print"dump_file=/var/log/vyatta/hostapd.$wlan\n";
 # TODO do we need this?
