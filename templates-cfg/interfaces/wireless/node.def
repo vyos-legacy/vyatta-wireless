@@ -4,7 +4,11 @@ help: Set wireless network interface
 syntax:expression: exec \
    "/opt/vyatta/sbin/vyatta-interfaces.pl --dev=$VAR(@) --check=wireless"
 allowed: /opt/vyatta/sbin/vyatta-interfaces.pl --show=wireless
-commit:expression: ( "$VAR(./type/@)" != "" ) ; "interface type must be set"
+
+commit:expression: "$VAR(./type/@)" != "" ; \
+		   "interface type must be set"
+commit:expression: "$VAR(./type/@)" == "monitor" || "$VAR(./ssid/@)" != "" ; \
+		   "ssid must be set"
 
 create: if [ ! -d /sys/class/net/$VAR(@) ]; then
 	    /opt/vyatta/sbin/wireless-config.pl --dev=$VAR(@) --create || exit 1
