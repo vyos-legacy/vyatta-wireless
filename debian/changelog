@@ -1,3 +1,12 @@
+vyatta-wireless (0.1.3) unstable; urgency=low
+
+  * make necessary directory during install
+  * Allow multiple WEP keys and formats
+  * Move wep/wpa check to wpa node.
+  * preliminary station mode support
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Fri, 21 Aug 2009 14:50:47 -0700
+
 vyatta-wireless (0.1.2) unstable; urgency=low
 
   * Get rid of vyatta- in command names
