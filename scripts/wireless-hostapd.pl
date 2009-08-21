@@ -57,8 +57,8 @@ print "# Hostapd configuration\n";
 print "interface=$wlan\n";
 print "driver=nl80211\n";
 
-print "logger_syslog=-1";
-print "logger_syslog_level=3";	# TOD make configurable
+print "logger_syslog=-1\n";
+print "logger_syslog_level=3\n";	# TODO make configurable
 
 print "ssid=$ssid\n";
 print "channel=$chan\n" if $chan;
