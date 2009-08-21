@@ -1,4 +1,11 @@
+tag:
 type: txt
 help: Set WEP encryption key
-syntax:expression: pattern $VAR(@) "^[[:xdigit:]]{10,26,32}$" \
+syntax:expression: ((pattern $VAR(@) "^[[:xdigit:]]{10}$") ||
+		    (pattern $VAR(@) "^[[:xdigit:]]{26}$") ||
+		    (pattern $VAR(@) "^[[:xdigit:]]{58}$")) \
 		   ; "Invalid WEP key $VAR(@)"
+comp_help: Wired Equivalent Privacy key 
+  10 hex digits -> 64 bit WEP
+  26 hex digits -> 128 bit WEP
+  58 hex digits -> 256 bit WEP
