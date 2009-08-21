@@ -23,6 +23,7 @@
 use lib "/opt/vyatta/share/perl5/";
 use Getopt::Long;
 use Vyatta::Config;
+use Vyatta::Interface;
 
 use strict;
 use warnings;
@@ -53,7 +54,7 @@ sub get_phy {
     my $intf = shift;
 
     my $link = readlink ("/sys/class/net/$intf/phy80211");
-    return $1 if ( $link  =~ m#/(phy\d+)$# ); 
+    return $1 if ( $link  =~ m#/(phy\d+)$# );
 }
 
 # get list of channels available by device
@@ -140,15 +141,6 @@ sub check_type {
     die "Type $type is not a available for $dev\n" unless ($match > 0);
 }
 
-sub set_type {
-    my ($dev, $t) = @_;
-    my $type = $mode2iw{$t};
-    die "$t is not a known type\n" unless $type;
-    
-    exec 'sudo', 'iw', 'dev',  $dev, 'set', 'type', $type;
-    die "exec iw failed: $!";
-}
-
 sub create_dev {
     my $wlan = shift;
     my $cfg = new Vyatta::Config;
@@ -162,44 +154,106 @@ sub create_dev {
 
     my $mode = $cfg->returnValue('mode');
     die "wireless $wlan: you must specify mode\n" unless $mode;
-    
+
     my $iwmode = $mode2iw{$mode};
     die "wireless $wlan: unknown mode $mode\n" unless $iwmode;
 
-    system("sudo iw phy $phy interface add $wlan type $iwmode") == 0
+    system("iw phy $phy interface add $wlan type $iwmode") == 0
 	or die "wireless $wlan: device create failed\n";
 }
 
 sub delete_dev {
     my $name = shift;
 
-    exec 'sudo', 'iw', 'dev', $name, 'del';
+    exec 'iw', 'dev', $name, 'del';
     die "Could not exec iw: $!";
 }
 
-sub hostap_config {
-    my $name = shift;
-    my $hostap = new Vyatta::Wireless::Hostap($name);
+sub config_wpa {
+    my ($intf, $ssid) = @_;
+    my $logname = "/var/log/vyatta/wpa_supplicant/$intf";
+    my $cfgname = "/var/run/vyatta/wpa_supplicant/$intf";
+    my $config = new Vyatta::Config;
+    $config->setLevel("interfaces wireless $intf security");
 
-    $hostap->print_cfg();
+    open my $cfg, '>', $cfgname
+	or die "Can't open $cfgname:$!\n";
+
+    print {$cfg} "# WPA supplicant config\n";
+    print {$cfg} "network={\n";
+    print {$cfg} "ssid=\"$ssid\"\n";
+    print {$cfg} "scan_ssid=1\n" if ($config->exists('disable-broadcast'));
+
+    if ($config->exists('wep')) {
+	print {$cfg} "key_mgmt=NONE\n";
+
+	my @keys = $config->listNodes('wep key');
+	for (my $i = 0; $i < $#keys; ++$i) {
+	    print {$cfg} "wep_key$i=$keys[$i]\n";
+	}
+    } elsif ($config->exists('wpa')) {
+	my $psk = $config->returnValue('wpa passphrase');
+	if ($psk) {
+	    print {$cfg} "psk=\"$psk\"\n";
+	} else {
+	    die "WPA-EAP client not supported yet\n";
+	}
+    }
+    close $cfg
+	or die "Write error on $cfgname: $!";
+
+    system("wpa_supplicant -i $intf -c $cfgname -f $logname -B") == 0
+	    or die "can't start wpa_supplicant: $!";
+}
+
+sub config_station {
+    my $name = shift;
+    my $intf = new Vyatta::Interface($name);
+    die "Unknown interface name $name" unless $intf;
+
+    my $cfg = new Vyatta::Config;
+    $cfg->setLevel("interfaces wireless $name");
+    my $ssid = $cfg->returnValue('ssid');
+    die "wireless interface $name : SSID not set" unless $ssid;
+
+    if ($intf->flags() & IFF_UP) {
+	system("ip link set $name down") == 0
+	    or die "ip command failed: $!";
+    }
+
+    my $type = $cfg->returnValue('type');
+    if ($type) {
+	system ("iw dev $name set type $type") == 0
+	    or die "iw set type command failed: $!";
+    }
+
+    my $chan = $cfg->returnValue('channel');
+    if ($chan) {
+	system ("iw dev $name set channel $chan") == 0
+	    or die "iw set channel command failed: $!";
+    }
+
+    config_wpa ($name, $ssid) if ($cfg->exists('security'));
+
+    exec 'ip', 'link', 'set', $name, 'up'
+	or die "exec of ip link set up failed: $!";
 }
 
 my $dev;
-my ( $list_type, $check_type, $list_chan, $check_chan, $set_type );
-my ( $create_dev, $delete_dev, $hostap );
+my ( $list_type, $check_type, $list_chan, $check_chan, $config_station );
+my ( $create_dev, $delete_dev );
 
 GetOptions(
     'dev=s'		  => \$dev,
     'list-type'   	  => \$list_type,
     'check-type=s'	  => \$check_type,
-    'set-type=s'	  => \$set_type,
+    'config'		  => \$config_station,
 
     'list-chan'		  => \$list_chan,
     'check-chan=s'	  => \$check_chan,
 
     'create'		  => \$create_dev,
     'delete'		  => \$delete_dev,
-    'hostap'		  => \$hostap,
 ) or usage();
 
 die "Missing device argument\n" unless $dev;
@@ -209,8 +263,9 @@ check_chan($dev, $check_chan)	if $check_chan;
 
 list_type($dev)			if $list_type;
 check_type($dev, $check_type)	if $check_type;
-set_type($dev, $set_type)	if $set_type;
 
 create_dev($dev)		if $create_dev;
 delete_dev($dev)		if $delete_dev;
-hostap_config($dev)		if $hostap;
+
+config_station($dev)		if $config_station;
+

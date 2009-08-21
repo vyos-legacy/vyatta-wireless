@@ -1,8 +1,7 @@
 tag:
 type: txt
 help: Set wireless network interface
-syntax:expression: exec \
-   "/opt/vyatta/sbin/vyatta-interfaces.pl --dev=$VAR(@) --check=wireless"
+syntax:expression: pattern $VAR(@) "^wlan[1-9]*[0-9]$" : "invalid wireless device name"
 allowed: /opt/vyatta/sbin/vyatta-interfaces.pl --show=wireless
 
 commit:expression: "$VAR(./type/@)" != "" ; \
@@ -18,18 +17,15 @@ delete: [ -d /sys/class/net/$VAR(@) ] || exit 0
 	/opt/vyatta/sbin/wireless-config.pl --dev=$VAR(@) --delete
 
 end:if [ ${COMMIT_ACTION} = 'SET' -o ${COMMIT_ACTION} = 'ACTIVE' ]; then
-        if [ "$VAR(./type/@)" = "access-point" ]; then
+       case $VAR(./type/@) in
+       access-point)
             case ${COMMIT_ACTION} in
      	    SET)  sudo ip link set $VAR(@) up
 	          sudo /opt/vyatta/sbin/hostapd-init start $VAR(@) ;;
 	    ACTIVE) sudo /opt/vyatta/sbin/hostapd-init reload $VAR(@) ;;
-            esac
-	else
-	    sudo ip link set $VAR(@) down
-	    sudo /opt/vyatta/sbin/wireless-config.pl --dev=$VAR(@) \
-	    	--set-type $VAR(./type/@)
-	    sudo iw dev $VAR(../@) set channel $VAR(./channel/@)
-	    sudo ip link set $VAR(@) up
-	fi
+            esac ;;
+       station)
+	    sudo /opt/vyatta/sbin/wireless-config.pl --dev=$VAR(@) --config
+	esac
         /opt/vyatta/sbin/vyatta-link-detect $VAR(@) on
     fi
