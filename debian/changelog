@@ -1,3 +1,11 @@
+vyatta-wireless (0.2) unstable; urgency=low
+
+  * add requirement for wpasupplicant
+  * fix typo in top level checks
+  * fix missing newline
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Fri, 21 Aug 2009 15:29:25 -0700
+
 vyatta-wireless (0.1.3) unstable; urgency=low
 
   * make necessary directory during install
