@@ -1,4 +1,2 @@
 help: Set wireless security settings
-commit:expression: ($VAR(wep/) != "") && ($VAR(wpa/) != "") \
-		   ; "wireless $VAR(../@) : can not specify both wep and wpa"
 
