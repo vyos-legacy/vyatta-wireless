@@ -39,13 +39,6 @@ fi
 pid_dir=/var/run/vyatta/hostapd
 log_dir=/var/log/vyatta/hostapd
 
-for dir in $pid_dir $log_dir ; do
-    if [ ! -d $dir ]; then
-	mkdir -p $dir
-	chmod 755 $dir
-    fi
-done
-
 pid_file=$pid_dir/$2.pid
 config=$pid_dir/$2.cfg
 
