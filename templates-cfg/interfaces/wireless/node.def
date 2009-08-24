@@ -26,8 +26,10 @@ end:if [ ${COMMIT_ACTION} = 'SET' -o ${COMMIT_ACTION} = 'ACTIVE' ]; then
 	    ACTIVE) sudo /opt/vyatta/sbin/hostapd-init reload $VAR(@) ;;
             esac ;;
        station)
+            case ${COMMIT_ACTION} in
      	    SET) sudo /opt/vyatta/sbin/wpa_supplicant-init start $VAR(@) ;;
 	    ACTIVE) sudo /opt/vyatta/sbin/wpa_supplicant-init reload $VAR(@) ;;
+            esac ;;
        esac
        /opt/vyatta/sbin/vyatta-link-detect $VAR(@) on
     fi
