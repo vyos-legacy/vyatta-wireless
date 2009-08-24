@@ -4,6 +4,8 @@ opdir = $(datadir)/vyatta-op/templates
 sbin_SCRIPTS  = scripts/wireless-config.pl
 sbin_SCRIPTS += scripts/wireless-hostapd.pl
 sbin_SCRIPTS += scripts/hostapd-init
+sbin_SCRIPTS += scripts/wireless-wpa_supplicant.pl
+sbin_SCRIPTS += scripts/wpa_supplicant-init
 
 bin_SCRIPTS = scripts/show-wireless.pl
 
