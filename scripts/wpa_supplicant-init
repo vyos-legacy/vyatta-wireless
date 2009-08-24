@@ -33,14 +33,17 @@ if [ $# -ne 2 ]; then
     exit 1
 fi
 
+DAEMON=/sbin/wpa_supplicant
 pid_dir=/var/run/vyatta/wpa_supplicant
+[ -d $pid_dir ] || mkdir -m 0775 -p $pid_dir
+
 log_dir=/var/log/vyatta/wpa_supplicant
+[ -d $log_dir ] || mkdir -m 0775 -p $log_dir
 
 pid_file=$pid_dir/$2.pid
 config=$pid_dir/$2.cfg
 log_file=$log_dir/$2
 
-DAEMON=/usr/sbin/wpa_supplicant
 DAEMON_OPTS="-B -D nl80211 -i $2 -c $config -f $log_file"
 
 set -e
