@@ -43,13 +43,12 @@ pid_file=$pid_dir/$2.pid
 config=$pid_dir/$2.cfg
 
 DAEMON_OPTS="-B -P $pid_file $config"
-DESC="Access point mangement for $2"
 
 set -e
 
 case "$1" in
   start)
-	/opt/vyatta/sbin/wireless-hostapd.pl $2  > $config
+	/opt/vyatta/sbin/wireless-hostapd.pl $2 > $config
 	start-stop-daemon --start --oknodo --quiet \
 		--exec $DAEMON --pidfile $pid_file -- $DAEMON_OPTS > /dev/null
 	;;
@@ -70,8 +69,6 @@ case "$1" in
 	exit 1
 	;;
 esac
-
-
 
 
 
