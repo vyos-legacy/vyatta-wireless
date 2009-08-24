@@ -1,3 +1,10 @@
+vyatta-wireless (0.2.1) unstable; urgency=low
+
+  * Update operational mode
+  * fix show interfaces wireless wlan0 stations
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Mon, 24 Aug 2009 11:36:30 -0700
+
 vyatta-wireless (0.2) unstable; urgency=low
 
   * add requirement for wpasupplicant
