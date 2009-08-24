@@ -1,4 +1,4 @@
-tag:
+multi:
 type: txt
 help: Set WEP encryption key
 syntax:expression: ((pattern $VAR(@) "^[[:xdigit:]]{10}$") ||
