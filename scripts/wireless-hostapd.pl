@@ -92,21 +92,26 @@ print "device_name=$descript\n" if $descript;
 # TODO allow configuring ACL
 print "macaddr_acl=0\n";
 
-$config->setLevel("interfaces wireless $wlan security");
+$config->setLevel("$level security");
 if ( $config->exists('wep') ) {
-    my $key = getValue($config, 'wep key');
+    my @keys = $config->returnValues('wep key');
+
+    die "Missing WEP keys\n" unless @keys;
 
     # TODO allow open/shared to be configured
-    print <<EOF
-auth_algs=2
-wep_key_len_broadcast=5
-wep_key_len_unicast=5
-wep_default_key=0
-wep_key0=$key
-EOF
+    print "auth_algs=2\nwep_key_len_broadcast=5\nwep_key_len_unicast=5\n";
+
+    # TODO allow chosing default key
+    print "wep_default_key=0\n";
+
+    for (my $i = 0; $i <= $#keys; $i++) {
+	print "wep_key$i=$keys[$i]\n";
+    }
+
 } elsif ( $config->exists('wpa') ) {
-    my $phrase = $config->returnValue("passphrase");
-    my @radius = $config->listNodes("radius-server");
+    $config->setLevel("$level security wpa");
+    my $phrase = $config->returnValue('passphrase');
+    my @radius = $config->listNodes('radius-server');
 
     # By default, use both WPA and WPA2
     print "wpa=3\nwpa_pairwise=TKIP CCMP\n";
