@@ -1,3 +1,14 @@
+vyatta-wireless (0.2.2) unstable; urgency=low
+
+  * Fix incorrect wep key template
+  * better error message on wpa passphrase
+  * remove non-working wpa/wep checks
+  * use correct path for security checks
+  * hostapd only supports 152 bit WEP max
+  * Fix WEP/WPA setup
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Mon, 24 Aug 2009 14:18:15 -0700
+
 vyatta-wireless (0.2.1) unstable; urgency=low
 
   * Update operational mode
