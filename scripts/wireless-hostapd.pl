@@ -92,7 +92,7 @@ print "device_name=$descript\n" if $descript;
 # TODO allow configuring ACL
 print "macaddr_acl=0\n";
 
-$config->setLevel("interface wireless $wlan security");
+$config->setLevel("interfaces wireless $wlan security");
 if ( $config->exists('wep') ) {
     my $key = getValue($config, 'wep key');
 
