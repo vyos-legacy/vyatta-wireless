@@ -37,7 +37,10 @@ if [ $# -ne 2 ]; then
 fi
 
 pid_dir=/var/run/vyatta/hostapd
+[ -d $pid_dir ] || mkdir -m 0775 -p $pid_dir
+
 log_dir=/var/log/vyatta/hostapd
+[ -d $log_dir ] || mkdir -m 0775 -p $log_dir
 
 pid_file=$pid_dir/$2.pid
 config=$pid_dir/$2.cfg
