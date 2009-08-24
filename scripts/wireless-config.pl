@@ -169,85 +169,14 @@ sub delete_dev {
     die "Could not exec iw: $!";
 }
 
-sub config_wpa {
-    my ($intf, $ssid) = @_;
-    my $logname = "/var/log/vyatta/wpa_supplicant/$intf";
-    my $cfgname = "/var/run/vyatta/wpa_supplicant/$intf";
-    my $config = new Vyatta::Config;
-    $config->setLevel("interfaces wireless $intf security");
-
-    open my $cfg, '>', $cfgname
-	or die "Can't open $cfgname:$!\n";
-
-    print {$cfg} "# WPA supplicant config\n";
-    print {$cfg} "network={\n";
-    print {$cfg} "ssid=\"$ssid\"\n";
-    print {$cfg} "scan_ssid=1\n" if ($config->exists('disable-broadcast'));
-
-    if ($config->exists('wep')) {
-	print {$cfg} "key_mgmt=NONE\n";
-
-	my @keys = $config->listNodes('wep key');
-	for (my $i = 0; $i < $#keys; ++$i) {
-	    print {$cfg} "wep_key$i=$keys[$i]\n";
-	}
-    } elsif ($config->exists('wpa')) {
-	my $psk = $config->returnValue('wpa passphrase');
-	if ($psk) {
-	    print {$cfg} "psk=\"$psk\"\n";
-	} else {
-	    die "WPA-EAP client not supported yet\n";
-	}
-    }
-    close $cfg
-	or die "Write error on $cfgname: $!";
-
-    system("wpa_supplicant -i $intf -c $cfgname -f $logname -B") == 0
-	    or die "can't start wpa_supplicant: $!";
-}
-
-sub config_station {
-    my $name = shift;
-    my $intf = new Vyatta::Interface($name);
-    die "Unknown interface name $name" unless $intf;
-
-    my $cfg = new Vyatta::Config;
-    $cfg->setLevel("interfaces wireless $name");
-    my $ssid = $cfg->returnValue('ssid');
-    die "wireless interface $name : SSID not set" unless $ssid;
-
-    if ($intf->flags() & IFF_UP) {
-	system("ip link set $name down") == 0
-	    or die "ip command failed: $!";
-    }
-
-    my $type = $cfg->returnValue('type');
-    if ($type) {
-	system ("iw dev $name set type $type") == 0
-	    or die "iw set type command failed: $!";
-    }
-
-    my $chan = $cfg->returnValue('channel');
-    if ($chan) {
-	system ("iw dev $name set channel $chan") == 0
-	    or die "iw set channel command failed: $!";
-    }
-
-    config_wpa ($name, $ssid) if ($cfg->exists('security'));
-
-    exec 'ip', 'link', 'set', $name, 'up'
-	or die "exec of ip link set up failed: $!";
-}
-
 my $dev;
-my ( $list_type, $check_type, $list_chan, $check_chan, $config_station );
+my ( $list_type, $check_type, $list_chan, $check_chan );
 my ( $create_dev, $delete_dev );
 
 GetOptions(
     'dev=s'		  => \$dev,
     'list-type'   	  => \$list_type,
     'check-type=s'	  => \$check_type,
-    'config'		  => \$config_station,
 
     'list-chan'		  => \$list_chan,
     'check-chan=s'	  => \$check_chan,
@@ -266,6 +195,3 @@ check_type($dev, $check_type)	if $check_type;
 
 create_dev($dev)		if $create_dev;
 delete_dev($dev)		if $delete_dev;
-
-config_station($dev)		if $config_station;
-

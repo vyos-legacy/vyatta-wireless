@@ -9,22 +9,25 @@ commit:expression: ( "$VAR(./type/@)" == "monitor" || "$VAR(./ssid/@)" != "" ) \
 		   ; "SSID must be set"
 
 create: if [ ! -d /sys/class/net/$VAR(@) ]; then
-	    /opt/vyatta/sbin/wireless-config.pl --dev=$VAR(@) --create || exit 1
+	    sudo /opt/vyatta/sbin/wireless-config.pl --dev=$VAR(@) --create || exit 1
 	fi
 
 delete: [ -d /sys/class/net/$VAR(@) ] || exit 0
-	/opt/vyatta/sbin/wireless-config.pl --dev=$VAR(@) --delete
+	sudo /opt/vyatta/sbin/wireless-config.pl --dev=$VAR(@) --delete
 
 end:if [ ${COMMIT_ACTION} = 'SET' -o ${COMMIT_ACTION} = 'ACTIVE' ]; then
+       if [ ${COMMIT_ACTION} = 'SET' ]; then
+             sudo ip link set $VAR(@) up
+       fi
        case $VAR(./type/@) in
        access-point)
             case ${COMMIT_ACTION} in
-     	    SET)  sudo ip link set $VAR(@) up
-	          sudo /opt/vyatta/sbin/hostapd-init start $VAR(@) ;;
+     	    SET) sudo /opt/vyatta/sbin/hostapd-init start $VAR(@) ;;
 	    ACTIVE) sudo /opt/vyatta/sbin/hostapd-init reload $VAR(@) ;;
             esac ;;
        station)
-	    sudo /opt/vyatta/sbin/wireless-config.pl --dev=$VAR(@) --config
-	esac
-        /opt/vyatta/sbin/vyatta-link-detect $VAR(@) on
+     	    SET) sudo /opt/vyatta/sbin/wpa_supplicant-init start $VAR(@) ;;
+	    ACTIVE) sudo /opt/vyatta/sbin/wpa_supplicant-init reload $VAR(@) ;;
+       esac
+       /opt/vyatta/sbin/vyatta-link-detect $VAR(@) on
     fi

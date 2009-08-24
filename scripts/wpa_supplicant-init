@@ -26,29 +26,28 @@
 # 
 # **** End License ****
 
-# Based on Debian /etc/init.d/hostapd
-
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
-DAEMON=/usr/sbin/hostapd
 
 if [ $# -ne 2 ]; then
     echo "Usage: $0 {start|stop|restart} wlanX" >&2
     exit 1
 fi
 
-pid_dir=/var/run/vyatta/hostapd
-log_dir=/var/log/vyatta/hostapd
+pid_dir=/var/run/vyatta/wpa_supplicant
+log_dir=/var/log/vyatta/wpa_supplicant
 
 pid_file=$pid_dir/$2.pid
 config=$pid_dir/$2.cfg
+log_file=$log_dir/$2
 
-DAEMON_OPTS="-B -P $pid_file $config"
+DAEMON=/usr/sbin/wpa_supplicant
+DAEMON_OPTS="-B -D nl80211 -i $2 -c $config -f $log_file"
 
 set -e
 
 case "$1" in
   start)
-	/opt/vyatta/sbin/wireless-hostapd.pl $2 > $config
+	/opt/vyatta/sbin/wireless-wpa_supplicant.pl $2 > $config
 	start-stop-daemon --start --oknodo --quiet \
 		--exec $DAEMON --pidfile $pid_file -- $DAEMON_OPTS > /dev/null
 	;;
@@ -56,7 +55,7 @@ case "$1" in
 	start-stop-daemon --stop --oknodo --quiet --pidfile $pid_file
 	;;
   reload)
-	/opt/vyatta/sbin/wireless-hostapd.pl $2 > $config
+	/opt/vyatta/sbin/wireless-wpa_supplicant.pl $2 > $config
 	start-stop-daemon --stop --signal HUP --pidfile $pid_file
 	;;
   restart|force-reload)
@@ -71,5 +70,9 @@ case "$1" in
 esac
 
 
+
+    system("wpa_supplicant -i $wlan -c $cfgname -f $logname -B") == 0
+	    or die "can't start wpa_supplicant: $!";
+}
 
 
