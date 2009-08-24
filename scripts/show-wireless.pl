@@ -38,60 +38,122 @@ sub get_device_map {
     my %wlans;
 
     open my $iwcmd, '-|'
-	or exec qw(iw dev)
-	or die "iw command failed: $!";
+      or exec qw(iw dev)
+      or die "iw command failed: $!";
 
     my $name;
     while (<$iwcmd>) {
-	my @fields = split;
-	if ($fields[0] eq 'Interface') { $name = $fields[1]; }
-	elsif ($fields[0] eq 'type')   { $wlans{$name} = $fields[1]; }
+        my @fields = split;
+        if ( $fields[0] eq 'Interface' ) { $name = $fields[1]; }
+        elsif ( $fields[0] eq 'type' ) { $wlans{$name} = $fields[1]; }
     }
     close $iwcmd;
 
     return \%wlans;
 }
 
-sub show_brief {
-    my $wlans = get_device_map();
+sub show_intf {
+    my $intf   = shift;
+    my $format = "%-18s %-12s %-10s %-10s  %-10s %-10s\n";
+    printf $format, "Station", "Signal",
+      "RX: bytes", "packets", "TX: bytes", "packets";
 
-    my $format = "%-12s %-18s %-20s %-6s\n";
-    printf $format, "Interface","Type","SSID","Channel";
+    open my $iwcmd, '-|'
+      or exec 'iw', 'dev', $intf, 'station', 'dump'
+      or die "iw command failed: $!";
 
-    foreach my $intf (sort keys %$wlans) {
-	# TODO convert to config names
-	my $type = $$wlans{$intf};
-	my ($ssid, $chan);
-
-    die "not done yet\n";
-# TODO
-	if ($type eq 'AP') {
-	    ($ssid, $chan) = hostap_params($intf);
-	} else {
-	    $ssid = get_intf_ssid($intf);
-	    $chan = get_intf_chan($intf);
-	}
-
-	printf $format, $intf, $type, $ssid, $chan;
+    # Station 00:1d:e0:30:26:3f (on wlan0)
+    #	inactive time:	5356 ms
+    #	rx bytes:	6399
+    #	rx packets:	85
+    #	tx bytes:	4433
+    #	tx packets:	32
+    #	signal:  	-57 dBm
+    #	tx bitrate:	1.0 MBit/s
+    my ( $station, $signal, $rxbytes, $rxpkts, $txbytes, $txpkts );
+    while (<$iwcmd>) {
+        my @fields = split;
+        if ( $fields[0] eq 'Station' ) {
+            $station = $fields[1];
+        }
+        elsif ( $fields[0] eq 'signal:' ) {
+            $signal = $fields[1];
+        }
+        elsif ( $fields[0] eq 'rx' ) {
+            if ( $fields[1] eq 'bytes:' ) {
+                $rxbytes = $fields[2];
+            }
+            elsif ( $fields[1] eq 'packets:' ) {
+                $rxpkts = $fields[2];
+            }
+        }
+        elsif ( $fields[0] eq 'tx' ) {
+            if ( $fields[1] eq 'bytes:' ) {
+                $txbytes = $fields[2];
+            }
+            elsif ( $fields[1] eq 'packets:' ) {
+                $txpkts = $fields[2];
+            }
+            elsif ( $fields[1] eq 'bitrate:' ) {
+                printf $format, $station, $signal,
+                  $rxbytes, $rxpkts, $txbytes, $txpkts;
+            }
+        }
     }
+    close $iwcmd;
 }
 
-sub show_intf {
-# TODO
-    die "not done yet\n";
+sub hostap_params {
+    my $intf    = shift;
+    my $cfgfile = "/var/run/vyatta/hostapd/$intf.cfg";
+
+    open my $hcfg, '<', $cfgfile
+      or die "missing hostap config file $cfgfile:$!";
+
+    my ( $ssid, $chan );
+
+    while (<$hcfg>) {
+        chomp;
+        if (m/^ssid=(.*)$/) {
+            $ssid = $1;
+        }
+        elsif (m/^channel=(\d+)$/) {
+            $chan = $1;
+        }
+    }
+    close $hcfg;
+
+    return ( $ssid, $chan );
+}
+
+my %param_func = ( 'AP' => \&hostap_params, );
+
+sub show_brief {
+    my $wlans  = get_device_map();
+    my $format = "%-12s %-18s %-20s %-6s\n";
+    printf $format, "Interface", "Type", "SSID", "Channel";
+
+    foreach my $intf ( sort keys %$wlans ) {
+
+        # TODO convert to config names
+        my $type       = $$wlans{$intf};
+        my $get_params = $param_func{$type};
+
+        my $ssid = '-';
+        my $chan = '?';
+        ( $ssid, $chan ) = $get_params->($intf) if $get_params;
+
+        printf $format, $intf, $type, $ssid, $chan;
+    }
 }
 
 my ( $brief, $show );
 
 GetOptions(
-    'brief'	  => \$brief,
-    'show=s'	  => \$show,
+    'brief'  => \$brief,
+    'show=s' => \$show,
 ) or usage();
 
-
 show_brief() if ($brief);
-show_intf($show)  if ($show);
-
-
-
+show_intf($show) if ($show);
 
