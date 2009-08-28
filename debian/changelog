@@ -1,3 +1,48 @@
+vyatta-wireless (0.2.3) unstable; urgency=low
+
+  * Revision to wpa supplicant support
+  * whitespace cleanup
+  * Fix path to wpa-supplicant
+  * add missing case/esac
+  * make directories as needed
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Mon, 24 Aug 2009 16:16:07 -0700
+
+vyatta-wireless (0.2.2) unstable; urgency=low
+
+  * Fix incorrect wep key template
+  * better error message on wpa passphrase
+  * remove non-working wpa/wep checks
+  * use correct path for security checks
+  * hostapd only supports 152 bit WEP max
+  * Fix WEP/WPA setup
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Mon, 24 Aug 2009 14:18:15 -0700
+
+vyatta-wireless (0.2.1) unstable; urgency=low
+
+  * Update operational mode
+  * fix show interfaces wireless wlan0 stations
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Mon, 24 Aug 2009 11:36:30 -0700
+
+vyatta-wireless (0.2) unstable; urgency=low
+
+  * add requirement for wpasupplicant
+  * fix typo in top level checks
+  * fix missing newline
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Fri, 21 Aug 2009 15:29:25 -0700
+
+vyatta-wireless (0.1.3) unstable; urgency=low
+
+  * make necessary directory during install
+  * Allow multiple WEP keys and formats
+  * Move wep/wpa check to wpa node.
+  * preliminary station mode support
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Fri, 21 Aug 2009 14:50:47 -0700
+
 vyatta-wireless (0.1.2) unstable; urgency=low
 
   * Get rid of vyatta- in command names
