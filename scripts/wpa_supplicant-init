@@ -73,9 +73,3 @@ case "$1" in
 esac
 
 
-
-    system("wpa_supplicant -i $wlan -c $cfgname -f $logname -B") == 0
-	    or die "can't start wpa_supplicant: $!";
-}
-
-
