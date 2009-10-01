@@ -1,3 +1,10 @@
+vyatta-wireless (0.2.4) unstable; urgency=low
+
+  * update copyrights and dates
+  * Get rid of garbage on end of wpa supplicant init
+
+ -- Stephen Hemminger <shemminger@lenny.localdomain>  Thu, 01 Oct 2009 12:31:37 -0700
+
 vyatta-wireless (0.2.3) unstable; urgency=low
 
   * Revision to wpa supplicant support
