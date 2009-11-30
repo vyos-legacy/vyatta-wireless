@@ -57,6 +57,10 @@ print "# Hostapd configuration\n";
 print "interface=$wlan\n";
 print "driver=nl80211\n";
 
+my $bridge = $config->returnvalue('bridge-group/bridge');
+print "bridge=$bridge\n"
+    if ($bridge);
+
 print "logger_syslog=-1\n";
 print "logger_syslog_level=3\n";	# TODO make configurable
 

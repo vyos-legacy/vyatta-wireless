@@ -1,0 +1,36 @@
+help: Add this interface to a bridge group
+
+end:
+    wlanif=$VAR(../@)
+    oldbridge=`/opt/vyatta/sbin/vyatta-cli-expand-var.pl \\$VAR\(/interfaces/wireless/$wlanif/bridge-group/bridge/@\)`
+    newbridge="$VAR(./bridge/@)"
+
+    if [ ${COMMIT_ACTION} = 'SET' ]; then
+	if [ -z "$newbridge" ]; then
+	    echo "Must specify bridge name."
+	    exit 1
+	fi
+        echo "Adding interface $wlanif to bridge $newbridge."
+	sudo brctl addif $newbridge $wlanif;
+
+	[ -n "$VAR(./cost/@)" ] && sudo brctl setpathcost $newbridge $wlanif $VAR(./cost/@)
+	[ -n "$VAR(./priority/@)" ] && sudo brctl setportprio $newbridge $wlanif $VAR(./priority/@);
+    elif [ ${COMMIT_ACTION} = 'DELETE' ]; then
+	echo "Removing interface $wlanif from bridge $oldbridge."
+	sudo brctl delif $oldbridge $wlanif
+    else
+	if [ -z "$newbridge" ]; then
+	    echo "Must specify bridge name."
+	    exit 1
+	fi
+	if [ "$oldbridge" != "$newbridge" ]; then
+	    echo "Removing interface $wlanif from bridge $oldbridge and adding it to $newbridge."
+	    sudo brctl delif $oldbridge $wlanif
+	    sudo brctl addif $newbridge $wlanif
+	fi
+	[ -n "$VAR(./cost/@)" ] && sudo brctl setpathcost $newbridge $wlanif $VAR(./cost/@)
+	[ -n "$VAR(./priority/@)" ] && sudo brctl setportprio $newbridge $wlanif $VAR(./priority/@)
+    fi
+    exit 0
+
+

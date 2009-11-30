@@ -5,9 +5,12 @@ help: Set wireless network interface
 syntax:expression: pattern $VAR(@) "^wlan[1-9]*[0-9]$" \
 		   ; "invalid wireless device name"
 allowed: /opt/vyatta/sbin/vyatta-interfaces.pl --show=wireless
+
 commit:expression: "$VAR(./type/@)" != "" ; "interface type must be set"
 commit:expression: ( "$VAR(./type/@)" == "monitor" || "$VAR(./ssid/@)" != "" ) \
 		   ; "SSID must be set"
+commit:expression: ( "$VAR(./bridge-group/bridge/@)" == "" || $VAR(./type/@) == "access-point" ) \
+		   ; "Bridging only allowed for access-point"
 
 create: if [ ! -d /sys/class/net/$VAR(@) ]; then
 	    sudo /opt/vyatta/sbin/wireless-config.pl --dev=$VAR(@) --create || exit 1
