@@ -57,7 +57,7 @@ print "# Hostapd configuration\n";
 print "interface=$wlan\n";
 print "driver=nl80211\n";
 
-my $bridge = $config->returnvalue('bridge-group/bridge');
+my $bridge = $config->returnValue('bridge-group/bridge');
 print "bridge=$bridge\n"
     if ($bridge);
 
