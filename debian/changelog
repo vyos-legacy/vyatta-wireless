@@ -1,3 +1,10 @@
+vyatta-wireless (0.2.10) unstable; urgency=low
+
+  * Fix typo in wireless-hostapd
+  * Add finer grain control over wireless encryption
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Mon, 07 Dec 2009 15:18:10 -0800
+
 vyatta-wireless (0.2.9) unstable; urgency=low
 
   * Add support for bridging wireless AP
