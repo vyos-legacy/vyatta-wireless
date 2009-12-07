@@ -35,6 +35,12 @@ use lib "/opt/vyatta/share/perl5/";
 use Vyatta::Config;
 use Vyatta::Misc;
 
+my %wpa_mode = (
+    'wpa'	=> 1,
+    'wpa2'	=> 2,
+    'both'	=> 3,
+);
+
 
 # Generate a hostapd.conf file based on Vyatta config
 die "Usage: $0 wlanX\n"
@@ -57,7 +63,7 @@ print "# Hostapd configuration\n";
 print "interface=$wlan\n";
 print "driver=nl80211\n";
 
-my $bridge = $config->returnvalue('bridge-group/bridge');
+my $bridge = $config->returnValue('bridge-group/bridge');
 print "bridge=$bridge\n"
     if ($bridge);
 
@@ -74,12 +80,13 @@ if ($country) {
 
 if ( $hw_mode eq 'n' ) {
     print "hw_mode=g\n";
-    print "ieee80211n=1\n" 
+    print "ieee80211n=1\n"
 } else {
     print "hw_mode=$hw_mode\n";
 }
 
 print"dump_file=/var/log/vyatta/hostapd.$wlan\n";
+
 # TODO do we need this?
 #my $gid = getgrnam('vyatta-cfg');
 #if ($gid) {
@@ -117,13 +124,17 @@ if ( $config->exists('wep') ) {
     my $phrase = $config->returnValue('passphrase');
     my @radius = $config->listNodes('radius-server');
 
-    # By default, use both WPA and WPA2
-    print "wpa=3\nwpa_pairwise=TKIP CCMP\n";
+    print "wpa=", $wpa_mode{$config->returnValue('mode')}, "\n";
+
+    my @cipher = $config->lostNodes('cipher');
+    @cipher = ( 'TKIP', 'CCMP' )
+	unless (@cipher);
+    print "wpa_pairwise=",join(' ',@cipher), "\n";
 
     if ($phrase) {
         print "auth_algs=1\nwpa_passphrase=$phrase\nwpa_key_mgmt=WPA-PSK\n";
-    }
-    elsif (@radius) {
+    } elsif (@radius) {
+	# What about integrated EAP server in hostapd?
         print "ieee8021x=1\nwpa_key_mgmt=WPA-EAP\n";
 
         # TODO figure out how to prioritize server for primary
