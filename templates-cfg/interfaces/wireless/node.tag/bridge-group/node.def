@@ -1,5 +1,8 @@
 help: Add this interface to a bridge group
 
+commit:expression: "$VAR(../type/@)" == "access-point" ; \
+		   "Bridging only allowed for access-point"
+
 end:
     wlanif=$VAR(../@)
     oldbridge=`/opt/vyatta/sbin/vyatta-cli-expand-var.pl \\$VAR\(/interfaces/wireless/$wlanif/bridge-group/bridge/@\)`
