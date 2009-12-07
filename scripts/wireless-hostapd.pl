@@ -126,7 +126,7 @@ if ( $config->exists('wep') ) {
 
     print "wpa=", $wpa_mode{$config->returnValue('mode')}, "\n";
 
-    my @cipher = $config->lostNodes('cipher');
+    my @cipher = $config->listNodes('cipher');
     @cipher = ( 'TKIP', 'CCMP' )
 	unless (@cipher);
     print "wpa_pairwise=",join(' ',@cipher), "\n";
