@@ -28,7 +28,7 @@ use Vyatta::Interface;
 use strict;
 use warnings;
 
-my %iw2mode = (
+my %iw2type = (
     'IBSS'	=> 'adhoc',
     'managed'	=> 'station',
     'AP'	=> 'access-point',
@@ -39,8 +39,8 @@ my %iw2mode = (
 );
 
 # Only modes valid on command line are listed
-# access-point mode is controlled by hostapd, not here.
-my %mode2iw = (
+my %type2iw = (
+    'access-point'	=> '__ap',
     'adhoc'		=> 'IBSS',
     'station'		=> 'managed',
 #    'wds'		=> 'wds',
@@ -52,9 +52,16 @@ my %mode2iw = (
 # This is gross, no other API for getting the info
 sub get_phy {
     my $intf = shift;
+    my $phylink = "/sys/class/net/$intf/phy80211";
 
-    my $link = readlink ("/sys/class/net/$intf/phy80211");
-    return $1 if ( $link  =~ m#/(phy\d+)$# );
+    # if interface does not exist yet, that is okay
+    return unless -l $phylink;
+
+    my $link = readlink $phylink;
+    return unless $link;
+
+    #  expect value like ../../ieee80211/phy0
+    return $1 if ( $link =~ m/\/(phy\d+)$/ );
 }
 
 # get list of channels available by device
@@ -70,11 +77,13 @@ sub get_chan {
 
     my @chans;
     while (<$iwcmd>) {
+	chomp;
 	next unless /Frequencies:/;
 
 	while (<$iwcmd>) {
-	    next if m/\(disabled\)/;
-	    last unless m/\* \d+ MHz \[(\d+)\]/;
+	    chomp;
+	    next if /\(disabled\)/;
+	    last unless /\* \d+ MHz \[(\d+)\]/;
 	    push @chans, $1;
 	}
 	last;
@@ -100,7 +109,7 @@ sub get_type {
 	next unless /Supported interface modes:/;
 	while (<$iwcmd>) {
 	    last unless m/\* (.+)$/;
-	    my $t = $iw2mode{$1};
+	    my $t = $iw2type{$1};
 
 	    # skip unknown/unused types
 	    push @types, $t if $t;
@@ -145,20 +154,20 @@ sub create_dev {
     my $wlan = shift;
     my $cfg = new Vyatta::Config;
 
-    $cfg->setLevel("wireless interface");
-    die "No configuration fore $wlan\n" unless $cfg->exists($wlan);
+    $cfg->setLevel("interfaces wireless");
+    die "No configuration for $wlan\n" unless $cfg->exists($wlan);
 
-    $cfg->setLevel("wireless interface $wlan");
+    $cfg->setLevel("interfaces wireless $wlan");
     my $phy = $cfg->returnValue('physical-device');
     die "wireless $wlan: you must specify physical-device\n" unless $phy;
 
-    my $mode = $cfg->returnValue('mode');
-    die "wireless $wlan: you must specify mode\n" unless $mode;
+    my $type = $cfg->returnValue('type');
+    die "wireless $wlan: you must specify type\n" unless $type;
 
-    my $iwmode = $mode2iw{$mode};
-    die "wireless $wlan: unknown mode $mode\n" unless $iwmode;
+    my $iwtype = $type2iw{$type};
+    die "wireless $wlan: unknown type $type\n" unless $iwtype;
 
-    system("iw phy $phy interface add $wlan type $iwmode") == 0
+    system("iw phy $phy interface add $wlan type $iwtype") == 0
 	or die "wireless $wlan: device create failed\n";
 }
 
