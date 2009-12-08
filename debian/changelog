@@ -1,3 +1,11 @@
+vyatta-wireless (0.3.1) unstable; urgency=low
+
+  * Fix typo in expansion of physical-device
+  * Set link detect after device is created
+  * Fix device creation script
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Mon, 07 Dec 2009 17:28:23 -0800
+
 vyatta-wireless (0.3) unstable; urgency=low
 
   * Typo in last change
