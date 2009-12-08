@@ -1,3 +1,13 @@
+vyatta-wireless (0.3) unstable; urgency=low
+
+  * Typo in last change
+  * Move commit check for bridge
+  * Add disable-link-detect
+  * Add VIF support for wireless
+  * Remove commit check for channel number
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Mon, 07 Dec 2009 16:14:35 -0800
+
 vyatta-wireless (0.2.10) unstable; urgency=low
 
   * Fix typo in wireless-hostapd
