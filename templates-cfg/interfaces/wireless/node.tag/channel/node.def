@@ -1,9 +1,7 @@
 type: u32
 help: Set wireless channel
-syntax:expression: $VAR(@) > 0 && $VAR(@) < 15 ; "Channel must be between 1 and 14"
-commit:expression:exec \
-    "/opt/vyatta/sbin/wireless-config.pl --dev=$VAR(../@) --check-chan=$VAR(@)"
-
+syntax:expression: $VAR(@) > 0 && $VAR(@) < 15 ; \
+		   "Channel must be between 1 and 14"
 
 comp_help: possible completions
   <1-14> Channel (not all maybe available depending on geography and hardware)
