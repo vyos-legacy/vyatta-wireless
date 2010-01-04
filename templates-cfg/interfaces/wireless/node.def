@@ -21,7 +21,7 @@ end:if [ ${COMMIT_ACTION} = 'SET' -o ${COMMIT_ACTION} = 'ACTIVE' ]; then
        if [ ${COMMIT_ACTION} = 'SET' ]; then
              sudo ip link set $VAR(@) up
        fi
-       case $VAR(./type/@) in
+       case "$VAR(./type/@)" in
        access-point)
             case ${COMMIT_ACTION} in
      	    SET) sudo /opt/vyatta/sbin/hostapd-init start $VAR(@) ;;
