@@ -1,3 +1,11 @@
+vyatta-wireless (0.3.2) unstable; urgency=low
+
+  * Fix error deleting wireless interface
+  * Add support for debugging wireless
+  * Put daemon files in /var/run
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Mon, 04 Jan 2010 10:38:30 -0800
+
 vyatta-wireless (0.3.1) unstable; urgency=low
 
   * Fix typo in expansion of physical-device
