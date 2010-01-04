@@ -9,7 +9,6 @@ allowed: /opt/vyatta/sbin/vyatta-interfaces.pl --show=wireless
 commit:expression: "$VAR(./type/@)" != "" ; "interface type must be set"
 commit:expression: ( "$VAR(./type/@)" == "monitor" || "$VAR(./ssid/@)" != "" ) \
 		   ; "SSID must be set"
-
 create: if [ ! -d /sys/class/net/$VAR(@) ]; then
 	    sudo /opt/vyatta/sbin/wireless-config.pl --dev=$VAR(@) --create || exit 1
 	fi
