@@ -1,6 +1,7 @@
+priority: 322
 help: Add this interface to a bridge group
 
-commit:expression: "$VAR(../type/@)" == "access-point" ; \
+commit:expression: "$VAR(../@/type/@)" == "access-point" ; \
 		   "Bridging only allowed for access-point"
 
 end:

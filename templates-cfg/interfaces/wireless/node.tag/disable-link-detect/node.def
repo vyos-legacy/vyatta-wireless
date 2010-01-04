@@ -1,4 +1,4 @@
 help: Set to ignore link state changes on this interface
-priority: 351
+priority: 321
 update:/opt/vyatta/sbin/vyatta-link-detect $VAR(../@) on
 delete:/opt/vyatta/sbin/vyatta-link-detect $VAR(../@) off
