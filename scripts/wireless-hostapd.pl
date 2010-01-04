@@ -55,29 +55,38 @@ $config->setLevel($level);
 my $ssid = $config->returnValue('ssid');
 die "$level : missing SSID\n" unless $ssid;
 
-my $hw_mode = $config->returnValue('mode');
-my $chan = $config->returnValue('channel');
-my $country = $config->returnValue('country');
-
 print "# Hostapd configuration\n";
 print "interface=$wlan\n";
 print "driver=nl80211\n";
 
 my $bridge = $config->returnValue('bridge-group/bridge');
-print "bridge=$bridge\n"
-    if ($bridge);
+print "bridge=$bridge\n"  if $bridge;
 
+# Levels (minimum value for logged events):
+#  0 = verbose debugging
+#  1 = debugging
+#  2 = informational messages
+#  3 = notification
+#  4 = warning
+my $debug = $config->exists('debug') ? 2 : 0;
 print "logger_syslog=-1\n";
-print "logger_syslog_level=3\n";	# TODO make configurable
+print "logger_syslog_level=$debug\n";
+
+print "logger_stdout=-1\n";
+print "logger_stdout_level=4\n";
 
 print "ssid=$ssid\n";
+
+my $chan = $config->returnValue('channel');
 print "channel=$chan\n" if $chan;
 
+my $country = $config->returnValue('country');
 if ($country) {
     print "country_code=$country\n";
     print "ieee80211d=1\n";	# TODO make optional?
 }
 
+my $hw_mode = $config->returnValue('mode');
 if ( $hw_mode eq 'n' ) {
     print "hw_mode=g\n";
     print "ieee80211n=1\n"
@@ -85,7 +94,7 @@ if ( $hw_mode eq 'n' ) {
     print "hw_mode=$hw_mode\n";
 }
 
-print"dump_file=/var/log/vyatta/hostapd.$wlan\n";
+print "dump_file=/tmp/hostapd.$wlan\n";
 
 # TODO do we need this?
 #my $gid = getgrnam('vyatta-cfg');
