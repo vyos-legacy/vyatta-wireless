@@ -1,3 +1,10 @@
+vyatta-wireless (0.3.3) unstable; urgency=low
+
+  * Rearrange priorities to get bridging to work
+  * Fix bridging initialiazation
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Mon, 04 Jan 2010 14:03:49 -0800
+
 vyatta-wireless (0.3.2) unstable; urgency=low
 
   * Fix error deleting wireless interface
