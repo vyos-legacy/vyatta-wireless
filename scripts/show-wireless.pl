@@ -105,7 +105,7 @@ sub show_intf {
 
 sub hostap_params {
     my $intf    = shift;
-    my $cfgfile = "/var/run/vyatta/hostapd/$intf.cfg";
+    my $cfgfile = "/var/run/hostapd/$intf.cfg";
 
     open my $hcfg, '<', $cfgfile
       or die "missing hostap config file $cfgfile:$!";

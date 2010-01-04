@@ -34,7 +34,7 @@ if [ $# -ne 2 ]; then
 fi
 
 DAEMON=/sbin/wpa_supplicant
-pid_dir=/var/run/vyatta/wpa_supplicant
+pid_dir=/var/run/wpa_supplicant
 [ -d $pid_dir ] || mkdir -m 0775 -p $pid_dir
 
 pid_file=$pid_dir/$2.pid

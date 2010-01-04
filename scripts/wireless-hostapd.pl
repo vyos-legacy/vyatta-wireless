@@ -99,7 +99,7 @@ print "dump_file=/tmp/hostapd.$wlan\n";
 # TODO do we need this?
 #my $gid = getgrnam('vyatta-cfg');
 #if ($gid) {
-#    print "ctrl_interface=/var/run/vyatta/hostapd/$wlan\n";
+#    print "ctrl_interface=/var/run/hostapd/$wlan\n";
 #    print "ctrl_interface_group=$gid\n";
 #}
 
