@@ -16,7 +16,7 @@
 #
 # Author: Stephen Hemminger
 # Date: August 2009
-# Description: Script to display bonding information
+# Description: Script to display wireless information
 #
 # **** End License ****
 
