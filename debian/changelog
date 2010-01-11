@@ -1,3 +1,10 @@
+vyatta-wireless (0.3.4) unstable; urgency=low
+
+  * Fix help text
+  * Fix bridge-group template
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Mon, 11 Jan 2010 15:37:58 -0800
+
 vyatta-wireless (0.3.3) unstable; urgency=low
 
   * Rearrange priorities to get bridging to work
