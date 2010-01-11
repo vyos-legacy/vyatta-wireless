@@ -3,8 +3,9 @@ help: Add this interface to a bridge group
 
 commit:expression: "$VAR(./bridge/@)" != "" ; "bridge name must be set"
 
-commit:expression: "$VAR(../@/type/@)" = "access-point"
-	; "Bridging only allowed for type access-point"
+commit:expression: ( "$VAR(./bridge/@)" == "" || \
+		     "$VAR(../@/type/@)" == "access-point" ) \
+		     ; "Bridging only allowed for type access-point"
 
 end:
     wlan=$VAR(../@)
