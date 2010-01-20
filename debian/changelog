@@ -1,3 +1,10 @@
+vyatta-wireless (0.3.5) unstable; urgency=low
+
+  * Add wireless scan command
+  * change label on scan header
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Tue, 19 Jan 2010 21:52:12 -0800
+
 vyatta-wireless (0.3.4) unstable; urgency=low
 
   * Fix help text
