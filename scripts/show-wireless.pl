@@ -154,7 +154,7 @@ sub show_brief {
 sub scan_intf {
     my $intf   = shift;
     my $format = "%-18s %-20s %-4s %-6s\n";
-    printf $format, "Mac", "SSID", "Chan", "Signal (dbm)";
+    printf $format, "Address", "SSID", "Chan", "Signal (dbm)";
 
     open my $iwcmd, '-|'
 	or exec 'sudo', 'iw', 'dev', $intf, 'scan'
