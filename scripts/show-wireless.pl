@@ -29,6 +29,7 @@ sub usage {
     print <<EOF;
 Usage: $0 --brief
        $0 --show=<interface>
+       $0 --scan=<interface>
 EOF
     exit 1;
 }
@@ -147,13 +148,57 @@ sub show_brief {
     }
 }
 
-my ( $brief, $show );
+# TODO - decode mode (a,b,g,n) from rate table
+#      - decode wpa, wpa2, wep from cipher output
+#      - sort by signal? or ssid?
+sub scan_intf {
+    my $intf   = shift;
+    my $format = "%-18s %-20s %-4s %-6s\n";
+    printf $format, "Mac", "SSID", "Chan", "Signal (dbm)";
+
+    open my $iwcmd, '-|'
+	or exec 'sudo', 'iw', 'dev', $intf, 'scan'
+	or die "iw command failed: $!";
+
+    # BSS 00:22:3f:b5:68:d6 (on wlan0)
+    # 	TSF: 13925242600192 usec (161d, 04:07:22)
+    # 	freq: 2412
+    # 	beacon interval: 100
+    # 	capability: ESS Privacy ShortSlotTime (0x0411)
+    # 	signal: -77.00 dBm
+    #	SSID: Jbridge2
+    #	Supported rates: 1.0* 2.0* 5.5* 11.0* 18.0 24.0 36.0 54.0 
+    #	DS Paramater set: channel 11
+    # ...
+    my ($ssid, $mac, $signal, $chan);
+    while (<$iwcmd>) {
+	if (/^BSS ([0-9a-fA-F:]+)/) { 
+	    if ($mac) {
+		printf $format, $mac, $ssid, $chan, $signal;
+		$chan = undef;
+		$signal = undef;
+		$ssid = undef;
+	    }
+	    $mac = $1;
+	}
+	elsif (/^\s*SSID: (.*)$/)        { $ssid = $1; }
+	elsif (/^\s*signal: ([-0-9]+)/) { $signal = $1; }
+	elsif (/ channel (\d+)/)         { $chan = $1 }
+    }
+    close $iwcmd;
+
+    printf $format, $mac, $ssid, $chan, $signal
+	if $mac;
+}
+
+my ( $brief, $show, $scan );
 
 GetOptions(
     'brief'  => \$brief,
     'show=s' => \$show,
+    'scan=s' => \$scan,
 ) or usage();
 
 show_brief() if ($brief);
 show_intf($show) if ($show);
-
+scan_intf($scan) if ($scan);
