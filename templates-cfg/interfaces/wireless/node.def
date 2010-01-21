@@ -7,8 +7,13 @@ syntax:expression: pattern $VAR(@) "^wlan[1-9]*[0-9]$" \
 allowed: /opt/vyatta/sbin/vyatta-interfaces.pl --show=wireless
 
 commit:expression: "$VAR(./type/@)" != "" ; "interface type must be set"
+
 commit:expression: ( "$VAR(./type/@)" == "monitor" || "$VAR(./ssid/@)" != "" ) \
 		   ; "SSID must be set"
+
+commit:expression: ( "$VAR(./type/@)" != "access-point" || "$VAR(./channel/@)" != "" ) \
+		   ; "channel must be set for access-point"
+
 create: if [ ! -d /sys/class/net/$VAR(@) ]; then
 	    sudo /opt/vyatta/sbin/wireless-config.pl --dev=$VAR(@) --create || exit 1
 	fi
