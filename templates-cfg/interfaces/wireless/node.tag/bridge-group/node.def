@@ -7,18 +7,40 @@ end:
     wlan=$VAR(../@)
     oldbridge=`/opt/vyatta/sbin/vyatta-cli-expand-var.pl \\$VAR\(/interfaces/wireless/$wlan/bridge-group/bridge/@\)`
     newbridge="$VAR(./bridge/@)"
-    if [ ${COMMIT_ACTION} = 'DELETE' ]; then
-	sudo brctl delif $oldbridge $wlan
-    elif [ ${COMMIT_ACTION} = 'SET' ]; then
-        if [ "$oldbridge" != "$newbridge" ] ; then
-	   [ -n "$oldbridge" ] 	&& sudo brctl delif $oldbridge $wlan
-	   sudo brctl addif $newbridge $wlan
+
+    if [ ${COMMIT_ACTION} = 'SET' ]; then
+	if [ -z "$newbridge" ]; then
+	    echo "Must specify bridge name."
+	    exit 1
+	else
+	    echo "Adding interface $wlan to bridge $newbridge."
+	    sudo brctl addif $newbridge $wlan;
+
+	    if [ -n "$VAR(./cost/@)" ]; then
+		sudo brctl setpathcost $newbridge $wlan $VAR(./cost/@);
+	    fi;
+	    if [ -n "$VAR(./priority/@)" ]; then 
+		sudo brctl setportprio $newbridge $wlan $VAR(./priority/@);
+	    fi
 	fi
-	cost="$VAR(./cost/@)"
-	[ -n "$cost" ] && sudo brctl setpathcost $newbridge $wlan $cost
-	prio="$VAR(./priority/@)"
-	[ -n "$prio" ] && sudo brctl setportprio $newbridge $wlan $prio
+    elif [ ${COMMIT_ACTION} = 'DELETE' ]; then
+	echo "Removing interface $wlan from bridge $oldbridge."
+	sudo brctl delif $oldbridge $wlan
+    else
+	if [ -z "$newbridge" ]; then
+	    echo "Must specify bridge name."
+	    exit 1
+	else
+	    if [ "$oldbridge" != "$newbridge" ]; then
+		echo "Removing interface $wlan from bridge $oldbridge and adding it to $newbridge."
+		sudo brctl delif $oldbridge $wlan
+		sudo brctl addif $newbridge $wlan
+	    fi
+	    if [ -n "$VAR(./cost/@)" ]; then
+		sudo brctl setpathcost $newbridge $wlan $VAR(./cost/@)
+	    fi
+	    if [ -n "$VAR(./priority/@)" ]; then 
+		sudo brctl setportprio $newbridge $wlan $VAR(./priority/@)
+	    fi
+	fi
     fi
-
-
-
