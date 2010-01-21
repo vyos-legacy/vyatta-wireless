@@ -41,10 +41,6 @@ pid_file=$pid_dir/$2.pid
 config=$pid_dir/$2.cfg
 
 DAEMON_OPTS="-s -B -D nl80211 -i $2 -c $config"
-if vyatta-exists interfaces wireless $2 debug
-then
-    DAEMON_OPTS="-ddt $DAEMON_OPTS"
-fi
 
 set -e
 
