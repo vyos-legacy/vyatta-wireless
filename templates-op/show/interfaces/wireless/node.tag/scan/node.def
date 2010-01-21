@@ -1,2 +1,2 @@
 help: Scan for nearby wireless SSID
-run: ${vyatta_bindir}/show_wireless.pl --scan=$4
+run: ${vyatta_bindir}/show-wireless.pl --scan=$4
