@@ -55,6 +55,12 @@ $config->setLevel($level);
 my $ssid = $config->returnValue('ssid');
 die "$level : missing SSID\n" unless $ssid;
 
+my $cfg_name = "/var/run/hostapd/$wlan.cfg";
+open (my $cfg, '>', $wpa_cfg_name)
+    or die "Can't create $cfg_name: $!\n";
+
+select $cfg;
+
 print "# Hostapd configuration\n";
 print "interface=$wlan\n";
 print "driver=nl80211\n";
@@ -113,6 +119,10 @@ print "device_name=$descript\n" if $descript;
 print "macaddr_acl=0\n";
 
 $config->setLevel("$level security");
+
+die "$wlan: can't configure both wpa and wep\n")
+    if ($config->exists('wep') && $config->exists('wpa'));
+
 if ( $config->exists('wep') ) {
     my @keys = $config->returnValues('wep key');
 
@@ -164,7 +174,10 @@ if ( $config->exists('wep') ) {
         die "wireless $wlan: security wpa but no server or key\n";
     }
 } else {
-
     # Open system
     print "auth_algs=1\n";
 }
+
+select STDOUT;
+close $cfg;
+exit 0;

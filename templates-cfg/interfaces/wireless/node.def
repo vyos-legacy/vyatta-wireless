@@ -27,11 +27,13 @@ end:if [ ${COMMIT_ACTION} = 'SET' -o ${COMMIT_ACTION} = 'ACTIVE' ]; then
        fi
        case "$VAR(./type/@)" in
        access-point)
+            /opt/vyatta/sbin/wireless-hostapd.pl $VAR(@) || exit 1
             case ${COMMIT_ACTION} in
      	    SET) sudo /opt/vyatta/sbin/hostapd-init start $VAR(@) ;;
 	    ACTIVE) sudo /opt/vyatta/sbin/hostapd-init reload $VAR(@) ;;
             esac ;;
        station)
+	   /opt/vyatta/sbin/wireless-wpa_supplicant.pl $VAR(@) || exit 1
             case ${COMMIT_ACTION} in
      	    SET) sudo /opt/vyatta/sbin/wpa_supplicant-init start $VAR(@) ;;
 	    ACTIVE) sudo /opt/vyatta/sbin/wpa_supplicant-init reload $VAR(@) ;;

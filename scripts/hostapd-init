@@ -44,32 +44,34 @@ config=$pid_dir/$2.cfg
 
 DAEMON_OPTS="-B -P $pid_file $config"
 
-set -e
+do_start()
+{
+	start-stop-daemon --start --quiet --pidfile $pid_file \
+	    --exec $DAEMON -- $DAEMON_OPTS > /dev/null
+}
+
+do_stop()
+{
+	start-stop-daemon --stop --quiet --pidfile $pid_file --name $DAEMON
+}
 
 case "$1" in
   start)
-	/opt/vyatta/sbin/wireless-hostapd.pl $2 > $config
-	start-stop-daemon --start --oknodo --quiet \
-		--exec $DAEMON --pidfile $pid_file -- $DAEMON_OPTS > /dev/null
+	do_start
 	;;
   stop)
 	start-stop-daemon --stop --oknodo --quiet --pidfile $pid_file
 	;;
   reload)
-	/opt/vyatta/sbin/wireless-hostapd.pl $2 > $config
-	start-stop-daemon --stop --signal HUP --pidfile $pid_file
+	start-stop-daemon --stop --signal HUP --quiet  \
+	    --pidfile $pid_file --name $DAEMON
 	;;
   restart|force-reload)
-  	$0 stop
-	sleep 8
-	$0 start
+	do_stop
+	do_start
 	;;
   *)
 	echo "Usage: $0 {start|stop|restart|force-reload} wlanX" >&2
 	exit 1
 	;;
 esac
-
-
-
-

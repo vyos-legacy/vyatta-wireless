@@ -48,6 +48,12 @@ $config->setLevel($level);
 my $ssid = $config->returnValue('ssid');
 die "$level : missing SSID\n" unless $ssid;
 
+my $wpa_cfg_name = "/var/run/wpa_supplicant/$wlan.cfg";
+open (my $wpa_cfg, '>', $wpa_cfg_name)
+    or die "Can't create $wpa_cfg_name: $!\n";
+
+select $wpa_cfg;
+
 # TODO support multiple ssid's / networks
 print "# WPA supplicant config\n";
 print "network={\n";
@@ -55,6 +61,10 @@ print "ssid=\"$ssid\"\n";
 print "scan_ssid=1\n" if ($config->exists('disable-broadcast'));
 
 $config->setLevel("$level security");
+
+die "$wlan: can't configure both wpa and wep\n")
+    if ($config->exists('wep') && $config->exists('wpa'));
+
 if ($config->exists('wep')) {
     print "key_mgmt=NONE\n";
 
@@ -71,3 +81,8 @@ if ($config->exists('wep')) {
     }
 }
 print "}\n";
+
+select STDOUT;
+close $wpa_cfg;
+exit 0;
+

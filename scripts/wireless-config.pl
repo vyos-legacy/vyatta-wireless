@@ -180,7 +180,7 @@ sub delete_dev {
 
 my $dev;
 my ( $list_type, $check_type, $list_chan, $check_chan );
-my ( $create_dev, $delete_dev );
+my ( $create_dev, $delete_dev, $check_config );
 
 GetOptions(
     'dev=s'		  => \$dev,

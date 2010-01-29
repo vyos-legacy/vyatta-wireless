@@ -37,35 +37,40 @@ DAEMON=/sbin/wpa_supplicant
 pid_dir=/var/run/wpa_supplicant
 [ -d $pid_dir ] || mkdir -m 0775 -p $pid_dir
 
-pid_file=$pid_dir/$2.pid
-config=$pid_dir/$2.cfg
+DEVICE=$2
+pid_file=$pid_dir/$DEVICE.pid
+config=$pid_dir/$DEVICE.cfg
 
-DAEMON_OPTS="-s -B -D nl80211 -i $2 -c $config"
+DAEMON_OPTS="-s -B -D nl80211 -i $DEVICE -c $config"
 
-set -e
+do_start()
+{
+	start-stop-daemon --start --quiet --pidfile $pid_file \
+	    --exec $DAEMON -- $DAEMON_OPTS > /dev/null
+}
+
+do_stop()
+{
+	start-stop-daemon --stop --quiet --pidfile $pid_file --name $DAEMON
+}
 
 case "$1" in
   start)
-	/opt/vyatta/sbin/wireless-wpa_supplicant.pl $2 > $config
-	start-stop-daemon --start --oknodo --quiet \
-		--exec $DAEMON --pidfile $pid_file -- $DAEMON_OPTS > /dev/null
+	do_start
 	;;
   stop)
-	start-stop-daemon --stop --oknodo --quiet --pidfile $pid_file
+	do_stop
 	;;
   reload)
-	/opt/vyatta/sbin/wireless-wpa_supplicant.pl $2 > $config
-	start-stop-daemon --stop --signal HUP --pidfile $pid_file
+	start-stop-daemon --stop --signal HUP --quiet \
+	    --pidfile $pid_file --name $DAEMON
 	;;
   restart|force-reload)
-  	$0 stop
-	sleep 8
-	$0 start
+	do_stop
+	do_start
 	;;
   *)
 	echo "Usage: $0 {start|stop|restart|force-reload} wlanX" >&2
 	exit 1
 	;;
 esac
-
-
