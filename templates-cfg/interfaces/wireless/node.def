@@ -6,17 +6,11 @@ syntax:expression: pattern $VAR(@) "^wlan[1-9]*[0-9]$" \
 		   ; "invalid wireless device name"
 allowed: /opt/vyatta/sbin/vyatta-interfaces.pl --show=wireless
 
-commit:expression: "$VAR(./type/@)" != "" ; "interface type must be set"
+commit:expression: exec \
+    "/opt/vyatta/sbin/wireless-config.pl  --dev=$VAR(@) --check-config"
 
-commit:expression: ( "$VAR(./type/@)" == "monitor" || "$VAR(./ssid/@)" != "" ) \
-		   ; "SSID must be set"
-
-commit:expression: ( "$VAR(./type/@)" != "access-point" || "$VAR(./channel/@)" != "" ) \
-		   ; "channel must be set for access-point"
-
-create: if [ ! -d /sys/class/net/$VAR(@) ]; then
-	    sudo /opt/vyatta/sbin/wireless-config.pl --dev=$VAR(@) --create || exit 1
-	fi
+create: [ -d /sys/class/net/$VAR(@) ] || \
+	sudo /opt/vyatta/sbin/wireless-config.pl --dev=$VAR(@) --create
 
 delete: [ -d /sys/class/net/$VAR(@) ] || exit 0
 	sudo /opt/vyatta/sbin/wireless-config.pl --dev=$VAR(@) --delete
@@ -27,13 +21,16 @@ end:if [ ${COMMIT_ACTION} = 'SET' -o ${COMMIT_ACTION} = 'ACTIVE' ]; then
        fi
        case "$VAR(./type/@)" in
        access-point)
+	    sudo /opt/vyatta/sbin/wpa_supplicant-init stop $VAR(@)
+
             /opt/vyatta/sbin/wireless-hostapd.pl $VAR(@) || exit 1
             case ${COMMIT_ACTION} in
      	    SET) sudo /opt/vyatta/sbin/hostapd-init start $VAR(@) ;;
 	    ACTIVE) sudo /opt/vyatta/sbin/hostapd-init reload $VAR(@) ;;
             esac ;;
        station)
-	   /opt/vyatta/sbin/wireless-wpa_supplicant.pl $VAR(@) || exit 1
+            sudo /opt/vyatta/sbin/hostapd-init stop $VAR(@)
+	    /opt/vyatta/sbin/wireless-wpa_supplicant.pl $VAR(@) || exit 1
             case ${COMMIT_ACTION} in
      	    SET) sudo /opt/vyatta/sbin/wpa_supplicant-init start $VAR(@) ;;
 	    ACTIVE) sudo /opt/vyatta/sbin/wpa_supplicant-init reload $VAR(@) ;;

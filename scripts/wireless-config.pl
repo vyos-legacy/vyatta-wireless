@@ -150,6 +150,44 @@ sub check_type {
     die "Type $type is not a available for $dev\n" unless ($match > 0);
 }
 
+sub check_config {
+    my $wlan = shift;
+    my $config = new Vyatta::Config;
+
+    $config->setLevel("interfaces wireless $wlan");
+
+    # Need to know AP versus station mode
+    my $type = $config->returnValue('type');
+    die ("$wlan: interface type must be set\n")
+	unless $type;
+
+    my $ssid = $config->returnValue('ssid');
+    die ("$wlan: SSID must be set\n")
+	unless ($type eq 'monitor' || defined($ssid));
+
+    my $chan = $config->returnValue('channel');
+    die "$wlan: channel must be set for $type\n"
+	if ($type eq 'access-point' && ! defined($chan));
+
+    my $phy = $config->returnValue('physical-device');
+    unless ($phy) {
+	$phy = get_phy($wlan);
+	return unless $phy;
+    }
+
+    $config->setLevel("interfaces wireless");
+    foreach my $intf ($config->listNodes()) {
+	next if ($intf eq $wlan);
+
+	my $ophy = get_phy($intf);
+	next unless $ophy;
+	next if ($ophy ne $phy);
+
+	die "$wlan: Duplicate SSID on same physical device\n"
+	    if ($ssid eq $config->returnValue("$intf ssid"));
+    }
+}
+
 sub create_dev {
     my $wlan = shift;
     my $cfg = new Vyatta::Config;
@@ -190,6 +228,7 @@ GetOptions(
     'list-chan'		  => \$list_chan,
     'check-chan=s'	  => \$check_chan,
 
+    'check-config'	  => \$check_config,
     'create'		  => \$create_dev,
     'delete'		  => \$delete_dev,
 ) or usage();
@@ -202,5 +241,6 @@ check_chan($dev, $check_chan)	if $check_chan;
 list_type($dev)			if $list_type;
 check_type($dev, $check_type)	if $check_type;
 
+check_config($dev)		if $check_config;
 create_dev($dev)		if $create_dev;
 delete_dev($dev)		if $delete_dev;
