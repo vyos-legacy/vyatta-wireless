@@ -35,18 +35,19 @@ fi
 
 DAEMON=/sbin/wpa_supplicant
 pid_dir=/var/run/wpa_supplicant
-[ -d $pid_dir ] || mkdir -m 0775 -p $pid_dir
+[ -d $pid_dir ] || exit 1
 
 DEVICE=$2
 pid_file=$pid_dir/$DEVICE.pid
 config=$pid_dir/$DEVICE.cfg
 
-DAEMON_OPTS="-s -B -D nl80211 -i $DEVICE -c $config"
+DAEMON_OPTS="-s -B -P $pid_file -D nl80211 -i $DEVICE -c $config"
 
 do_start()
 {
-    start-stop-daemon --start --quiet --pidfile $pid_file \
-	    --exec $DAEMON -- $DAEMON_OPTS > /dev/null
+    start-stop-daemon --start --quiet \
+	--chdir $pid_dir --pidfile $pid_file \
+	--exec $DAEMON -- $DAEMON_OPTS > /dev/null
 }
 
 do_stop()

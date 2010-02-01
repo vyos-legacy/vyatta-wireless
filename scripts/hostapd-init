@@ -37,16 +37,18 @@ if [ $# -ne 2 ]; then
 fi
 
 pid_dir=/var/run/hostapd
-[ -d $pid_dir ] || mkdir -m 0775 -p $pid_dir
+[ -d $pid_dir ] || exit 1
 
-pid_file=$pid_dir/$2.pid
-config=$pid_dir/$2.cfg
+DEVICE=$2
+pid_file=$pid_dir/$DEVICE.pid
+config=$pid_dir/$DEVICE.cfg
 
 DAEMON_OPTS="-B -P $pid_file $config"
 
 do_start()
 {
-    start-stop-daemon --start --quiet --pidfile $pid_file \
+    start-stop-daemon --start --quiet \
+	--chdir $pid_dir --pidfile $pid_file \
 	--exec $DAEMON -- $DAEMON_OPTS > /dev/null
 }
 
