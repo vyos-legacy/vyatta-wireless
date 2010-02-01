@@ -1,3 +1,19 @@
+vyatta-wireless (0.3.7) unstable; urgency=low
+
+  * ignore derived files
+  * Rework wireless device initialization
+  * Fix mis use of config interface
+  * Manage pid_file in init scripts
+  * Move commit checks into one script
+  * Move check for WEP and WPA to commit
+  * Typo in hostap generation
+  * Setup config files properly
+  * Fix check for WEP/WPA conflict
+  * Change init scripts
+  * Hostapd/wpa-supplicant start/stop needs to be done as root
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Mon, 01 Feb 2010 14:08:22 -0800
+
 vyatta-wireless (0.3.6) unstable; urgency=low
 
   * Fix typo in new scan command
