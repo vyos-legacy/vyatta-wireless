@@ -158,7 +158,7 @@ sub check_config {
 
     # Need to know AP versus station mode
     my $type = $config->returnValue('type');
-    die ("$wlan: interface type must be set\n")
+    die ("$wlan: type must be set (ie. station or access-point)\n")
 	unless $type;
 
     my $ssid = $config->returnValue('ssid');
@@ -174,6 +174,9 @@ sub check_config {
 	$phy = get_phy($wlan);
 	return unless $phy;
     }
+
+    die "$wlan: can't configure both wpa and wep\n"
+	if ($config->exists('wep') && $config->exists('wpa'));
 
     $config->setLevel("interfaces wireless");
     foreach my $intf ($config->listNodes()) {
@@ -233,7 +236,7 @@ GetOptions(
     'delete'		  => \$delete_dev,
 ) or usage();
 
-die "Missing device argument\n" unless $dev;
+die "$0: missing device argument\n" unless $dev;
 
 list_chan($dev) 		if $list_chan;
 check_chan($dev, $check_chan)	if $check_chan;

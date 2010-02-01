@@ -120,9 +120,6 @@ print "macaddr_acl=0\n";
 
 $config->setLevel("$level security");
 
-die "$wlan: can't configure both wpa and wep\n")
-    if ($config->exists('wep') && $config->exists('wpa'));
-
 if ( $config->exists('wep') ) {
     my @keys = $config->returnValues('wep key');
 

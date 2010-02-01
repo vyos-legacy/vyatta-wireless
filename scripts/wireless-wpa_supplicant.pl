@@ -62,9 +62,6 @@ print "scan_ssid=1\n" if ($config->exists('disable-broadcast'));
 
 $config->setLevel("$level security");
 
-die "$wlan: can't configure both wpa and wep\n")
-    if ($config->exists('wep') && $config->exists('wpa'));
-
 if ($config->exists('wep')) {
     print "key_mgmt=NONE\n";
 
