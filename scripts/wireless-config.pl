@@ -175,8 +175,9 @@ sub check_config {
 	return unless $phy;
     }
 
+    my @security = $config->listNodes('security');
     die "$wlan: can't configure both wpa and wep\n"
-	if ($config->exists('wep') && $config->exists('wpa'));
+	if ($#security > 1);
 
     $config->setLevel("interfaces wireless");
     foreach my $intf ($config->listNodes()) {
