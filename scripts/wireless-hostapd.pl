@@ -56,7 +56,7 @@ my $ssid = $config->returnValue('ssid');
 die "$level : missing SSID\n" unless $ssid;
 
 my $cfg_name = "/var/run/hostapd/$wlan.cfg";
-open (my $cfg, '>', $wpa_cfg_name)
+open (my $cfg, '>', $cfg_name)
     or die "Can't create $cfg_name: $!\n";
 
 select $cfg;
