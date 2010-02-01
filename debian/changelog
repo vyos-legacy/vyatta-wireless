@@ -1,3 +1,10 @@
+vyatta-wireless (0.3.8) unstable; urgency=low
+
+  * Fix wpa/wep check
+  * Add physical device to error message
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Mon, 01 Feb 2010 15:10:18 -0800
+
 vyatta-wireless (0.3.7) unstable; urgency=low
 
   * ignore derived files
