@@ -39,6 +39,11 @@ fi
 pid_dir=/var/run/hostapd
 [ -d $pid_dir ] || exit 1
 
+if [ $EUID -ne 0 ]; then
+   echo "Must be root to start/stop hostapd"
+   exit 1
+fi
+
 DEVICE=$2
 pid_file=$pid_dir/$DEVICE.pid
 config=$pid_dir/$DEVICE.cfg
