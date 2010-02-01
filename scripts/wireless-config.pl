@@ -186,7 +186,7 @@ sub check_config {
 	next unless $ophy;
 	next if ($ophy ne $phy);
 
-	die "$wlan: Duplicate SSID on same physical device\n"
+	die "$wlan: Duplicate SSID on same physical device: $phy\n"
 	    if ($ssid eq $config->returnValue("$intf ssid"));
     }
 }
