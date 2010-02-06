@@ -35,7 +35,7 @@ fi
 
 DAEMON=/sbin/wpa_supplicant
 pid_dir=/var/run/wpa_supplicant
-[ -d $pid_dir ] || exit 1
+[ -d $pid_dir ] || mkdir -p $pid_dir
 
 if [ $EUID -ne 0 ]; then
    echo "Must be root to start/stop wpa-supplicant"

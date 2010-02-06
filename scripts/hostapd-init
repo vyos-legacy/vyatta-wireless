@@ -37,7 +37,7 @@ if [ $# -ne 2 ]; then
 fi
 
 pid_dir=/var/run/hostapd
-[ -d $pid_dir ] || exit 1
+[ -d $pid_dir ] || mkdir -p /var/run/hostapd
 
 if [ $EUID -ne 0 ]; then
    echo "Must be root to start/stop hostapd"

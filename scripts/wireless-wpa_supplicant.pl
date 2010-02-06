@@ -48,7 +48,10 @@ $config->setLevel($level);
 my $ssid = $config->returnValue('ssid');
 die "$level : missing SSID\n" unless $ssid;
 
-my $wpa_cfg_name = "/var/run/wpa_supplicant/$wlan.cfg";
+my $wpa_dir = "/var/run/wpa_supplicant";
+mkdir $wpa_dir unless $wpa_dir;
+
+my $wpa_cfg_name = "$wpa_dir/$wlan.cfg";
 open (my $wpa_cfg, '>', $wpa_cfg_name)
     or die "Can't create $wpa_cfg_name: $!\n";
 
