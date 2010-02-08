@@ -1,3 +1,9 @@
+vyatta-wireless (0.3.9) unstable; urgency=low
+
+  * Make /var/run directories during init not install
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Mon, 08 Feb 2010 15:58:50 -0800
+
 vyatta-wireless (0.3.8) unstable; urgency=low
 
   * Fix wpa/wep check
