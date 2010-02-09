@@ -33,14 +33,14 @@ if [ $# -ne 2 ]; then
     exit 1
 fi
 
-DAEMON=/sbin/wpa_supplicant
-pid_dir=/var/run/wpa_supplicant
-[ -d $pid_dir ] || mkdir -p $pid_dir
-
 if [ $EUID -ne 0 ]; then
    echo "Must be root to start/stop wpa-supplicant"
    exit 1
 fi
+
+DAEMON=/sbin/wpa_supplicant
+pid_dir=/var/run/wpa_supplicant
+[ -d $pid_dir ] || exit 0
 
 DEVICE=$2
 pid_file=$pid_dir/$DEVICE.pid

@@ -56,7 +56,8 @@ my $ssid = $config->returnValue('ssid');
 die "$level : missing SSID\n" unless $ssid;
 
 my $hostap_dir = "/var/run/hostapd";
-mkdir $hostap_dir  unless (-d $hostap_dir);
+mkdir $hostap_dir
+    unless (-d $hostap_dir);
 
 my $cfg_name = "$hostap_dir/$wlan.cfg";
 open (my $cfg, '>', $cfg_name)
