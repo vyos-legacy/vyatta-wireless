@@ -1,3 +1,9 @@
+vyatta-wireless (0.3.10) unstable; urgency=low
+
+  * Better management of /var/run directory
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Tue, 09 Feb 2010 16:03:45 -0800
+
 vyatta-wireless (0.3.9) unstable; urgency=low
 
   * Make /var/run directories during init not install
