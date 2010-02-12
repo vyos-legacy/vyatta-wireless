@@ -137,7 +137,7 @@ sub list_chan {
 sub check_chan {
     my ($dev, $ch) = @_;
     my $match = grep { $ch eq $_ } get_chan($dev);
-    die "Channel $ch is not availabe for $dev\n" unless ($match > 0);
+    die "Channel $ch is not available for $dev\n" unless ($match > 0);
 }
 
 sub list_type {
@@ -188,6 +188,10 @@ sub check_config {
 
 	die "$wlan: Duplicate SSID on same physical device: $phy\n"
 	    if ($ssid eq $config->returnValue("$intf ssid"));
+
+	my $ochan = $config->returnValue('channel');
+	die "$wlan: Duplicate channel on same physical device: $phy\n"
+	    if (defined($chan) && defined($ochan) && $chan eq $ochan);
     }
 }
 
