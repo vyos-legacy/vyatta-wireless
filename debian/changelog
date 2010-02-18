@@ -1,3 +1,10 @@
+vyatta-wireless (0.3.11) unstable; urgency=low
+
+  [ Stephen Hemminger ]
+  * Block attempts to configure two wireless interfaces on same channel
+
+ -- An-Cheng Huang <ancheng@vyatta.com>  Wed, 17 Feb 2010 16:16:56 -0800
+
 vyatta-wireless (0.3.10) unstable; urgency=low
 
   * Better management of /var/run directory
