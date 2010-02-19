@@ -1,3 +1,9 @@
+vyatta-wireless (0.3.12) unstable; urgency=low
+
+  * Fix bug 5064 can't delete bridge-group and membership in one commit
+
+ -- Mohit Mehta <mohit.mehta@vyatta.com>  Thu, 18 Feb 2010 17:27:15 -0800
+
 vyatta-wireless (0.3.11) unstable; urgency=low
 
   [ Stephen Hemminger ]
