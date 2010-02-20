@@ -150,6 +150,23 @@ sub check_type {
     die "Type $type is not a available for $dev\n" unless ($match > 0);
 }
 
+sub getmac {
+    my $wlan = shift;
+    my $config = new Vyatta::Config;
+
+    $config->setLevel("interfaces wireless $wlan");
+    my $addr = $config->returnValue("mac");
+    unless ($addr) {
+	if (open (my $sysfs, '<', "/sys/class/net/$wlan/address")) {
+	    $addr = <$sysfs>;
+	    close $sysfs;
+	    chomp $addr;
+	}
+    }
+
+    return $addr;
+}
+
 sub check_config {
     my $wlan = shift;
     my $config = new Vyatta::Config;
@@ -178,9 +195,19 @@ sub check_config {
     my @security = $config->listNodes('security');
     die "$wlan: can't configure both wpa and wep\n" if ($#security > 0);
 
+    my $mac = getmac($wlan);
+    die "$wlan: MAC address not configured\n"
+	unless $mac;
+
     $config->setLevel("interfaces wireless");
     foreach my $intf ($config->listNodes()) {
 	next if ($intf eq $wlan);
+
+	if ($type eq 'access-point') {
+	    my $omac = getmac($intf);
+	    die "$wlan: Duplicate MAC address with $intf\n"
+		if (defined($omac) && $omac eq $mac);
+	}
 
 	my $ophy = get_phy($intf);
 	next unless $ophy;
