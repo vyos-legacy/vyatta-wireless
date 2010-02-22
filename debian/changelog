@@ -1,3 +1,9 @@
+vyatta-wireless (0.3.10+kenwood2) unstable; urgency=low
+
+  * Add support for setting MAC address
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Mon, 22 Feb 2010 10:34:13 -0800
+
 vyatta-wireless (0.3.10+kenwood1) unstable; urgency=low
 
   [ Stephen Hemminger ]
