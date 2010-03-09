@@ -1,3 +1,9 @@
+vyatta-wireless (0.3.10+kenwood4) unstable; urgency=low
+
+  * Set priority of mac address
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Tue, 09 Mar 2010 09:43:55 -0800
+
 vyatta-wireless (0.3.10+kenwood3) unstable; urgency=low
 
   * Fix bug 5064 can't delete bridge-group and membership in one commit
