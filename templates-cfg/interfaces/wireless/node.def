@@ -16,6 +16,9 @@ delete: [ -d /sys/class/net/$VAR(@) ] || exit 0
 	sudo /opt/vyatta/sbin/wireless-config.pl --dev=$VAR(@) --delete
 
 end:if [ ${COMMIT_ACTION} = 'SET' -o ${COMMIT_ACTION} = 'ACTIVE' ]; then
+       if [ -n "$VAR(./mac/@)" ]; then
+           /opt/vyatta/sbin/vyatta-interfaces.pl --dev $VAR(@) --set-mac $VAR(./mac/@)
+       fi
        if [ ${COMMIT_ACTION} = 'SET' ]; then
              sudo ip link set $VAR(@) up
        fi
