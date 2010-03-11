@@ -1,3 +1,10 @@
+vyatta-wireless (0.3.14) unstable; urgency=low
+
+  * Change priority of wireless bridge-group to match ethernet
+  * Set mac address in top level node
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Thu, 11 Mar 2010 11:14:24 -0800
+
 vyatta-wireless (0.3.13) unstable; urgency=low
 
   * Add support for setting MAC address
