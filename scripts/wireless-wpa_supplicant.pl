@@ -70,7 +70,7 @@ if ($config->exists('wep')) {
     print "key_mgmt=NONE\n";
 
     my @keys = $config->returnValues('wep key');
-    for (my $i = 0; $i < $#keys; ++$i) {
+    for (my $i = 0; $i <= $#keys; ++$i) {
 	print "wep_key$i=$keys[$i]\n";
     }
 } elsif ($config->exists('wpa')) {
