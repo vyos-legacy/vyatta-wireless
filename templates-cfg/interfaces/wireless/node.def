@@ -13,6 +13,7 @@ create: [ -d /sys/class/net/$VAR(@) ] || \
 	sudo /opt/vyatta/sbin/wireless-config.pl --dev=$VAR(@) --create
 
 delete: [ -d /sys/class/net/$VAR(@) ] || exit 0
+        sudo /opt/vyatta/sbin/hostapd-init stop $VAR(@)
 	sudo /opt/vyatta/sbin/wireless-config.pl --dev=$VAR(@) --delete
 
 end:if [ ${COMMIT_ACTION} = 'SET' -o ${COMMIT_ACTION} = 'ACTIVE' ]; then
