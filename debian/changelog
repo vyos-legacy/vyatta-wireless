@@ -1,3 +1,13 @@
+vyatta-wireless (0.3.10+kenwood5) unstable; urgency=low
+
+  [ Jon Andersson ]
+  * Correct writing of WEP keys to config file
+  * Remove monitor interface when deleteing an accesspoint
+
+  [ Stephen Hemminger ]
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Thu, 27 May 2010 15:24:46 -0700
+
 vyatta-wireless (0.3.10+kenwood4) unstable; urgency=low
 
   * Set priority of mac address
