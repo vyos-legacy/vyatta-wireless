@@ -1,7 +1,7 @@
 tag:
 priority: 322
 type: u32
-help: Set Virtual Local Area Network (VLAN) ID
+help: Virtual Local Area Network (VLAN) ID
 syntax:expression: $VAR(@) >= 0 && $VAR(@) <= 4094; "VLAN ID must be between 0 and 4094"
 create: if ! sudo ip link add link $VAR(../@) name "$VAR(../@).$VAR(@)" type vlan id $VAR(@)
 	then echo "Error creating VLAN device $VAR(../@).$VAR(@)"

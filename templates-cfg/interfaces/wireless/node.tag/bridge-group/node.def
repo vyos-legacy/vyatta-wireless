@@ -1,5 +1,5 @@
 priority: 320
-help: Add this interface to a bridge group
+help: Interface bridge group
 
 commit:expression: "$VAR(./bridge/@)" != "" ; "bridge name must be set"
 

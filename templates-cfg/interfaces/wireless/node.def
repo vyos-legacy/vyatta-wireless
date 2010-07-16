@@ -1,7 +1,7 @@
 tag:
 priority: 318 # Same as ethernet
 type: txt
-help: Set wireless network interface
+help: Wireless network interface
 syntax:expression: pattern $VAR(@) "^wlan[1-9]*[0-9]$" \
 		   ; "invalid wireless device name"
 allowed: /opt/vyatta/sbin/vyatta-interfaces.pl --show=wireless

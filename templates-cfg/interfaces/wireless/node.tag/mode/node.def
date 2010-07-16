@@ -1,5 +1,5 @@
 type: txt
-help: Set wireless radio mode
+help: Wireless radio mode
 default: "g"
 allowed: echo "a b g n"
 syntax:expression: $VAR(@) in "a", "b", "g", "n" ; "mode must be a, b, g or n"

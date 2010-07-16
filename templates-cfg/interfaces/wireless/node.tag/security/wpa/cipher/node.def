@@ -1,6 +1,6 @@
 multi:
 type: txt
-help: Set WPA cipher suite
+help: WPA cipher suite
 syntax:expression:$VAR(@) in "CCMP","TKIP"
 comp_help: Controls the encryption algorithm for broadcast and multicast frames
     in WPA (not WPA2) mode. WPA2 always uses CCMP.

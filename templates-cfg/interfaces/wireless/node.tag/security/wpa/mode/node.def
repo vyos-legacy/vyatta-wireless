@@ -1,5 +1,5 @@
 type: txt
-help: Set WPA mode
+help: WPA mode
 allowed: echo "wpa wpa2 both"
 default: "both"
 syntax:expression: $VAR(@) in "wpa", "wpa2", "both" ; \

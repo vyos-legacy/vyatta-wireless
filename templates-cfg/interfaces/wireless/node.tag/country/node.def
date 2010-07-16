@@ -1,5 +1,5 @@
 type: txt
-help: Set regulatory domain (optional)
+help: Regulatory domain (optional)
 syntax:expression: pattern $VAR(@) "^[A-Z][A-Z]$" ; "Invalid country code"
 # give partial list of obvious values
 allowed: echo "US EU JP"

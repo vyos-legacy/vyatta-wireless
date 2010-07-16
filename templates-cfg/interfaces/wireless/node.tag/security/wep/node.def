@@ -1,2 +1,2 @@
-help: Set Wired Equivalent Privacy (WEP) parameters
+help: Wired Equivalent Privacy (WEP) parameters
 commit:expression: $VAR(key/@@) != "" ; "WEP requires one or more keys"

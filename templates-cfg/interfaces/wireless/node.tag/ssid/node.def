@@ -1,4 +1,4 @@
 type: txt
-help: Set wireless access-point service set identifier (SSID)
+help: Wireless access-point service set identifier (SSID)
 syntax:expression: pattern $VAR(@) "^[[:print:]]{1,32}$" ; "Invalid ssid"
 

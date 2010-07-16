@@ -1,5 +1,5 @@
 type: u32
-help: Set wireless channel
+help: Wireless radio channel
 syntax:expression: $VAR(@) > 0 && $VAR(@) < 15 ; \
 		   "Channel must be between 1 and 14"
 

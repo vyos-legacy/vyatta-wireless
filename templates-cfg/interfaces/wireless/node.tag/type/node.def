@@ -1,5 +1,5 @@
 type: txt
-help: Set the wireless device type for this interface [REQUIRED]
+help: Wireless device type for this interface [REQUIRED]
 syntax:expression:$VAR(@) in "access-point", "station", "monitor" ; "type must be access-point, station or monitor"
 allowed: echo "access-point station monitor"
 commit:expression:exec "/opt/vyatta/sbin/wireless-config.pl --dev=$VAR(../@) --check-type $VAR(@)"
