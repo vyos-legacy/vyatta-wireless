@@ -1,6 +1,6 @@
 type: txt
 
-help: Bridge interface for bridge-group
+help: Bridge group name
 
 commit:expression: exec \
    "/opt/vyatta/sbin/vyatta-interfaces.pl --dev=$VAR(@) --check=bridge"
