@@ -1,3 +1,14 @@
+vyatta-wireless (0.3.17) unstable; urgency=low
+
+  * Catch configuration of station mode WPA without passphrase
+  * Remove verb from help strings
+  * Use val_help: for interface address
+  * Use new help format for bridge-group option
+  * Use val_help: for vif related options
+  * Use new help format for wireless options
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Sun, 18 Jul 2010 12:21:24 -0700
+
 vyatta-wireless (0.3.16) unstable; urgency=low
 
   [ Jon Andersson ]
