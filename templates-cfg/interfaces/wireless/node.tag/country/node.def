@@ -3,6 +3,4 @@ help: Regulatory domain (optional)
 syntax:expression: pattern $VAR(@) "^[A-Z][A-Z]$" ; "Invalid country code"
 # give partial list of obvious values
 allowed: echo "US EU JP"
-comp_help: Possible values are Country code (ISO/IEC 3166-1). 
-  Set as needed to indicate country in which device is operating.
-  This can limit available channels and transmit power.
+val_help:<code>; Country code (ISO/IEC 3166-1). 

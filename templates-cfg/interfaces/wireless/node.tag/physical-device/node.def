@@ -1,7 +1,8 @@
 type: txt
 help: Wireless physical device
-comp_help: Enter wireless device physical name (phy0 - phy9)
 syntax:expression: pattern $VAR(@) "^phy[0-9]+$" ; "Must be (phy0 - phy9)"
+val_help:txt; Wireless device physical name (phy0 - phy9)
+
 allowed: [ -d /sys/class/ieee80211 ] && ls -x /sys/class/ieee80211
 commit:expression: exec "\
 	 if [ ! -d /sys/class/ieee80211/$VAR(@) ]; then

@@ -1,9 +1,7 @@
 multi:
 type: txt
-help: WPA cipher suite
+help: Cipher suite for WPA
 syntax:expression:$VAR(@) in "CCMP","TKIP"
-comp_help: Controls the encryption algorithm for broadcast and multicast frames
-    in WPA (not WPA2) mode. WPA2 always uses CCMP.
-    CCMP = AES in Counter mode with CBC-MAC [RFC 3610, IEEE 802.11i/D7.0]
-    TKIP = Temporal Key Integrity Protocol [IEEE 802.11i/D7.0]
+val_help:CCMP; AES in Counter mode with CBC-MAC [RFC 3610, IEEE 802.11i/D7.0]
+val_help:TKIP; Temporal Key Integrity Protocol [IEEE 802.11i/D7.0]
 

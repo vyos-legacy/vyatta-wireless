@@ -2,5 +2,4 @@ type: txt
 help: WPA personal shared pass phrase
 syntax:expression: pattern $VAR(@) "^[[:print:]]{8,63}$" \
    ; "Invalid WPA pass phrase $VAR(@) must be 8 to 63 printable characters"
-comp_help: WPA shared pass phrase:
-  <>   passphrase of at least 8 but not more than 63 printable characters
+val_help:<text>; Passphrase of at least 8 but not more than 63 printable characters

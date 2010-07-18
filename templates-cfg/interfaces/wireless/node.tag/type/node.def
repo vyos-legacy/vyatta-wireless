@@ -3,7 +3,7 @@ help: Wireless device type for this interface [REQUIRED]
 syntax:expression:$VAR(@) in "access-point", "station", "monitor" ; "type must be access-point, station or monitor"
 allowed: echo "access-point station monitor"
 commit:expression:exec "/opt/vyatta/sbin/wireless-config.pl --dev=$VAR(../@) --check-type $VAR(@)"
-comp_help:Possible completions:
-  access-point\tAccess-point forwards packets between other nodes
-  station\t\tConnects to another access point
-  monitor\t\tPassively monitor all packets on the frequency/channel
+
+val_help:access-point; Access-point forwards packets between other nodes
+val_help:station; Connects to another access point
+val_help:monitor; Passively monitor all packets on the frequency/channel
