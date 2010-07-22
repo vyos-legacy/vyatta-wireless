@@ -61,25 +61,27 @@ select $wpa_cfg;
 # TODO support multiple ssid's / networks
 print "# WPA supplicant config\n";
 print "network={\n";
-print "ssid=\"$ssid\"\n";
-print "scan_ssid=1\n" if ($config->exists('disable-broadcast'));
+print "    ssid=\"$ssid\"\n";
+print "    scan_ssid=1\n" if ($config->exists('disable-broadcast'));
 
 $config->setLevel("$level security");
 
 if ($config->exists('wep')) {
-    print "key_mgmt=NONE\n";
+    print "    key_mgmt=NONE\n";
 
     my @keys = $config->returnValues('wep key');
     for (my $i = 0; $i <= $#keys; ++$i) {
-	print "wep_key$i=$keys[$i]\n";
+	print "    wep_key$i=$keys[$i]\n";
     }
 } elsif ($config->exists('wpa')) {
     my $psk = $config->returnValue('wpa passphrase');
     if ($psk) {
-	print "psk=\"$psk\"\n";
+	print "    psk=\"$psk\"\n";
     } else {
 	die "WPA-EAP client not supported yet\n";
     }
+} else {
+    print "    key_mgmt=NONE\n";
 }
 print "}\n";
 
