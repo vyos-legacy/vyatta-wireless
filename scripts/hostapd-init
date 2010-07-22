@@ -36,13 +36,8 @@ if [ $# -ne 2 ]; then
     exit 1
 fi
 
-if [ $EUID -ne 0 ]; then
-   echo "Must be root to start/stop hostapd"
-   exit 1
-fi
-
 pid_dir=/var/run/hostapd
-[ -d $pid_dir ] || exit 0
+mkdir -p $pid_dir
 
 DEVICE=$2
 pid_file=$pid_dir/$DEVICE.pid
@@ -65,12 +60,30 @@ do_stop()
     fi
 }
 
+
+do_status()
+{
+    if [ ! -r $pid_file ]; then
+	echo "$DAEMON is not running."
+	exit 3
+    elif read pid < $pid_file && ps -p "$pid" > /dev/null 2>&1; then
+	echo "$DAEMON is running."
+	exit 0
+    else
+	echo "$DAEMON is not running but $pid_file exists."
+	exit 1
+    fi
+}
+
 case "$1" in
   start)
 	do_start
 	;;
   stop)
-	start-stop-daemon --stop --oknodo --quiet --pidfile $pid_file
+	do_stop
+	;;
+  status)
+	do_status
 	;;
   reload)
 	start-stop-daemon --stop --signal HUP --quiet  \
