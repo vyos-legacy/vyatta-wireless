@@ -1,3 +1,10 @@
+vyatta-wireless (0.3.17+larkspur2) unstable; urgency=low
+
+  * Generate correct configuration for Open station mode
+  * Add status target to wpa/hostapd init script
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Fri, 23 Jul 2010 09:29:44 -0700
+
 vyatta-wireless (0.3.17+larkspur1) unstable; urgency=low
 
   * UNRELEASED
