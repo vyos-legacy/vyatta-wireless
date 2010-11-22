@@ -10,6 +10,7 @@ Architecture: all
 Depends: vyatta-cfg (>= 0.15.33),
  vyatta-bash,
  vyatta-op,
+ vyatta-cfg-system (>= 0.19.1),
  hostapd (>= 0.6.8),
  wpasupplicant (>= 0.6.7),
  iw
