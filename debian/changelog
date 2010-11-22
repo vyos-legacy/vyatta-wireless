@@ -1,3 +1,9 @@
+vyatta-wireless (0.3.22) unstable; urgency=low
+
+  * Update to new address management utilities
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Mon, 22 Nov 2010 15:33:14 -0800
+
 vyatta-wireless (0.3.21) unstable; urgency=low
 
   * remove deprecated linda override
