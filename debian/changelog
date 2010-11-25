@@ -1,3 +1,9 @@
+vyatta-wireless (0.3.23) unstable; urgency=low
+
+  * Add hw-id template
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Wed, 24 Nov 2010 16:51:07 -0800
+
 vyatta-wireless (0.3.22) unstable; urgency=low
 
   * Update to new address management utilities
