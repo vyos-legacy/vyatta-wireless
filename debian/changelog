@@ -1,3 +1,9 @@
+vyatta-wireless (0.3.24) unstable; urgency=low
+
+  * Default wireless interfaces to monitor mode
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Mon, 29 Nov 2010 17:17:58 -0800
+
 vyatta-wireless (0.3.23) unstable; urgency=low
 
   * Add hw-id template
