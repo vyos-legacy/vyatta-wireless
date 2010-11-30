@@ -1,26 +1,19 @@
 multi:
-
 type: txt
+help: IP address
 
-help: IP address for this interface
 
-# Syntax check at "set" time.  Give curent address value to script
-# so that it can perform syntax check.
-#
-syntax:expression: exec "/opt/vyatta/sbin/vyatta-interfaces.pl --valid-addr-set $VAR(@) --dev $VAR(../../@).$VAR(../@) "\
-       ; "Invalid IP address/prefix [$VAR(@)] for interface $VAR(../../@).$VAR(../@)"
+syntax:expression: exec "/opt/vyatta/sbin/valid_address $VAR(@)"
 
-# Syntax check at "commit" time.  Pass all address values to script so that
-# it can perform consistency check.
-#
 commit:expression: exec "/opt/vyatta/sbin/vyatta-interfaces.pl --valid-addr-commit $VAR(@@) --dev $VAR(../../@).$VAR(../@)"
 
-create:sudo /opt/vyatta/sbin/vyatta-interfaces.pl --eth-addr-update $VAR(@) --dev $VAR(../../@).$VAR(../@)
+create: sudo /opt/vyatta/sbin/vyatta-address add $VAR(../../@).$VAR(../@) $VAR(@)
 
-delete:sudo /opt/vyatta/sbin/vyatta-interfaces.pl --eth-addr-delete $VAR(@) --dev $VAR(../../@).$VAR(../@)
+delete: sudo /opt/vyatta/sbin/vyatta-address delete $VAR(../../@).$VAR(../@) $VAR(@)
 
 allowed: echo "dhcp <>"
 
-val_help:<x.x.x.x/x>; IP address and prefix length
-val_help:<h:h:h:h:h:h:h:h/x>; IPv6 address and prefix length
-val_help:dhcp; Dynamic Host Configuration Protocol
+val_help: ipv4; IP address and prefix length
+val_help: ipv6; IPv6 address and prefix length
+val_help: dhcp; Dynamic Host Configuration Protocol
+val_help: dhcpv6; Dynamic Host Configuration Protocol for IPv6
