@@ -1,3 +1,9 @@
+vyatta-wireless (0.3.28) unstable; urgency=low
+
+  * Fix warnings from start-stop-daemon
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Wed, 01 Dec 2010 15:12:40 -0800
+
 vyatta-wireless (0.3.27) unstable; urgency=low
 
   * fix typo in iw path
