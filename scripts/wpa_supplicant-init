@@ -53,7 +53,7 @@ do_start()
 do_stop()
 {
     if [ -r $pid_file ]; then
-	start-stop-daemon --stop --quiet --pidfile $pid_file --name $DAEMON
+	start-stop-daemon --stop --quiet --pidfile $pid_file --exec $DAEMON
 	rm -f $pid_file
     fi
 }
@@ -84,7 +84,7 @@ case "$1" in
 	;;
   reload)
 	start-stop-daemon --stop --signal HUP --quiet \
-	    --pidfile $pid_file --name $DAEMON
+	    --pidfile $pid_file --exec $DAEMON
 	;;
   restart|force-reload)
 	do_stop
