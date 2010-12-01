@@ -28,6 +28,8 @@ use Vyatta::Interface;
 use strict;
 use warnings;
 
+my $IW = "/usr/sbin/iw";
+
 my %iw2type = (
     'IBSS'	=> 'adhoc',
     'managed'	=> 'station',
@@ -70,10 +72,8 @@ sub get_chan {
     my $phy = get_phy($intf);
     exit 0 unless $phy;
 
-    my @args = ('iw', 'phy', $phy, 'info');
-    open my $iwcmd, '-|'
-	or exec @args
-	or die "iw command failed: $!";
+    open my $iwcmd, '-|', "$IW phy $phy info"
+	or die "$IW phy command failed: $!";
 
     my @chans;
     while (<$iwcmd>) {
@@ -98,11 +98,8 @@ sub get_type {
     my $phy = get_phy($intf);
     exit 0 unless $phy;
 
-    my @args = ('iw', 'phy', $phy, 'info');
-
-    open my $iwcmd, '-|'
-	or exec @args
-	or die "iw command failed: $!";
+    open my $iwcmd, '-|', "$IW phy $phy info"
+	or die "$IW phy failed: $!";
 
     my @types;
     while (<$iwcmd>) {
@@ -252,8 +249,8 @@ sub create_dev {
 sub delete_dev {
     my $name = shift;
 
-    exec 'iw', 'dev', $name, 'del';
-    die "Could not exec iw: $!";
+    exec $IW, 'dev', $name, 'del'
+	or die "Could not exec $IW: $!";
 }
 
 my $dev;
