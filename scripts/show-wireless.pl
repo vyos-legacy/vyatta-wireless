@@ -25,6 +25,8 @@ use Getopt::Long;
 use strict;
 use warnings;
 
+my $IW = "/us/sbin/iw";
+
 sub usage {
     print <<EOF;
 Usage: $0 --brief
@@ -38,9 +40,8 @@ EOF
 sub get_device_map {
     my %wlans;
 
-    open my $iwcmd, '-|'
-      or exec qw(iw dev)
-      or die "iw command failed: $!";
+    open my $iwcmd, '-|', "$IW dev"
+      or die "$IW dev failed: $!";
 
     my $name;
     while (<$iwcmd>) {
@@ -59,9 +60,8 @@ sub show_intf {
     printf $format, "Station", "Signal",
       "RX: bytes", "packets", "TX: bytes", "packets";
 
-    open my $iwcmd, '-|'
-      or exec 'iw', 'dev', $intf, 'station', 'dump'
-      or die "iw command failed: $!";
+    open my $iwcmd, '-|', "$IW dev $intf station dump"
+      or die "$IW station dump failed: $!";
 
     # Station 00:1d:e0:30:26:3f (on wlan0)
     #	inactive time:	5356 ms
@@ -156,9 +156,8 @@ sub scan_intf {
     my $format = "%-18s %-20s %-4s %-6s\n";
     printf $format, "Address", "SSID", "Chan", "Signal (dbm)";
 
-    open my $iwcmd, '-|'
-	or exec 'sudo', 'iw', 'dev', $intf, 'scan'
-	or die "iw command failed: $!";
+    open my $iwcmd, '-|', "$IW dev $intf scan"
+	or die "$IW scan failed: $!";
 
     # BSS 00:22:3f:b5:68:d6 (on wlan0)
     # 	TSF: 13925242600192 usec (161d, 04:07:22)
