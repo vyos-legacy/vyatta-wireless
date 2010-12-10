@@ -1,4 +1,5 @@
 multi:
+priority: 320 # After wireless device is created
 type: txt
 help: Address for this interface
 
