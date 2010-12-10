@@ -5,6 +5,7 @@ help: Wireless network interface
 syntax:expression: pattern $VAR(@) "^wlan[1-9]*[0-9]$" \
 		   ; "invalid wireless device name"
 allowed: /opt/vyatta/sbin/vyatta-interfaces.pl --show=wireless
+val_help: <wlanN>; Wireless interface name
 
 commit:expression: exec \
     "/opt/vyatta/sbin/wireless-config.pl  --dev=$VAR(@) --check-config"
