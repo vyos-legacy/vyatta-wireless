@@ -1,3 +1,9 @@
+vyatta-wireless (0.3.30) unstable; urgency=low
+
+  * Fix problem when no security is set
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Thu, 16 Dec 2010 12:52:22 -0800
+
 vyatta-wireless (0.3.29) unstable; urgency=low
 
   * Add val_help for wireless interface name
