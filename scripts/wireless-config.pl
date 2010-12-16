@@ -190,12 +190,15 @@ sub check_config {
     }
 
     my @security = $config->listNodes('security');
-    die "$wlan: can't configure both wpa and wep\n" if ($#security > 0);
 
-    if ($security[0] eq 'wpa' && $type eq 'station') {
-	# TODO: add support for WPA-EAP 'security wpa security wpa identity'
-	die "$wlan: missing WPA password\n" 
-	    unless $config->returnValue('security wpa passphrase');
+    if ($#security > 0) {
+	die "$wlan: can't configure more than one security setting\n"
+    } elsif ($#security == 0) {
+	if ($security[0] eq 'wpa' && $type eq 'station') {
+	    # TODO: add support for WPA-EAP 'security wpa security wpa identity'
+	    die "$wlan: missing WPA password\n"
+		unless $config->returnValue('security wpa passphrase');
+	}
     }
 
     my $mac = getmac($wlan);
