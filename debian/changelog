@@ -1,3 +1,9 @@
+vyatta-wireless (0.3.30+mendocino1) unstable; urgency=low
+
+  * new branch
+
+ -- An-Cheng Huang <ancheng@vyatta.com>  Tue, 28 Dec 2010 20:41:12 +0000
+
 vyatta-wireless (0.3.30) unstable; urgency=low
 
   * Fix problem when no security is set
