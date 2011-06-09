@@ -245,7 +245,7 @@ sub create_dev {
     my $iwtype = $type2iw{$type};
     die "wireless $wlan: unknown type $type\n" unless $iwtype;
 
-    system("iw phy $phy interface add $wlan type $iwtype") == 0
+    system("$IW phy $phy interface add $wlan type $iwtype") == 0
 	or die "wireless $wlan: device create failed\n";
 }
 
