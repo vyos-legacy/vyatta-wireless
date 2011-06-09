@@ -1,3 +1,10 @@
+vyatta-wireless (0.3.33) unstable; urgency=low
+
+  * need full path to iw command
+  * Enhance channel configuration
+
+ -- Stephen Hemminger <stephen.hemminger@vyatta.com>  Thu, 09 Jun 2011 16:09:31 -0700
+
 vyatta-wireless (0.3.32) unstable; urgency=low
 
   * Add dhcpv6 to wireless help message
