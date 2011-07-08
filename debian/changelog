@@ -1,3 +1,9 @@
+vyatta-wireless (0.3.35+napa1) unstable; urgency=low
+
+  * new branch
+
+ -- Deepti Kulkarni <deepti@vyatta.com>  Thu, 07 Jul 2011 20:51:33 -0700
+
 vyatta-wireless (0.3.35) unstable; urgency=low
 
   * Change references to ethernet to say wireless
