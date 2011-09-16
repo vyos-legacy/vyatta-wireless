@@ -1,0 +1,2 @@
+help: Montior captured traffic on specified wireless interface
+run: ${vyatta_bindir}/vyatta-tshark.pl --intf $4.$6
