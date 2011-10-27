@@ -1,3 +1,15 @@
+vyatta-wireless (0.3.38) unstable; urgency=low
+
+  * Remove wireless capture commands from show
+  * Add monitor for wireless interfaces
+  * Fix filter completion
+  * remove run from 'montior interface wireless [name]' command
+  * remove run from 'montior interface wireless [name] vif [name]'
+    command
+  * Fix missing node.def for monitoring wireless vif
+
+ -- John Southworth <john.southworth@vyatta.com>  Thu, 27 Oct 2011 17:51:06 -0500
+
 vyatta-wireless (0.3.37) unstable; urgency=low
 
   * Bugfix 7551: Fix vlan address completion text
