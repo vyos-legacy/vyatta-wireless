@@ -158,6 +158,7 @@ if ( $config->exists('wep') ) {
         print "ieee8021x=1\nwpa_key_mgmt=WPA-EAP\n";
 
         # TODO figure out how to prioritize server for primary
+	$config->setLevel("$level security wpa radius-server");
         foreach my $server (@radius) {
             my $port   = $config->returnValue("$server port");
             my $secret = $config->returnValue("$server secret");
