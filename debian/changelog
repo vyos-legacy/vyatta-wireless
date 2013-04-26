@@ -1,3 +1,9 @@
+vyatta-wireless (0.3.41+daisy2) unstable; urgency=low
+
+  * Add size and files options to "traffic save"
+
+ -- James Davidson <james.davidson@vyatta.com>  Fri, 26 Apr 2013 12:32:38 -0700
+
 vyatta-wireless (0.3.41+daisy1) unstable; urgency=low
 
   * create daisy branch
