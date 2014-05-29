@@ -219,8 +219,9 @@ sub check_config {
 	next unless $ophy;
 	next if ($ophy ne $phy);
 
+	my $ossid = $config->returnValue("$intf ssid");
 	die "$wlan: Duplicate SSID on same physical device: $phy\n"
-	    if ($ssid eq $config->returnValue("$intf ssid"));
+	    if (defined($ssid) && defined($ossid) && $ssid eq $ossid);
 
 	my $ochan = $config->returnValue('channel');
 	die "$wlan: Duplicate channel on same physical device: $phy\n"
