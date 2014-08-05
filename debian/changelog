@@ -1,3 +1,14 @@
+vyatta-wireless (0.3.41+vyos1+helium2) unstable; urgency=low
+
+  [ Alex Harpin ]
+  * wireless-hostapd: ensure the cipher value given is used by hostapd
+  * wireless-hostapd: set the default cipers to CCMP TKIP
+  * wireless-config: fix "use of uninitialized value" warning
+
+  [ Daniil Baturin ]
+
+ -- Daniil Baturin <daniil@baturin.org>  Tue, 05 Aug 2014 16:36:27 +0000
+
 vyatta-wireless (0.3.41+vyos1+helium1) unstable; urgency=low
 
   * New branch
