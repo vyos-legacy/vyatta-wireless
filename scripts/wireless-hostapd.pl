@@ -144,12 +144,25 @@ if ( $config->exists('wep') ) {
     my $phrase = $config->returnValue('passphrase');
     my @radius = $config->listNodes('radius-server');
 
-    print "wpa=", $wpa_mode{$config->returnValue('mode')}, "\n";
+    my $wpa_type = $config->returnValue('mode');
+    print "wpa=", $wpa_mode{$wpa_type}, "\n";
 
     my @cipher = $config->returnValues('cipher');
-    @cipher = ( 'CCMP', 'TKIP' )
-	unless (@cipher);
-    print "wpa_pairwise=",join(' ',@cipher), "\n";
+
+    if ( $wpa_type eq 'wpa' ) {    
+        @cipher = ( 'TKIP', 'CCMP' )
+	    unless (@cipher);
+    } elsif ( $wpa_type eq 'both' ) {
+        @cipher = ( 'CCMP', 'TKIP' )
+            unless (@cipher);
+    }
+    if ( $wpa_type eq 'wpa2' ) {
+        @cipher = ( 'CCMP' )
+            unless (@cipher);
+        print "rsn_pairwise=",join(' ',@cipher), "\n";
+    } else {
+        print "wpa_pairwise=",join(' ',@cipher), "\n";
+    }
 
     if ($phrase) {
         print "auth_algs=1\nwpa_passphrase=$phrase\nwpa_key_mgmt=WPA-PSK\n";
