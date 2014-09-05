@@ -1,3 +1,13 @@
+vyatta-wireless (0.3.41+vyos1+helium3) unstable; urgency=low
+
+  [ Alex Harpin ]
+  * wireless-hostapd: set default ciphers used based on the wpa mode
+
+  [ Daniil Baturin ]
+  * Fix maintainer address.
+
+ -- Daniil Baturin <daniil@baturin.org>  Fri, 05 Sep 2014 23:40:10 +0200
+
 vyatta-wireless (0.3.41+vyos1+helium2) unstable; urgency=low
 
   [ Alex Harpin ]
