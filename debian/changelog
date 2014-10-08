@@ -1,3 +1,9 @@
+vyatta-wireless (0.3.41+vyos1+helium4) unstable; urgency=low
+
+  * Bug #311, #313: add crda and wireless-regdb to dependencies.
+
+ -- Daniil Baturin <daniil@baturin.org>  Wed, 08 Oct 2014 14:19:03 +0200
+
 vyatta-wireless (0.3.41+vyos1+helium3) unstable; urgency=low
 
   [ Alex Harpin ]
