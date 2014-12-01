@@ -1,3 +1,9 @@
+vyatta-wireless (0.3.41+vyos2+lithium1) unstable; urgency=low
+
+  * New branch
+
+ -- Alex Harpin <development@landsofshadow.co.uk>  Mon, 01 Dec 2014 07:56:12 +0000
+ 
 vyatta-wireless (0.3.41+vyos1+helium4) unstable; urgency=low
 
   * Bug #311, #313: add crda and wireless-regdb to dependencies.
