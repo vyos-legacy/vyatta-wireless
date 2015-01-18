@@ -1,5 +1,20 @@
 type: txt
 help: WPA personal shared pass phrase
 syntax:expression: pattern $VAR(@) "^[[:print:]]{8,63}$" \
-   ; "Invalid WPA pass phrase $VAR(@) must be 8 to 63 printable characters"
+   ; "Invalid WPA pass phrase $VAR(@) must be 8 to 63 printable characters
+   
+Use of single quotes to set the WPA passphrase is recommended. If you are
+using special characters in the WPA passphrase then single quotes are
+required.
+Example usage : 'aA1-&!@,.:_2Bb$'
+"
+
+comp_help:
+Passphrase of at least 8 but not more than 63 printable characters
+
+Use of single quotes to set the WPA passphrase is recommended. If you are
+using special characters in the WPA passphrase then single quotes are
+required.
+Example usage : 'aA1-&!@,.:_2Bb$'
+
 val_help:<text>; Passphrase of at least 8 but not more than 63 printable characters
