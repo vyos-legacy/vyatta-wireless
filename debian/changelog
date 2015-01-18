@@ -1,3 +1,10 @@
+vyatta-wireless (0.3.41+vyos2+lithium3) unstable; urgency=low
+
+  [ Alex Harpin ]
+  * vyatta-wireless: update wpa passphrase help for single quotes
+
+ -- Alex Harpin <development@landsofshadow.co.uk>  Sun, 18 Jan 2015 15:42:53 +0000
+ 
 vyatta-wireless (0.3.41+vyos2+lithium2) unstable; urgency=low
 
   * Force release
