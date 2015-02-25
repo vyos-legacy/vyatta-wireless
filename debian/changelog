@@ -1,3 +1,10 @@
+vyatta-wireless (0.3.41+vyos1+helium5) unstable; urgency=low
+
+  [ Alex Harpin ]
+  * vyatta-wireless: update wpa passphrase help for single quotes
+
+ -- Alex Harpin <development@landsofshadow.co.uk>  Wed, 25 Feb 2015 07:15:58 +0000
+ 
 vyatta-wireless (0.3.41+vyos1+helium4) unstable; urgency=low
 
   * Bug #311, #313: add crda and wireless-regdb to dependencies.
