@@ -1,3 +1,12 @@
+vyatta-wireless (0.3.41+vyos2+current1) unstable; urgency=medium
+
+  [ Thomas Jepp ]
+  * Fixed build dependencies.
+
+  [ Kim Hagen ]
+
+ -- Kim Hagen <kim.sidney@gmail.com>  Sun, 24 Jan 2016 15:38:34 -0500
+
 vyatta-wireless (0.3.41+vyos2+lithium5) unstable; urgency=low
 
   * vyatta-wireless: update dh_gencontrol with new development build flag
