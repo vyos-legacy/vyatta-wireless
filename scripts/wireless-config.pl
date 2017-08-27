@@ -28,7 +28,7 @@ use Vyatta::Interface;
 use strict;
 use warnings;
 
-my $IW = "/usr/sbin/iw";
+my $IW = "/sbin/iw";
 
 my %iw2type = (
     'IBSS'	=> 'adhoc',

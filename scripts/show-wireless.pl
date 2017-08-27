@@ -25,7 +25,7 @@ use Getopt::Long;
 use strict;
 use warnings;
 
-my $IW = "sudo /usr/sbin/iw";
+my $IW = "sudo /sbin/iw";
 
 sub usage {
     print <<EOF;
