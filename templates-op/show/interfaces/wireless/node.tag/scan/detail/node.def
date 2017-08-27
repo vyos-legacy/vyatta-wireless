@@ -1,2 +1,2 @@
 help: Show detailed scan results
-run: sudo /usr/sbin/iw dev $4 scan
+run: sudo /sbin/iw dev $4 scan
