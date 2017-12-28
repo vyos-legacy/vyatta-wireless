@@ -1,9 +1,10 @@
 type: txt
 help: Wireless radio mode
 default: "g"
-allowed: echo "a b g n"
-syntax:expression: $VAR(@) in "a", "b", "g", "n" ; "mode must be a, b, g or n"
+allowed: echo "a b g n ac"
+syntax:expression: $VAR(@) in "a", "b", "g", "n", "ac" ; "mode must be a, b, g, n or ac"
 val_help:a; 802.11a - 54 Mbits/sec
 val_help:b; 802.11b - 11 Mbits/sec
 val_help:g; 802.11g - 54 Mbits/sec (default)
 val_help:n; 802.11n - 600 Mbits/sec
+val_help:ac; 802.11ac

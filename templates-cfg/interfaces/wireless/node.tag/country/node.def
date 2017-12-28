@@ -1,6 +1,6 @@
 type: txt
-help: Regulatory domain (optional)
+help: Regulatory domain (mandatory)
 syntax:expression: pattern $VAR(@) "^[A-Z][A-Z]$" ; "Invalid country code"
 # give partial list of obvious values
-allowed: echo "US EU JP"
+allowed: echo "US EU JP DE UK ..."
 val_help:<code>; Country code (ISO/IEC 3166-1). 
