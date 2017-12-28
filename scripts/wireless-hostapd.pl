@@ -71,6 +71,10 @@ print "driver=nl80211\n";
 
 my $bridge = $config->returnValue('bridge-group bridge');
 print "bridge=$bridge\n"  if $bridge;
+if ($bridge) {
+    print "bridge=$bridge\n";
+    print "wds_sta=1\n";
+}
 
 # Levels (minimum value for logged events):
 #  0 = verbose debugging
@@ -99,9 +103,27 @@ if ($country) {
 my $hw_mode = $config->returnValue('mode');
 if ( $hw_mode eq 'n' ) {
     print "hw_mode=g\n";
-    print "ieee80211n=1\n"
+    print "ieee80211n=1\n";
+} elsif ( $hw_mode eq 'ac' ) {
+    print "hw_mode=a\n";
+    print "ieee80211n=1\n";
+    #print "ieee80211d=1\n";	# Already set a few lines ago
+    print "ieee80211h=1\n";
+    print "ieee80211ac=1\n";
+    # ieee80211w: Whether management frame protection (MFP) is enabled
+    # 0 = disabled (default)
+    # 1 = optional
+    # 2 = required
+    #print "ieee80211w=1\n";
 } else {
     print "hw_mode=$hw_mode\n";
+}
+
+my @hostapd_options = $config->returnValues("hostapd-option");
+if (@hostapd_options > 0) {
+    foreach my $line (@hostapd_options) {
+        print "$line\n";
+    }
 }
 
 print "dump_file=/tmp/hostapd.$wlan\n";
@@ -192,6 +214,46 @@ if ( $config->exists('wep') ) {
     # Open system
     print "auth_algs=1\n";
 }
+
+# uncondifional further settings
+print "tx_queue_data3_aifs=7\n";
+print "tx_queue_data3_cwmin=15\n";
+print "tx_queue_data3_cwmax=1023\n";
+print "tx_queue_data3_burst=0\n";
+print "tx_queue_data2_aifs=3\n";
+print "tx_queue_data2_cwmin=15\n";
+print "tx_queue_data2_cwmax=63\n";
+print "tx_queue_data2_burst=0\n";
+print "tx_queue_data1_aifs=1\n";
+print "tx_queue_data1_cwmin=7\n";
+print "tx_queue_data1_cwmax=15\n";
+print "tx_queue_data1_burst=3.0\n";
+print "tx_queue_data0_aifs=1\n";
+print "tx_queue_data0_cwmin=3\n";
+print "tx_queue_data0_cwmax=7\n";
+print "tx_queue_data0_burst=1.5\n";
+print "wmm_enabled=1\n";
+print "uapsd_advertisement_enabled=1\n";
+print "wmm_ac_bk_cwmin=4\n";
+print "wmm_ac_bk_cwmax=10\n";
+print "wmm_ac_bk_aifs=7\n";
+print "wmm_ac_bk_txop_limit=0\n";
+print "wmm_ac_bk_acm=0\n";
+print "wmm_ac_be_aifs=3\n";
+print "wmm_ac_be_cwmin=4\n";
+print "wmm_ac_be_cwmax=10\n";
+print "wmm_ac_be_txop_limit=0\n";
+print "wmm_ac_be_acm=0\n";
+print "wmm_ac_vi_aifs=2\n";
+print "wmm_ac_vi_cwmin=3\n";
+print "wmm_ac_vi_cwmax=4\n";
+print "wmm_ac_vi_txop_limit=94\n";
+print "wmm_ac_vi_acm=0\n";
+print "wmm_ac_vo_aifs=2\n";
+print "wmm_ac_vo_cwmin=2\n";
+print "wmm_ac_vo_cwmax=3\n";
+print "wmm_ac_vo_txop_limit=47\n";
+print "wmm_ac_vo_acm=0\n";
 
 select STDOUT;
 close $cfg;

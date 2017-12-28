@@ -1,9 +1,10 @@
 type: u32
 help: Wireless radio channel
-syntax:expression: ( $VAR(@) >= 1 && $VAR(@) <= 165 ) \
-        ; "Channel must be between 1 and 165"
+syntax:expression: ( $VAR(@) >= 0 && $VAR(@) <= 165 ) \
+        ; "Channel must be between 0 and 165"
+	; "Channel 0 means acs auto channel selection (needed for DFS)"
 
 commit:expression: exec "/opt/vyatta/sbin/wireless-config.pl --dev=$VAR(../@) --check-chan $VAR(@)"
 
 val_help:<1-14>; 2.4Ghz (802.11 b/g/n) Channel
-val_help:<34-165>; 5Ghz (802.11 a/h/j/n) Channel
+val_help:<0,34-165>; 5Ghz (802.11 a/h/j/n) Channel
