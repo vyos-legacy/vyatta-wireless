@@ -1,5 +1,4 @@
 type: txt
 help: Enable hostapd logging to syslog (logger_syslog_level=2)
-# give partial list of obvious values
 allowed: echo "enable"
 val_help: enable; Enable hostapd logger
