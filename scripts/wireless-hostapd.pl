@@ -52,9 +52,11 @@ my $config = new Vyatta::Config;
 my $level  = "interfaces wireless $wlan";
 $config->setLevel($level);
 
-# Mandatory value
+# Mandatory values
 my $ssid = $config->returnValue('ssid');
 die "$level : missing SSID\n" unless $ssid;
+my $country = $config->returnValue('country');
+die "$level : missing country\n" unless $country;
 
 my $hostap_dir = "/var/run/hostapd";
 mkdir $hostap_dir
@@ -66,10 +68,20 @@ open (my $cfg, '>', $cfg_name)
 
 select $cfg;
 
-print "# Hostapd configuration\n";
+# hostapd config file header
+print "# Hostapd configuration for $wlan\n";
+
+# hostapd option: device_name=<char[32]>
+my $descript = $config->returnValue('description');
+print "device_name=$descript\n" if $descript;
+
+# hostapd option: interface=<string>
+# hostapd option: driver=[nl80211|none|hostap]
 print "interface=$wlan\n";
 print "driver=nl80211\n";
 
+# hostapd option: bridge=<string>
+# hostapd option: wds_sta=[0|1]
 my $bridge = $config->returnValue('bridge-group bridge');
 print "bridge=$bridge\n"  if $bridge;
 if ($bridge) {
@@ -77,6 +89,7 @@ if ($bridge) {
     print "wds_sta=1\n";
 }
 
+# hostapd options: logger_syslog, logger_syslog_level, logger_stdout, logger_stdout_level
 # Levels (minimum value for logged events):
 #  0 = verbose debugging
 #  1 = debugging
@@ -86,21 +99,23 @@ if ($bridge) {
 my $debug = $config->exists('debug') ? 1 : 0;
 print "logger_syslog=-1\n";
 print "logger_syslog_level=$debug\n";
-
 print "logger_stdout=-1\n";
 print "logger_stdout_level=4\n";
 
+# hostapd option: ssid=<string>
 print "ssid=$ssid\n";
 
+# hostapd option: channel=[0,1-14,34-173]
 my $chan = $config->returnValue('channel');
 print "channel=$chan\n" if $chan;
 
-my $country = $config->returnValue('country');
+# hostapd option: country_code=[US|EU|JP|DE|UK|...]
 if ($country) {
     print "country_code=$country\n";
     print "ieee80211d=1\n";	# Mandatory to comply with regulatory domains.
 }
 
+# hostapd option: hw_mode=[a|b|g|ad]
 my $hw_mode = $config->returnValue('mode');
 if ( $hw_mode eq 'n' ) {
     print "hw_mode=g\n";
@@ -114,6 +129,7 @@ if ( $hw_mode eq 'n' ) {
     print "hw_mode=$hw_mode\n";
 }
 
+# hostapd option: ieee80211w=[0|1|2]
 my $ieee80211w = $config->returnValue("mgmt-frame-protection");
 if ($ieee80211w) {
     switch($ieee80211w) {
@@ -124,29 +140,35 @@ if ($ieee80211w) {
     }
 }
 
-my @hostapd_options = $config->returnValues("hostapd-option");
-if (@hostapd_options > 0) {
-    foreach my $line (@hostapd_options) {
-        print "$line\n";
-    }
-}
-
-# TODO do we need this?
-#my $gid = getgrnam('vyatta-cfg');
-#if ($gid) {
-#    print "ctrl_interface=/var/run/hostapd/$wlan\n";
-#    print "ctrl_interface_group=$gid\n";
-#}
-
+# hostapd option: ignore_broadcast_ssid=[0|1|2]
 print "ignore_broadcast_ssid=1\n"
   if ( $config->exists('disable-broadcast-ssid') );
 
-my $descript = $config->returnValue('description');
-print "device_name=$descript\n" if $descript;
-
+# hostapd option: macaddr_acl=[0|1|2]
+# hostapd option: accept_mac_file=<string>
+# hostapd option: deny_mac_file=<string>
 # TODO allow configuring ACL
 print "macaddr_acl=0\n";
+#accept_mac_file=/config/hostapd.accept
+#deny_mac_file=/config/hostapd.deny
 
+# hostapd option: wep_key[0-3]=[<quoted_string>|<unquoted_hex_digits>]
+# hostapd option: wep_default_key=[0-3]
+# hostapd option: wep_key_len_broadcast=[5|13]
+# hostapd option: wep_key_len_unicast=[5|13]
+# hostapd option: auth_algs=[1|2|3]
+# hostapd option: wpa=[0-3]
+# hostapd option: rsn_pairwise=[TKIP|CCMP|TKIP CCMP]
+# hostapd option: wpa_pairwise=[TKIP|CCMP|TKIP CCMP]
+# hostapd option: wpa_passphrase=[<unquoted_hex_digits[64]>|<char[8-63]>]
+# hostapd option: wpa_key_mgmt=<string>
+# hostapd option: ieee8021x=[0|1]
+# hostapd option: auth_server_addr=<ip>
+# hostapd option: auth_server_port=[1-65535]
+# hostapd option: auth_server_shared_secret=<string>
+# hostapd option: acct_server_addr=<ip>
+# hostapd option: acct_server_port=[1-65535]
+# hostapd option: acct_server_shared_secret=<string>
 $config->setLevel("$level security");
 
 if ( $config->exists('wep') ) {
@@ -218,6 +240,15 @@ if ( $config->exists('wep') ) {
     print "auth_algs=1\n";
 }
 
+$config->setLevel($level);
+# Other yet unspecified hostapd options may be entered here.
+my @hostapd_options = $config->returnValues("hostapd-option");
+if (@hostapd_options > 0) {
+    foreach my $line (@hostapd_options) {
+        print "$line\n";
+    }
+}
+
 # uncondifional further settings
 print "tx_queue_data3_aifs=7\n";
 print "tx_queue_data3_cwmin=15\n";
@@ -258,6 +289,8 @@ print "wmm_ac_vo_cwmin=2\n";
 print "wmm_ac_vo_cwmax=3\n";
 print "wmm_ac_vo_txop_limit=47\n";
 print "wmm_ac_vo_acm=0\n";
+
+
 
 select STDOUT;
 close $cfg;
