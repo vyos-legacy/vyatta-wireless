@@ -131,8 +131,6 @@ if (@hostapd_options > 0) {
     }
 }
 
-print "dump_file=/tmp/hostapd.$wlan\n";
-
 # TODO do we need this?
 #my $gid = getgrnam('vyatta-cfg');
 #if ($gid) {
