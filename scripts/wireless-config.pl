@@ -213,7 +213,7 @@ sub check_config {
 	    my $omac = getmac($intf);
 	    die "$wlan: Duplicate MAC address with $intf\n"
 		if (defined($omac) && $omac eq $mac);
-	    my $country = $config->returnValue('country');
+	    my $country = $config->returnValue("$intf country");
 	    die ("$wlan: country reg domain must be set for access points\n")
 	            unless defined($country);
 	}
