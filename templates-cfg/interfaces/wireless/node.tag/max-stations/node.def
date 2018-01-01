@@ -1,0 +1,8 @@
+type: u32
+help: Maximum number of wireless radio stations
+comp_help: No more than the defined number of radio stations will be allowed to be associated at the same time to this AP. Excess stations will be rejected upon authentication request.
+
+syntax:expression: ( $VAR(@) >= 1 && $VAR(@) <= 2007 ) \
+        ; "Number of stations must be between 1 and 2007"
+
+val_help:<1-2007>; Number of allowed stations

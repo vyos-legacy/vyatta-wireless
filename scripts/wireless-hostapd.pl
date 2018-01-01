@@ -152,6 +152,12 @@ print "macaddr_acl=0\n";
 #accept_mac_file=/config/hostapd.accept
 #deny_mac_file=/config/hostapd.deny
 
+# hostapd option: max_num_sta=[1-2007]
+my $max_stations = $config->returnValue("max-stations");
+if ($max_stations) {
+    print "max_num_sta=$max_stations\n";
+}
+
 # hostapd option: wep_key[0-3]=[<quoted_string>|<unquoted_hex_digits>]
 # hostapd option: wep_default_key=[0-3]
 # hostapd option: wep_key_len_broadcast=[5|13]
