@@ -30,6 +30,7 @@
 
 use strict;
 use warnings;
+use Switch;
 
 use lib "/opt/vyatta/share/perl5/";
 use Vyatta::Config;
@@ -82,7 +83,7 @@ if ($bridge) {
 #  2 = informational messages
 #  3 = notification
 #  4 = warning
-my $debug = $config->exists('debug') ? 2 : 0;
+my $debug = $config->exists('debug') ? 1 : 0;
 print "logger_syslog=-1\n";
 print "logger_syslog_level=$debug\n";
 
@@ -97,7 +98,7 @@ print "channel=$chan\n" if $chan;
 my $country = $config->returnValue('country');
 if ($country) {
     print "country_code=$country\n";
-    print "ieee80211d=1\n";	# TODO make optional?
+    print "ieee80211d=1\n";	# Mandatory to comply with regulatory domains.
 }
 
 my $hw_mode = $config->returnValue('mode');
@@ -107,16 +108,20 @@ if ( $hw_mode eq 'n' ) {
 } elsif ( $hw_mode eq 'ac' ) {
     print "hw_mode=a\n";
     print "ieee80211n=1\n";
-    #print "ieee80211d=1\n";	# Already set a few lines ago
     print "ieee80211h=1\n";
     print "ieee80211ac=1\n";
-    # ieee80211w: Whether management frame protection (MFP) is enabled
-    # 0 = disabled (default)
-    # 1 = optional
-    # 2 = required
-    #print "ieee80211w=1\n";
 } else {
     print "hw_mode=$hw_mode\n";
+}
+
+my $ieee80211w = $config->returnValue("mgmt-frame-protection");
+if ($ieee80211w) {
+    switch($ieee80211w) {
+        case "disabled"    { print "ieee80211w=0\n" }
+        case "optional"    { print "ieee80211w=1\n" }
+        case "required"    { print "ieee80211w=2\n" }
+        else               { die "mgmt-frame-protection: Illegal argument\n" }
+    }
 }
 
 my @hostapd_options = $config->returnValues("hostapd-option");
@@ -233,6 +238,7 @@ print "tx_queue_data0_cwmin=3\n";
 print "tx_queue_data0_cwmax=7\n";
 print "tx_queue_data0_burst=1.5\n";
 print "wmm_enabled=1\n";
+print "wme_enabled=1\n";
 print "uapsd_advertisement_enabled=1\n";
 print "wmm_ac_bk_cwmin=4\n";
 print "wmm_ac_bk_cwmax=10\n";

@@ -1,0 +1,12 @@
+type: txt
+help: Management Frame Protection (MFP) according to IEEE 802.11w
+comp_help: MFP adds to WiFi security by providing data confidentiality, data integrity, authenticity of origin and replay protection for management frames. If you have trouble associating stations to your AP, disabling MFP may help.
+
+default: "disabled"
+allowed: echo "disabled optional required"
+syntax:expression: $VAR(@) in "disabled", "optional", "required" ; "MFP must be disabled, optional or required"
+
+val_help:disabled; no MFP (hostapd default)
+val_help:optional; MFP optional
+val_help:required; MFP enforced
+
