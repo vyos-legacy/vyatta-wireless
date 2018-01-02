@@ -1,0 +1,11 @@
+type: u32
+help: VHT operating Channel width
+
+syntax:expression: ( $VAR(@) >= 0 && $VAR(@) <= 3 ) ; "vht-channel-width must be >= 0 and <= 3"
+
+default: 0
+
+val_help:0; 20 or 40 MHz channel width (default)
+val_help:1; 80 MHz channel width
+val_help:2; 160 MHz channel width
+val_help:3; 80+80 MHz channel width

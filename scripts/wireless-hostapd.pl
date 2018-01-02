@@ -32,6 +32,10 @@ use strict;
 use warnings;
 use Switch;
 
+# TODO: Find a better way than using smartmatch 
+#       to easily match strings against custom lists
+use experimental 'smartmatch';
+
 use lib "/opt/vyatta/share/perl5/";
 use Vyatta::Config;
 use Vyatta::Misc;
@@ -44,6 +48,8 @@ my %wpa_mode = (
 
 
 # Generate a hostapd.conf file based on Vyatta config
+# hostapd.conf reference:
+# https://gist.github.com/renaudcerrato/db053d96991aba152cc17d71e7e0f63c
 die "Usage: $0 wlanX\n"
   unless ( $#ARGV eq 0 && $ARGV[0] =~ /^wlan\d+$/ );
 
@@ -116,13 +122,15 @@ if ($country) {
 }
 
 # hostapd option: hw_mode=[a|b|g|ad]
+# hostapd option: ieee80211n=[0|1] (on 2.4GHz PHYs)
+# hostapd option: ieee80211h=[0|1] (on 5GHz PHYs)
+# hostapd option: ieee80211ac=[0|1] (on 5GHz PHYs)
 my $hw_mode = $config->returnValue('mode');
 if ( $hw_mode eq 'n' ) {
     print "hw_mode=g\n";
     print "ieee80211n=1\n";
 } elsif ( $hw_mode eq 'ac' ) {
     print "hw_mode=a\n";
-    print "ieee80211n=1\n";
     print "ieee80211h=1\n";
     print "ieee80211ac=1\n";
 } else {
@@ -140,7 +148,88 @@ if ($ieee80211w) {
     }
 }
 
+# hostapd option: ht_capab=<ht_flags>
+# hostapd option: require_ht=[0|1]
+# hostapd option: vht_capab=<vht_flags>
+# hostapd option: require_vht=[0|1]
+# hostapd option: ieee80211n=[0|1] (on 5GHz PHYs)
+# hostapd option: wme_enabled=[0|1]
+# hostapd option: wmm_enabled=[0|1]
+if ( $config->exists('capabilities') ) {
+    $config->setLevel("$level capabilities");
+    my @ht = $config->returnValues("ht");
+    if (@ht > 0) {
+        my $ht_capab = "";
+        my $flag_ht_smps = 0;
+        my $flag_ht_rxstbc = 0;
+        foreach my $htc (@ht) {
+            if ($htc ~~ ["SMPS-STATIC", "SMPS-DYNAMIC"]) {
+                if ($flag_ht_smps > 0) { die "$level capabilities ht : SMPS-STATIC and SMPS-DYNAMIC are mutually exclusive.\n"; }
+                else { $flag_ht_smps = 1; }
+            }
+            if ($htc ~~ ["RX-STBC1", "RX-STBC12", "RX-STBC123"]) {
+                if ($flag_ht_rxstbc > 0) { die "$level capabilities ht : RX-STBC1, RX-STBC12 and RX-STBC123 are mutually exclusive.\n"; }
+                else { $flag_ht_rxstbc = 1; }
+            }
+            $ht_capab .= "[" . $htc . "]";
+        }
+        print "ht_capab=$ht_capab\n";
+        print "wme_enabled=1\n";       # Required for full HT and VHT functionality
+        print "wmm_enabled=1\n";       # Required for full HT and VHT functionality
+        my $require_ht = $config->returnValue("require-ht");
+        if ($require_ht eq "true") {
+            print "require_ht=1\n";
+        }
+    }
+    my @vht = $config->returnValues("vht");
+    if (@vht > 0) {
+        die "$level : You must specify HT flags if you want to use VHT!" unless (@ht > 0);
+        my $vht_capab = "";
+        my $flag_vht_maxmpdu = 0;
+        my $flag_vht_vht160width = 0;
+        my $flag_vht_rxstbc = 0;
+        my $flag_vht_mpdulenexp = 0;
+        my $flag_vht_linkadapt = 0;
+        foreach my $vhtc (@vht) {
+            if ($vhtc ~~ ["MAX-MPDU-7991", "MAX-MPDU-11454"]) {
+                if ($flag_vht_maxmpdu > 0) { die "$level capabilities vht : MAX-MPDU-7991 and MAX-MPDU-11454 are mutually exclusive.\n"; }
+                else { $flag_vht_maxmpdu = 1; }
+            }
+            if ($vhtc ~~ ["VHT160", "VHT160-80PLUS80"]) {
+                if ($flag_vht_vht160width > 0) { die "$level capabilities vht : VHT160 and VHT160-80PLUS80 are mutually exclusive.\n"; }
+                else { $flag_vht_vht160width = 1; }
+            }
+            if ($vhtc ~~ ["RX-STBC-1", "RX-STBC-12", "RX-STBC-123", "RX-STBC-1234"]) {
+                if ($flag_vht_rxstbc > 0) { die "$level capabilities vht : RX-STBC-1, RX-STBC-12, RX-STBC-123 and RX-STBC-1234 are mutually exclusive.\n"; }
+                else { $flag_vht_rxstbc = 1; }
+            }
+            if ($vhtc ~~ ["MAX-A-MPDU-LEN-EXP0", "MAX-A-MPDU-LEN-EXP7"]) {
+                if ($flag_vht_mpdulenexp > 0) { die "$level capabilities vht : MAX-A-MPDU-LEN-EXP0..MAX-A-MPDU-LEN-EXP7 are mutually exclusive.\n"; }
+                else { $flag_vht_mpdulenexp = 1; }
+            }
+            if ($vhtc ~~ ["VHT-LINK-ADAPT2", "VHT-LINK-ADAPT3"]) {
+                if ($flag_vht_linkadapt > 0) { die "$level capabilities vht : VHT-LINK-ADAPT2 and VHT-LINK-ADAPT3 are mutually exclusive.\n"; }
+                else { $flag_vht_linkadapt = 1; }
+            }
+            $vht_capab .= "[" . $vhtc . "]";
+        }
+        print "vht_capab=$vht_capab\n";
+        my $require_vht = $config->returnValue("require-vht");
+        if ($require_vht eq "true") {
+            print "require_vht=1\n";
+            print "ieee80211n=0\n";
+        } else {
+            print "ieee80211n=1\n";
+        }
+    }
+    my $vht_oper_chwidth = $config->returnValue("vht-channel-width");
+    if ($vht_oper_chwidth) {
+        print "vht_oper_chwidth=$vht_oper_chwidth\n";
+    }
+}
+
 # hostapd option: ignore_broadcast_ssid=[0|1|2]
+$config->setLevel($level);
 print "ignore_broadcast_ssid=1\n"
   if ( $config->exists('disable-broadcast-ssid') );
 
@@ -246,8 +335,8 @@ if ( $config->exists('wep') ) {
     print "auth_algs=1\n";
 }
 
-$config->setLevel($level);
 # Other yet unspecified hostapd options may be entered here.
+$config->setLevel($level);
 my @hostapd_options = $config->returnValues("hostapd-option");
 if (@hostapd_options > 0) {
     foreach my $line (@hostapd_options) {
@@ -272,8 +361,6 @@ print "tx_queue_data0_aifs=1\n";
 print "tx_queue_data0_cwmin=3\n";
 print "tx_queue_data0_cwmax=7\n";
 print "tx_queue_data0_burst=1.5\n";
-print "wmm_enabled=1\n";
-print "wme_enabled=1\n";
 print "uapsd_advertisement_enabled=1\n";
 print "wmm_ac_bk_cwmin=4\n";
 print "wmm_ac_bk_cwmax=10\n";

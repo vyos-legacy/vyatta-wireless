@@ -1,0 +1,8 @@
+type: bool
+help: Require stations to support HT PHY (reject association if they do not)
+comp_help: If you reject non-HT, you also disable 802.11g
+
+default: false
+
+val_help: true; "Require stations to support HT PHY"
+val_help: false; "Allow stations not supporting the HT PHY (default)"
