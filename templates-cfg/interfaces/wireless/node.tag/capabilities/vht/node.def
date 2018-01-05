@@ -7,7 +7,7 @@ help: VHT capabilitiy list
 syntax:expression: $VAR(@) in "MAX-MPDU-7991","MAX-MPDU-11454","VHT160","VHT160-80PLUS80", \
 "RXLDPC","SHORT-GI-80","SHORT-GI-160","TX-STBC-2BY1","RX-STBC-1","RX-STBC-12","RX-STBC-123","RX-STBC-1234", \
 "SU-BEAMFORMER","SU-BEAMFORMEE","BF-ANTENNA-2","SOUNDING-DIMENSION-2","MU-BEAMFORMER","MU-BEAMFORMEE", \
-"VHT-TXOP-PS","HTC-VHT","MAX-A-MPDU-LEN-EXP0","MAX-A-MPDU-LEN-EXP7","VHT-LINK-ADAPT2","VHT-LINK-ADAPT3", \
+"VHT-TXOP-PS","HTC-VHT","MAX-A-MPDU-LEN-EXP0","MAX-A-MPDU-LEN-EXP3","MAX-A-MPDU-LEN-EXP7","VHT-LINK-ADAPT2","VHT-LINK-ADAPT3", \
 "RX-ANTENNA-PATTERN","TX-ANTENNA-PATTERN"; "Invalid capability item"
 
 val_help: MAX-MPDU-7991; maximum MPDU length of 7991 octets
@@ -31,6 +31,7 @@ val_help: MU-BEAMFORMEE; support for operation as an MU beamformee
 val_help: VHT-TXOP-PS; support for VHT TXOP Power Save Mode
 val_help: HTC-VHT; STA supports receiving a VHT variant HT Control field
 val_help: MAX-A-MPDU-LEN-EXP0; maximum length of A-MPDU pre-EOF padding = 2 pow(13 + 0) -1 octets
+val_help: MAX-A-MPDU-LEN-EXP3; maximum length of A-MPDU pre-EOF padding = 2 pow(13 + 3) -1 octets
 val_help: MAX-A-MPDU-LEN-EXP7; maximum length of A-MPDU pre-EOF padding = 2 pow(13 + 7) -1 octets
 val_help: VHT-LINK-ADAPT2; link adaptation: STA provides only unsolicited VHT MFB
 val_help: VHT-LINK-ADAPT3; link adaptation: STA can provide unsolicited VHT MFB and VHT MFB in response to VHT MRQ

@@ -108,6 +108,12 @@ print "logger_syslog_level=$debug\n";
 print "logger_stdout=-1\n";
 print "logger_stdout_level=4\n";
 
+# hostapd option: country_code=[US|EU|JP|DE|UK|...]
+if ($country) {
+    print "country_code=$country\n";
+    print "ieee80211d=1\n";	# Mandatory to comply with regulatory domains.
+}
+
 # hostapd option: ssid=<string>
 print "ssid=$ssid\n";
 
@@ -115,12 +121,6 @@ print "ssid=$ssid\n";
 $config->setLevel($level);
 my $chan = $config->returnValue('channel');
 print "channel=$chan\n" if ($chan >= 0);
-
-# hostapd option: country_code=[US|EU|JP|DE|UK|...]
-if ($country) {
-    print "country_code=$country\n";
-    print "ieee80211d=1\n";	# Mandatory to comply with regulatory domains.
-}
 
 # hostapd option: hw_mode=[a|b|g|ad]
 # hostapd option: ieee80211n=[0|1] (on 2.4GHz PHYs)
@@ -204,7 +204,7 @@ if ( $config->exists('capabilities') ) {
                 if ($flag_vht_rxstbc > 0) { die "$level capabilities vht : RX-STBC-1, RX-STBC-12, RX-STBC-123 and RX-STBC-1234 are mutually exclusive.\n"; }
                 else { $flag_vht_rxstbc = 1; }
             }
-            if ($vhtc ~~ ["MAX-A-MPDU-LEN-EXP0", "MAX-A-MPDU-LEN-EXP7"]) {
+            if ($vhtc ~~ ["MAX-A-MPDU-LEN-EXP0", "MAX-A-MPDU-LEN-EXP3", "MAX-A-MPDU-LEN-EXP7"]) {
                 if ($flag_vht_mpdulenexp > 0) { die "$level capabilities vht : MAX-A-MPDU-LEN-EXP0..MAX-A-MPDU-LEN-EXP7 are mutually exclusive.\n"; }
                 else { $flag_vht_mpdulenexp = 1; }
             }
