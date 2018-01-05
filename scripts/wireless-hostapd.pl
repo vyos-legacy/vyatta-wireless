@@ -112,8 +112,9 @@ print "logger_stdout_level=4\n";
 print "ssid=$ssid\n";
 
 # hostapd option: channel=[0,1-14,34-173]
+$config->setLevel($level);
 my $chan = $config->returnValue('channel');
-print "channel=$chan\n" if $chan;
+print "channel=$chan\n" if ($chan >= 0);
 
 # hostapd option: country_code=[US|EU|JP|DE|UK|...]
 if ($country) {
