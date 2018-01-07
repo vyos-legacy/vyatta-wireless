@@ -1,0 +1,9 @@
+type: u32
+
+help: VHT operating channel center frequency - center freq 2 (for use with the 80+80 mode)
+comp_help: Set the first center frequency for the adequate command "iw dev <devname> set freq <control freq> [20|40|80|80+80|160] [<center freq 1>] [<center freq 2>]". Provide the VHT center channel index according to your intended channel width. If you use channel 52 with 80 MHz channel width, your channel center is 58.
+
+syntax:expression: ( $VAR(@) >= 34 && $VAR(@) <= 173 ) \
+        ; "channel center value must be between 34 and 173"
+
+val_help:<34-173>; 5Ghz (802.11 a/h/j/n/ac) Center channel index (use 58 for primary 80MHz channel 52)

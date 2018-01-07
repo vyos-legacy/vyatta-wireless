@@ -156,6 +156,9 @@ if ($ieee80211w) {
 # hostapd option: ieee80211n=[0|1] (on 5GHz PHYs)
 # hostapd option: wme_enabled=[0|1]
 # hostapd option: wmm_enabled=[0|1]
+# hostapd option: vht_oper_chwidth=[0|1|2|3]
+# hostapd option: vht_oper_centr_freq_seg0_idx=<channel_idx>
+# hostapd option: vht_oper_centr_freq_seg1_idx=<channel_idx>
 if ( $config->exists('capabilities') ) {
     $config->setLevel("$level capabilities");
     my @ht = $config->returnValues("ht");
@@ -226,6 +229,14 @@ if ( $config->exists('capabilities') ) {
     my $vht_oper_chwidth = $config->returnValue("vht-channel-width");
     if ($vht_oper_chwidth) {
         print "vht_oper_chwidth=$vht_oper_chwidth\n";
+    }
+    my $vht_oper_cfreq1 = $config->returnValue("vht-center-freq freq-1");
+    if ($vht_oper_cfreq1) {
+        print "vht_oper_centr_freq_seg0_idx=$vht_oper_cfreq1\n";
+    }
+    my $vht_oper_cfreq2 = $config->returnValue("vht-center-freq freq-2");
+    if ($vht_oper_cfreq2) {
+        print "vht_oper_centr_freq_seg1_idx=$vht_oper_cfreq2\n";
     }
 }
 
