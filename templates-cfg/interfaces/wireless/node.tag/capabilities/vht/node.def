@@ -17,8 +17,8 @@ val_help: VHT160-80PLUS80; 160 MHz and 80+80 channel widths are supported
 val_help: RXLDPC; support for receiving LDPC coded packets
 val_help: SHORT-GI-80; short GI support (VHT and CBW = 80Mhz)
 val_help: SHORT-GI-160; short GI support (VHT and CBW = 160Mhz)
-val_help: TX-STBC-2BY1; support for the transmission of at least 2x1 STBC
-val_help: RX-STBC-1; Rx STBC (one spacial stream)
+val_help: TX-STBC-2BY1; support for the transmission of at least 2x1 STBC (Space Time Block Coding)
+val_help: RX-STBC-1; support for receiving PPDU using STBC for one spacial stream
 val_help: RX-STBC-12; Rx STBC (one or two spacial stream)
 val_help: RX-STBC-123; Rx STBC (one, two or three spacial streams)
 val_help: RX-STBC-1234; Rx STBC (one, two, three or four spacial streams)

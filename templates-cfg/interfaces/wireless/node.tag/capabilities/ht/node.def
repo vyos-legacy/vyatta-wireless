@@ -15,8 +15,8 @@ val_help: SMPS-DYNAMIC; Spatial Multiplexing (SM) Power Save: STATIC and DYNAMIC
 val_help: GF; HT-greenfield
 val_help: SHORT-GI-20; Short GI for 20 MHz
 val_help: SHORT-GI-40; Short GI for 40 MHz
-val_help: TX-STBC; Tx STBC
-val_help: RX-STBC1; Rx STBC (one spacial stream)
+val_help: TX-STBC; support for sending PPDU using STBC (Space Time Block Coding)
+val_help: RX-STBC1; support for receiving PPDU using STBC for one spacial stream
 val_help: RX-STBC12; Rx STBC (one or two spacial streams)
 val_help: RX-STBC123; Rx STBC (one, two or three spacial streams)
 val_help: DELAYED-BA; HT-delayed Block Ack
