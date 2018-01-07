@@ -254,6 +254,12 @@ if (defined($red_tx_power)) {
     print "local_pwr_constraint=$red_tx_power\n";
 }
 
+# hostapd option: disassoc_low_ack=[0|1]
+my $disassoc_failed = $config->returnValue("expunge-failing-stations");
+if ($disassoc_failed eq "true") {
+    print "disassoc_low_ack=1\n";
+}
+
 # hostapd option: wep_key[0-3]=[<quoted_string>|<unquoted_hex_digits>]
 # hostapd option: wep_default_key=[0-3]
 # hostapd option: wep_key_len_broadcast=[5|13]
