@@ -1,0 +1,8 @@
+type: u32
+help: Transmission power reduction in dBm
+comp_help: Reduce the max transmission power admitted by regulatory domain setting (country code) by X dBm. A reduction of 3dBm will halve the maximum transmission power. A conversion table (dBm <--> mW) may be found here: https://www.rapidtables.com/convert/power/dBm_to_mW.html
+
+syntax:expression: ( $VAR(@) >= 0 && $VAR(@) <= 255 ) \
+        ; "dBm value must be between 0 and 255"
+
+val_help:<0-255>; TX power reduction in dBm

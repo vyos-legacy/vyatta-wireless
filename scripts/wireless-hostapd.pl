@@ -248,6 +248,12 @@ if ($max_stations) {
     print "max_num_sta=$max_stations\n";
 }
 
+# hostapd option: local_pwr_constraint=[0-255]
+my $red_tx_power = $config->returnValue("reduce-transmit-power");
+if (defined($red_tx_power)) {
+    print "local_pwr_constraint=$red_tx_power\n";
+}
+
 # hostapd option: wep_key[0-3]=[<quoted_string>|<unquoted_hex_digits>]
 # hostapd option: wep_default_key=[0-3]
 # hostapd option: wep_key_len_broadcast=[5|13]
