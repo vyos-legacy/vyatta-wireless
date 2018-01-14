@@ -4,5 +4,7 @@ comp_help: If you reject non-HT, you also disable 802.11g
 
 default: false
 
+syntax:expression: $VAR(@) in "true","false"; "Not a boolean value"
+
 val_help: true; Require stations to support HT PHY
 val_help: false; Allow stations not supporting the HT PHY (default)
