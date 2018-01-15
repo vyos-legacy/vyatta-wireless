@@ -4,7 +4,7 @@ comp_help: Disassociate stations based on excessive transmission failures. This 
 
 default: false
 
-syntax:expression: $VAR(@) in "true","false"; "Not a boolean value"
+syntax:expression: $VAR(@) in true,false; "Not a boolean value"
 
 val_help: true; Disassociate upon connection loss
 val_help: false; Keep associated (default)

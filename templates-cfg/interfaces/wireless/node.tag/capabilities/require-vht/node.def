@@ -4,7 +4,7 @@ comp_help: If you reject non-VHT, you also disable 802.11n
 
 default: false
 
-syntax:expression: $VAR(@) in "true","false"; "Not a boolean value"
+syntax:expression: $VAR(@) in true,false; "Not a boolean value"
 
 val_help: true; Require stations to support VHT PHY
 val_help: false; Allow stations not supporting the VHT PHY (default)
