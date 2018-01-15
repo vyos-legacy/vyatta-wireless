@@ -1,0 +1,8 @@
+type: txt
+help: Set Maximum A-MSDU length to 7935 octets or 3839 octets
+
+syntax:expression: $VAR(@) in "3839","7935"; "Invalid capability item"
+
+val_help: 3839; Set Maximum A-MSDU length to 3839 octets
+val_help: 7935; Set Maximum A-MSDU length to 7935 octets
+

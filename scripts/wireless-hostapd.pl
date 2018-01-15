@@ -161,33 +161,46 @@ if ($ieee80211w) {
 # hostapd option: vht_oper_centr_freq_seg1_idx=<channel_idx>
 if ( $config->exists('capabilities') ) {
     $config->setLevel("$level capabilities");
-    my @ht = $config->returnValues("ht");
-    if (@ht > 0) {
+    if ( $config->exists('ht') ) {
+        $config->setLevel("$level capabilities ht"); 
         my $ht_capab = "";
-        my $flag_ht_smps = 0;
-        my $flag_ht_rxstbc = 0;
-        foreach my $htc (@ht) {
-            if ($htc ~~ ["SMPS-STATIC", "SMPS-DYNAMIC"]) {
-                if ($flag_ht_smps > 0) { die "$level capabilities ht : SMPS-STATIC and SMPS-DYNAMIC are mutually exclusive.\n"; }
-                else { $flag_ht_smps = 1; }
+        if ($config->exists('40MHz-incapable') && $config->returnValue("40MHz-incapable") eq "true") { $ht_capab .= "[40-INTOLERANT]"; }       
+        if ($config->exists('delayed-block-ack') && $config->returnValue("delayed-block-ack") eq "true") { $ht_capab .= "[DELAYED-BA]"; }
+        if ($config->exists('dsss-cck-40') && $config->returnValue("dsss-cck-40") eq "true") { $ht_capab .= "[DSSS_CCK-40]"; }
+        if ($config->exists('greenfield') && $config->returnValue("greenfield") eq "true") { $ht_capab .= "[GF]"; }
+        if ($config->exists('ldpc') && $config->returnValue("ldpc") eq "true") { $ht_capab .= "[LDPC]"; }
+        if ($config->exists('lsig-protection') && $config->returnValue("lsig-protection") eq "true") { $ht_capab .= "[LSIG-TXOP-PROT]"; }
+        my $max_amsdu = $config->returnValue("max-amsdu");
+        if (defined($max_amsdu)) { $ht_capab .= "[MAX-AMSDU-" . $max_amsdu . "]"; }
+        my $smps = $config->returnValue("smps");
+        if (defined($smps)) { $ht_capab .= "[SMPS-" . uc $smps . "]"; }
+        my @csw = $config->returnValues("channel-set-width");
+        if (@csw > 0) {
+            foreach my $cswc (@csw) {
+                $ht_capab .= "[" . uc $cswc . "]";
             }
-            if ($htc ~~ ["RX-STBC1", "RX-STBC12", "RX-STBC123"]) {
-                if ($flag_ht_rxstbc > 0) { die "$level capabilities ht : RX-STBC1, RX-STBC12 and RX-STBC123 are mutually exclusive.\n"; }
-                else { $flag_ht_rxstbc = 1; }
-            }
-            $ht_capab .= "[" . $htc . "]";
+        }
+        my @sgi = $config->returnValues("short-gi");
+        if (@sgi > 0) {
+            foreach my $sgic (@sgi) {
+                $ht_capab .= "[SHORT-GI-" . $sgic . "]";
+            }   
+        } 
+        if ( $config->exists('stbc') ) {
+            $config->setLevel("$level capabilities ht stbc");
+            if ($config->exists('tx') && $config->returnValue("tx") eq "true") { $ht_capab .= "[TX-STBC]"; }
+            my $rx_stbc = $config->returnValue("rx");
+            if (defined($rx_stbc)) { $ht_capab .= "[RX-STBC" . $rx_stbc . "]"; }
         }
         print "ht_capab=$ht_capab\n";
         print "wme_enabled=1\n";       # Required for full HT and VHT functionality
         print "wmm_enabled=1\n";       # Required for full HT and VHT functionality
-        my $require_ht = $config->returnValue("require-ht");
-        if ($require_ht eq "true") {
-            print "require_ht=1\n";
-        }
+        $config->setLevel("$level capabilities");
+        if ($config->returnValue("require-ht") eq "true") { print "require_ht=1\n"; }
     }
     my @vht = $config->returnValues("vht");
     if (@vht > 0) {
-        die "$level : You must specify HT flags if you want to use VHT!" unless (@ht > 0);
+        die "$level : You must specify HT flags if you want to use VHT!" unless ($config->exists('ht'));
         my $vht_capab = "";
         my $flag_vht_maxmpdu = 0;
         my $flag_vht_vht160width = 0;

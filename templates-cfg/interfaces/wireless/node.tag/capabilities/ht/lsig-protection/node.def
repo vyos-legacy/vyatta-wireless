@@ -1,0 +1,10 @@
+type: bool
+help: L-SIG TXOP protection capability
+
+default: false
+
+syntax:expression: $VAR(@) in true,false; "Not a boolean value"
+
+val_help: true; enable LSIG-TXOP-PROT
+val_help: false; disable LSIG-TXOP-PROT (default)
+

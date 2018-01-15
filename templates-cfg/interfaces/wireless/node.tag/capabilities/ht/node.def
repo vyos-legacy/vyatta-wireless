@@ -1,27 +1,2 @@
-multi:
-type: txt
 help: HT capabilitiy list
-
-syntax:expression: $VAR(@) in "LDPC","HT20","HT40+","HT40-","SMPS-STATIC","SMPS-DYNAMIC",\
-"GF","SHORT-GI-20","SHORT-GI-40","TX-STBC","RX-STBC1","RX-STBC12","RX-STBC123",\
-"DELAYED-BA","MAX-AMSDU-7935","DSSS_CCK-40","40-INTOLERANT","LSIG-TXOP-PROT"; "Invalid capability item"
-
-val_help: LDPC; LDPC coding capability
-val_help: HT20; Supported channel set width both 20 MHz only
-val_help: HT40+; Supported channel set width both 20 MHz and 40 MHz with secondary channel above the primary channel
-val_help: HT40-; Supported channel set width both 20 MHz and 40 MHz with secondary channel below the primary channel
-val_help: SMPS-STATIC; Spatial Multiplexing (SM) Power Save: STATIC and DYNAMIC are mutually exclusive
-val_help: SMPS-DYNAMIC; Spatial Multiplexing (SM) Power Save: STATIC and DYNAMIC are mutually exclusive
-val_help: GF; HT-greenfield
-val_help: SHORT-GI-20; Short GI for 20 MHz
-val_help: SHORT-GI-40; Short GI for 40 MHz
-val_help: TX-STBC; support for sending PPDU using STBC (Space Time Block Coding)
-val_help: RX-STBC1; support for receiving PPDU using STBC for one spacial stream
-val_help: RX-STBC12; Rx STBC (one or two spacial streams)
-val_help: RX-STBC123; Rx STBC (one, two or three spacial streams)
-val_help: DELAYED-BA; HT-delayed Block Ack
-val_help: MAX-AMSDU-7935; Set Maximum A-MSDU length to 7935 octets instead of 3839 octets
-val_help: DSSS_CCK-40; DSSS/CCK Mode in 40 MHz
-val_help: 40-INTOLERANT; 40 MHz intolerant
-val_help: LSIG-TXOP-PROT; L-SIG TXOP protection support
 

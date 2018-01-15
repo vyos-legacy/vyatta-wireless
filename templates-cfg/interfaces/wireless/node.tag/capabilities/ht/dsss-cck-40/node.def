@@ -1,0 +1,9 @@
+type: bool
+help: DSSS/CCK Mode in 40 MHz
+
+default: false
+
+syntax:expression: $VAR(@) in true,false; "Not a boolean value"
+
+val_help: true; enable DSSS_CCK-40
+val_help: false; disable DSSS_CCK-40 (default)
