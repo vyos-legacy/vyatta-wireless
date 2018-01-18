@@ -272,6 +272,12 @@ if ($max_stations) {
     print "max_num_sta=$max_stations\n";
 }
 
+# hostapd-option: ap_isolate=[0|1]
+my $isolate_stations = $config->returnValue("isolate-stations");
+if ($isolate_stations) {
+    print "ap_isolate=1\n";
+}
+
 # hostapd option: local_pwr_constraint=[0-255]
 my $red_tx_power = $config->returnValue("reduce-transmit-power");
 if (defined($red_tx_power)) {
