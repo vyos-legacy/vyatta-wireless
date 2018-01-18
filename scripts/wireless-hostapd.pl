@@ -372,15 +372,6 @@ if ( $config->exists('wep') ) {
     print "auth_algs=1\n";
 }
 
-# Other yet unspecified hostapd options may be entered here.
-$config->setLevel($level);
-my @hostapd_options = $config->returnValues("hostapd-option");
-if (@hostapd_options > 0) {
-    foreach my $line (@hostapd_options) {
-        print "$line\n";
-    }
-}
-
 # uncondifional further settings
 print "tx_queue_data3_aifs=7\n";
 print "tx_queue_data3_cwmin=15\n";
