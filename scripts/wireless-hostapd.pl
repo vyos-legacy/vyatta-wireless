@@ -149,14 +149,15 @@ if ($ieee80211w) {
     }
 }
 
+# Configure WiFi NIC capabilities
+if ( $config->exists('capabilities') ) {
+    $config->setLevel("$level capabilities");
 # hostapd option: ht_capab=<ht_flags>
 # hostapd option: require_ht=[0|1]
 # hostapd_option: uapsd_advertisement_enabled=[0|1]
 # hostapd option: wme_enabled=[0|1]
 # hostapd option: wmm_enabled=[0|1]
 ## BEGIN HT CODE
-if ( $config->exists('capabilities') ) {
-    $config->setLevel("$level capabilities");
     if ( $config->exists('ht') ) {
         $config->setLevel("$level capabilities ht"); 
         my $ht_capab = "";
@@ -253,16 +254,6 @@ if ( $config->exists('capabilities') ) {
                 else                { die "$level capabilities vht link-adaptation : Invalid value.\n"; }
             }
         }
-#        my @vht_link_adaptation = $config->returnValues("link-adaptation");
-#        if (@vht_link_adaptation > 0) {
-#            foreach my $vht_lac (@vht_link_adaptation) {
-#                switch($vht_lac) {
-#                    case "unsolicited"  { $vht_capab .= "[VHT-LINK-ADAPT2]"; }
-#                    case "both"         { $vht_capab .= "[VHT-LINK-ADAPT3]"; }
-#                    else                { die "$level capabilities vht link-adaptation : Invalid value.\n"; }
-#            }
-#            }
-#        }
         my @vht_sgi = $config->returnValues("short-gi");
         if (@vht_sgi > 0) {
             foreach my $vht_sgic (@vht_sgi) {
@@ -284,7 +275,9 @@ if ( $config->exists('capabilities') ) {
                 }
             }
         }
-        if ($config->exists('antenna-pattern-fixed') && $config->returnValue("antenna-pattern-fixed") eq "true") { $vht_capab .= "[RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]"; }
+        if ($config->exists('antenna-pattern-fixed') && $config->returnValue("antenna-pattern-fixed") eq "true") { 
+            $vht_capab .= "[RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]"; 
+        }
         my $vht_antenna_count = $config->returnValue("antenna-count");
         if (defined($vht_antenna_count)) {
             if ($flag_vht_subeamformer > 0) {
@@ -293,7 +286,7 @@ if ( $config->exists('capabilities') ) {
                     $vht_capab .= "[BF-ANTENNA-" . $vht_ac_subf . "][SOUNDING-DIMENSION-" . $vht_ac_subf . "]";
                 }
                 else {
-                    die "$level capabilities vht antenna-count : You cannot use single-user-beamformer with just one antenna!\n";
+                    die "$level capabilities vht antenna-count : You cannot use beam forming with just one antenna!\n";
                 }
             }
             else {
@@ -383,7 +376,7 @@ if ( $config->exists('wep') ) {
     print "wep_default_key=0\n";
 
     for (my $i = 0; $i <= $#keys; $i++) {
-    print "wep_key$i=$keys[$i]\n";
+        print "wep_key$i=$keys[$i]\n";
     }
 
 } elsif ( $config->exists('wpa') ) {
@@ -398,7 +391,7 @@ if ( $config->exists('wep') ) {
 
     if ( $wpa_type eq 'wpa' ) {    
         @cipher = ( 'TKIP', 'CCMP' )
-        unless (@cipher);
+            unless (@cipher);
     } elsif ( $wpa_type eq 'both' ) {
         @cipher = ( 'CCMP', 'TKIP' )
             unless (@cipher);
@@ -417,7 +410,7 @@ if ( $config->exists('wep') ) {
     # What about integrated EAP server in hostapd?
         print "ieee8021x=1\nwpa_key_mgmt=WPA-EAP\n";
 
-        # TODO figure out how to prioritize server for primary
+    # TODO figure out how to prioritize server for primary
     $config->setLevel("$level security wpa radius-server");
         foreach my $server (@radius) {
             my $port   = $config->returnValue("$server port");
