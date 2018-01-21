@@ -1,0 +1,10 @@
+type: bool
+help: WMM-PS Unscheduled Automatic Power Save Delivery [U-APSD]
+
+default: false
+
+syntax:expression: $VAR(@) in true,false; "Not a boolean value"
+
+val_help: true; enable this flag if U-APSD is supported outside hostapd (eg., firmware/driver)
+val_help: false; disable U-APSD (default)
+

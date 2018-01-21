@@ -151,6 +151,7 @@ if ($ieee80211w) {
 
 # hostapd option: ht_capab=<ht_flags>
 # hostapd option: require_ht=[0|1]
+# hostapd_option: uapsd_advertisement_enabled=[0|1]
 # hostapd option: wme_enabled=[0|1]
 # hostapd option: wmm_enabled=[0|1]
 ## BEGIN HT CODE
@@ -191,6 +192,7 @@ if ( $config->exists('capabilities') ) {
         print "wme_enabled=1\n";       # Required for full HT and VHT functionality
         print "wmm_enabled=1\n";       # Required for full HT and VHT functionality
         $config->setLevel("$level capabilities");
+        if ($config->returnValue("auto-powersave") eq "true") { print "uapsd_advertisement_enabled=1\n"; }
         if ($config->returnValue("require-ht") eq "true") { print "require_ht=1\n"; }
     }
 ## END HT CODE
@@ -444,7 +446,6 @@ print "tx_queue_data0_aifs=1\n";
 print "tx_queue_data0_cwmin=3\n";
 print "tx_queue_data0_cwmax=7\n";
 print "tx_queue_data0_burst=1.5\n";
-print "uapsd_advertisement_enabled=1\n";
 print "wmm_ac_bk_cwmin=4\n";
 print "wmm_ac_bk_cwmax=10\n";
 print "wmm_ac_bk_aifs=7\n";
