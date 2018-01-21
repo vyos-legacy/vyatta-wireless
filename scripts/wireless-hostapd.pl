@@ -187,13 +187,14 @@ if ( $config->exists('capabilities') ) {
             if ($config->exists('tx') && $config->returnValue("tx") eq "true") { $ht_capab .= "[TX-STBC]"; }
             my $rx_stbc = $config->returnValue("rx");
             if (defined($rx_stbc)) { $ht_capab .= "[RX-STBC" . $rx_stbc . "]"; }
+            $config->setLevel("$level capabilities ht");
         }
         print "ht_capab=$ht_capab\n";
         print "wme_enabled=1\n";       # Required for full HT and VHT functionality
         print "wmm_enabled=1\n";       # Required for full HT and VHT functionality
+        if ($config->exists('auto-powersave') && $config->returnValue("auto-powersave") eq "true") { print "uapsd_advertisement_enabled=1\n"; }
         $config->setLevel("$level capabilities");
-        if ($config->returnValue("auto-powersave") eq "true") { print "uapsd_advertisement_enabled=1\n"; }
-        if ($config->returnValue("require-ht") eq "true") { print "require_ht=1\n"; }
+        if ($config->exists('require-ht') && $config->returnValue("require-ht") eq "true") { print "require_ht=1\n"; }
     }
 ## END HT CODE
 
@@ -240,11 +241,9 @@ if ( $config->exists('capabilities') ) {
             print "vht_oper_centr_freq_seg1_idx=$vht_oper_cfreq2\n";
         }
         if ($config->exists('stbc')) {
-            $config->setLevel("$level capabilities vht stbc");
-            if ($config->exists('tx') && $config->returnValue("tx") eq "true") { $vht_capab .= "[TX-STBC-2BY1]"; }
-            my $vht_rx_stbc = $config->returnValue("rx");
+            if ($config->exists('stbc tx') && $config->returnValue("stbc tx") eq "true") { $vht_capab .= "[TX-STBC-2BY1]"; }
+            my $vht_rx_stbc = $config->returnValue("stbc rx");
             if (defined($vht_rx_stbc)) { $vht_capab .= "[RX-STBC-" . $vht_rx_stbc . "]"; }
-            $config->setLevel("$level capabilities vht");
         }
         my $vht_link_adaptation = $config->returnValue("link-adaptation");
         if (defined($vht_link_adaptation)) {
@@ -254,6 +253,16 @@ if ( $config->exists('capabilities') ) {
                 else                { die "$level capabilities vht link-adaptation : Invalid value.\n"; }
             }
         }
+#        my @vht_link_adaptation = $config->returnValues("link-adaptation");
+#        if (@vht_link_adaptation > 0) {
+#            foreach my $vht_lac (@vht_link_adaptation) {
+#                switch($vht_lac) {
+#                    case "unsolicited"  { $vht_capab .= "[VHT-LINK-ADAPT2]"; }
+#                    case "both"         { $vht_capab .= "[VHT-LINK-ADAPT3]"; }
+#                    else                { die "$level capabilities vht link-adaptation : Invalid value.\n"; }
+#            }
+#            }
+#        }
         my @vht_sgi = $config->returnValues("short-gi");
         if (@vht_sgi > 0) {
             foreach my $vht_sgic (@vht_sgi) {
@@ -293,12 +302,14 @@ if ( $config->exists('capabilities') ) {
         }
         print "vht_capab=$vht_capab\n";
         $config->setLevel("$level capabilities");
-        my $require_vht = $config->returnValue("require-vht");
-        if ($require_vht eq "true") {
-            print "require_vht=1\n";
-            print "ieee80211n=0\n";
-        } else {
-            print "ieee80211n=1\n";
+        if ($config->exists('require-vht')) { 
+            my $require_vht = $config->returnValue("require-vht");
+            if ($require_vht eq "true") {
+                print "require_vht=1\n";
+                print "ieee80211n=0\n";
+            } else {
+                print "ieee80211n=1\n";
+            }
         }
     }
 ## END VHT CODE
