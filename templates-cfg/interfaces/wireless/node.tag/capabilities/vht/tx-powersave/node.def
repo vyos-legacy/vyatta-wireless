@@ -1,0 +1,12 @@
+type: bool
+help: Support for VHT TXOP Power Save Mode
+
+default: false
+
+syntax:expression: $VAR(@) in true,false; "Not a boolean value"
+
+val_help: true; enable VHT TX Power Save
+val_help: false; disable VHT TX Power Save (default)
+
+# TODO: set vht_capab=[VHT-TXOP-PS]
+

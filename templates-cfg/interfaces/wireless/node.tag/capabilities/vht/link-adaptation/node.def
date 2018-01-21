@@ -1,0 +1,11 @@
+multi:
+type: txt
+help: VHT link adaptation capabilities
+
+syntax:expression: $VAR(@) in "unsolicited","both"; "Invalid capability item"
+
+val_help: unsolicited; Station provides only unsolicited VHT MFB
+val_help: both; Station can provide VHT MFB in response to VHT MRQ and unsolicited VHT MFB
+
+# TODO: set vht_capab=[VHT-LINK-ADAPT2]|[VHT-LINK-ADAPT3]
+

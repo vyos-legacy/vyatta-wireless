@@ -1,0 +1,11 @@
+multi:
+type: txt
+help: Short GI capabilities
+
+syntax:expression: $VAR(@) in "80","160"; "Invalid capability item"
+
+val_help: 80; Short GI for 80 MHz
+val_help: 160; Short GI for 160 MHz
+
+# TODO: set vht_capab=[SHORT-GI-80][SHORT-GI-160]
+

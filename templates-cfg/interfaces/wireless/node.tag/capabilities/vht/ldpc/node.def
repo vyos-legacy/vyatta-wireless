@@ -1,0 +1,12 @@
+type: bool
+help: LDPC coding capability
+
+default: false
+
+syntax:expression: $VAR(@) in true,false; "Not a boolean value"
+
+val_help: true; enable LDPC
+val_help: false; disable LDPC (default)
+
+# TODO: set vht_capab=[RXLDPC]
+

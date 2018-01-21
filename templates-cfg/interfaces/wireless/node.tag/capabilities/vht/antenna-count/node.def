@@ -1,0 +1,11 @@
+type: u32
+help: Number of antennas on this card or if device is SU beamformer capable number of device antennas minus one
+comp_help: Number X of antennas on the card, set X to antenna count minus one if ard supports SU beamformer!
+
+syntax:expression: ( $VAR(@) >= 1 && $VAR(@) <= 9 ) \
+        ; "Number of antennas must be between 1 and 9"
+
+val_help:<1-9>; Number of antennas
+
+# TODO: set vht_capab=[BF-ANTENNA-n][SOUNDING-DIMENSION-n]
+

@@ -1,0 +1,13 @@
+multi:
+type: txt
+help: Beamforming capabilities
+
+syntax:expression: $VAR(@) in "single-user-beamformer","single-user-beamformee","multi-user-beamformer","multi-user-beamformee"; "Invalid capability item"
+
+val_help: single-user-beamformer; support for operation as a single user beamformer
+val_help: single-user-beamformee; support for operation as a single user beamformee
+val_help: multi-user-beamformer; support for operation as an MU beamformer
+val_help: multi-user-beamformee; support for operation as an MU beamformee
+
+# TODO: set vht_capab=[SU-BEAMFORMER][SU-BEAMFORMEE][MU-BEAMFORMER][MU-BEAMFORMEE]
+

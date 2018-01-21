@@ -41,9 +41,9 @@ use Vyatta::Config;
 use Vyatta::Misc;
 
 my %wpa_mode = (
-    'wpa'	=> 1,
-    'wpa2'	=> 2,
-    'both'	=> 3,
+    'wpa'   => 1,
+    'wpa2'  => 2,
+    'both'  => 3,
 );
 
 
@@ -111,7 +111,7 @@ print "logger_stdout_level=4\n";
 # hostapd option: country_code=[US|EU|JP|DE|UK|...]
 if ($country) {
     print "country_code=$country\n";
-    print "ieee80211d=1\n";	# Mandatory to comply with regulatory domains.
+    print "ieee80211d=1\n"; # Mandatory to comply with regulatory domains.
 }
 
 # hostapd option: ssid=<string>
@@ -151,14 +151,9 @@ if ($ieee80211w) {
 
 # hostapd option: ht_capab=<ht_flags>
 # hostapd option: require_ht=[0|1]
-# hostapd option: vht_capab=<vht_flags>
-# hostapd option: require_vht=[0|1]
-# hostapd option: ieee80211n=[0|1] (on 5GHz PHYs)
 # hostapd option: wme_enabled=[0|1]
 # hostapd option: wmm_enabled=[0|1]
-# hostapd option: vht_oper_chwidth=[0|1|2|3]
-# hostapd option: vht_oper_centr_freq_seg0_idx=<channel_idx>
-# hostapd option: vht_oper_centr_freq_seg1_idx=<channel_idx>
+## BEGIN HT CODE
 if ( $config->exists('capabilities') ) {
     $config->setLevel("$level capabilities");
     if ( $config->exists('ht') ) {
@@ -198,39 +193,104 @@ if ( $config->exists('capabilities') ) {
         $config->setLevel("$level capabilities");
         if ($config->returnValue("require-ht") eq "true") { print "require_ht=1\n"; }
     }
-    my @vht = $config->returnValues("vht");
-    if (@vht > 0) {
+## END HT CODE
+
+# hostapd option: vht_capab=<vht_flags>
+# hostapd option: require_vht=[0|1]
+# hostapd option: ieee80211n=[0|1] (on 5GHz PHYs)
+# hostapd option: vht_oper_chwidth=[0|1|2|3]
+# hostapd option: vht_oper_centr_freq_seg0_idx=<channel_idx>
+# hostapd option: vht_oper_centr_freq_seg1_idx=<channel_idx>
+## BEGIN VHT CODE
+    if ( $config->exists('vht') ) {
         die "$level : You must specify HT flags if you want to use VHT!" unless ($config->exists('ht'));
+        $config->setLevel("$level capabilities vht");
         my $vht_capab = "";
-        my $flag_vht_maxmpdu = 0;
-        my $flag_vht_vht160width = 0;
-        my $flag_vht_rxstbc = 0;
-        my $flag_vht_mpdulenexp = 0;
-        my $flag_vht_linkadapt = 0;
-        foreach my $vhtc (@vht) {
-            if ($vhtc ~~ ["MAX-MPDU-7991", "MAX-MPDU-11454"]) {
-                if ($flag_vht_maxmpdu > 0) { die "$level capabilities vht : MAX-MPDU-7991 and MAX-MPDU-11454 are mutually exclusive.\n"; }
-                else { $flag_vht_maxmpdu = 1; }
+        my $flag_vht_subeamformer = 0;
+        my $vht_max_mpdu = $config->returnValue("max-mpdu");
+        if (defined($vht_max_mpdu)) { 
+            switch($vht_max_mpdu) {
+                case "7991"   { $vht_capab .= "[MAX-MPDU-7991]"; }
+                case "11454"  { $vht_capab .= "[MAX-MPDU-11454]"; }
+                else          { die "$level capabilities vht max-mpdu : Invalid value.\n"; } 
+        }
+    }
+        if ($config->exists('max-mpdu-exp')) {
+            $vht_capab .= "[MAX-A-MPDU-LEN-EXP" . $config->returnValue("max-mpdu-exp") . "]";
+        }
+        my $vht_oper_chwidth = $config->returnValue("channel-set-width");
+        if ($vht_oper_chwidth) {
+            print "vht_oper_chwidth=$vht_oper_chwidth\n";
+            switch($vht_oper_chwidth) {
+                case "0"      { ; }
+                case "1"      { ; }
+                case "2"      { $vht_capab .= "[VHT160]"; }
+                case "3"      { $vht_capab .= "[VHT160-80PLUS80]"; }
+                else          { die "$level capabilities vht channel-set-width : Invalid value.\n"; }
+            }  
+        }
+        my $vht_oper_cfreq1 = $config->returnValue("center-channel-freq freq-1");
+        if ($vht_oper_cfreq1) {
+            print "vht_oper_centr_freq_seg0_idx=$vht_oper_cfreq1\n";
+        }
+        my $vht_oper_cfreq2 = $config->returnValue("center-channel-freq freq-2");
+        if ($vht_oper_cfreq2) {
+            print "vht_oper_centr_freq_seg1_idx=$vht_oper_cfreq2\n";
+        }
+        if ($config->exists('stbc')) {
+            $config->setLevel("$level capabilities vht stbc");
+            if ($config->exists('tx') && $config->returnValue("tx") eq "true") { $vht_capab .= "[TX-STBC-2BY1]"; }
+            my $vht_rx_stbc = $config->returnValue("rx");
+            if (defined($vht_rx_stbc)) { $vht_capab .= "[RX-STBC-" . $vht_rx_stbc . "]"; }
+            $config->setLevel("$level capabilities vht");
+        }
+        my $vht_link_adaptation = $config->returnValue("link-adaptation");
+        if (defined($vht_link_adaptation)) {
+            switch($vht_link_adaptation) {
+                case "unsolicited"  { $vht_capab .= "[VHT-LINK-ADAPT2]"; }
+                case "both"         { $vht_capab .= "[VHT-LINK-ADAPT3]"; }
+                else                { die "$level capabilities vht link-adaptation : Invalid value.\n"; }
             }
-            if ($vhtc ~~ ["VHT160", "VHT160-80PLUS80"]) {
-                if ($flag_vht_vht160width > 0) { die "$level capabilities vht : VHT160 and VHT160-80PLUS80 are mutually exclusive.\n"; }
-                else { $flag_vht_vht160width = 1; }
+        }
+        my @vht_sgi = $config->returnValues("short-gi");
+        if (@vht_sgi > 0) {
+            foreach my $vht_sgic (@vht_sgi) {
+                $vht_capab .= "[SHORT-GI-" . $vht_sgic . "]";
+            }   
+        }         
+        if ($config->exists('ldpc') && $config->returnValue("ldpc") eq "true") { $vht_capab .= "[RXLDPC]"; }
+        if ($config->exists('tx-powersave') && $config->returnValue("tx-powersave") eq "true") { $vht_capab .= "[VHT-TXOP-PS]"; }
+        if ($config->exists('vht-cf') && $config->returnValue("vht-cf") eq "true") { $vht_capab .= "[HTC-VHT]"; }
+        my @vht_bf = $config->returnValues("beamform");
+        if (@vht_bf > 0) {
+            foreach my $vht_bfc (@vht_bf) {
+                switch($vht_bfc) {
+                    case "single-user-beamformer"   { $vht_capab .= "[SU-BEAMFORMER]"; $flag_vht_subeamformer = 1; }
+                    case "single-user-beamformee"   { $vht_capab .= "[SU-BEAMFORMEE]"; }
+                    case "multi-user-beamformer"    { $vht_capab .= "[MU-BEAMFORMER]"; }
+                    case "multi-user-beamformee"    { $vht_capab .= "[MU-BEAMFORMEE]"; }
+                    else                            { die "$level capabilities vht beamform : Invalid value.\n"; }
+                }
             }
-            if ($vhtc ~~ ["RX-STBC-1", "RX-STBC-12", "RX-STBC-123", "RX-STBC-1234"]) {
-                if ($flag_vht_rxstbc > 0) { die "$level capabilities vht : RX-STBC-1, RX-STBC-12, RX-STBC-123 and RX-STBC-1234 are mutually exclusive.\n"; }
-                else { $flag_vht_rxstbc = 1; }
+        }
+        if ($config->exists('antenna-pattern-fixed') && $config->returnValue("antenna-pattern-fixed") eq "true") { $vht_capab .= "[RX-ANTENNA-PATTERN][TX-ANTENNA-PATTERN]"; }
+        my $vht_antenna_count = $config->returnValue("antenna-count");
+        if (defined($vht_antenna_count)) {
+            if ($flag_vht_subeamformer > 0) {
+                if ($vht_antenna_count > 1) {
+                    my $vht_ac_subf = $vht_antenna_count - 1;
+                    $vht_capab .= "[BF-ANTENNA-" . $vht_ac_subf . "][SOUNDING-DIMENSION-" . $vht_ac_subf . "]";
+                }
+                else {
+                    die "$level capabilities vht antenna-count : You cannot use single-user-beamformer with just one antenna!\n";
+                }
             }
-            if ($vhtc ~~ ["MAX-A-MPDU-LEN-EXP0", "MAX-A-MPDU-LEN-EXP3", "MAX-A-MPDU-LEN-EXP7"]) {
-                if ($flag_vht_mpdulenexp > 0) { die "$level capabilities vht : MAX-A-MPDU-LEN-EXP0..MAX-A-MPDU-LEN-EXP7 are mutually exclusive.\n"; }
-                else { $flag_vht_mpdulenexp = 1; }
+            else {
+                $vht_capab .= "[BF-ANTENNA-" . $vht_antenna_count . "][SOUNDING-DIMENSION-" . $vht_antenna_count . "]";
             }
-            if ($vhtc ~~ ["VHT-LINK-ADAPT2", "VHT-LINK-ADAPT3"]) {
-                if ($flag_vht_linkadapt > 0) { die "$level capabilities vht : VHT-LINK-ADAPT2 and VHT-LINK-ADAPT3 are mutually exclusive.\n"; }
-                else { $flag_vht_linkadapt = 1; }
-            }
-            $vht_capab .= "[" . $vhtc . "]";
         }
         print "vht_capab=$vht_capab\n";
+        $config->setLevel("$level capabilities");
         my $require_vht = $config->returnValue("require-vht");
         if ($require_vht eq "true") {
             print "require_vht=1\n";
@@ -239,18 +299,7 @@ if ( $config->exists('capabilities') ) {
             print "ieee80211n=1\n";
         }
     }
-    my $vht_oper_chwidth = $config->returnValue("vht-channel-width");
-    if ($vht_oper_chwidth) {
-        print "vht_oper_chwidth=$vht_oper_chwidth\n";
-    }
-    my $vht_oper_cfreq1 = $config->returnValue("vht-center-freq freq-1");
-    if ($vht_oper_cfreq1) {
-        print "vht_oper_centr_freq_seg0_idx=$vht_oper_cfreq1\n";
-    }
-    my $vht_oper_cfreq2 = $config->returnValue("vht-center-freq freq-2");
-    if ($vht_oper_cfreq2) {
-        print "vht_oper_centr_freq_seg1_idx=$vht_oper_cfreq2\n";
-    }
+## END VHT CODE
 }
 
 # hostapd option: ignore_broadcast_ssid=[0|1|2]
@@ -321,7 +370,7 @@ if ( $config->exists('wep') ) {
     print "wep_default_key=0\n";
 
     for (my $i = 0; $i <= $#keys; $i++) {
-	print "wep_key$i=$keys[$i]\n";
+    print "wep_key$i=$keys[$i]\n";
     }
 
 } elsif ( $config->exists('wpa') ) {
@@ -336,7 +385,7 @@ if ( $config->exists('wep') ) {
 
     if ( $wpa_type eq 'wpa' ) {    
         @cipher = ( 'TKIP', 'CCMP' )
-	    unless (@cipher);
+        unless (@cipher);
     } elsif ( $wpa_type eq 'both' ) {
         @cipher = ( 'CCMP', 'TKIP' )
             unless (@cipher);
@@ -352,11 +401,11 @@ if ( $config->exists('wep') ) {
     if ($phrase) {
         print "auth_algs=1\nwpa_passphrase=$phrase\nwpa_key_mgmt=WPA-PSK\n";
     } elsif (@radius) {
-	# What about integrated EAP server in hostapd?
+    # What about integrated EAP server in hostapd?
         print "ieee8021x=1\nwpa_key_mgmt=WPA-EAP\n";
 
         # TODO figure out how to prioritize server for primary
-	$config->setLevel("$level security wpa radius-server");
+    $config->setLevel("$level security wpa radius-server");
         foreach my $server (@radius) {
             my $port   = $config->returnValue("$server port");
             my $secret = $config->returnValue("$server secret");
@@ -378,7 +427,7 @@ if ( $config->exists('wep') ) {
     print "auth_algs=1\n";
 }
 
-# uncondifional further settings
+# unconditional further settings
 print "tx_queue_data3_aifs=7\n";
 print "tx_queue_data3_cwmin=15\n";
 print "tx_queue_data3_cwmax=1023\n";
