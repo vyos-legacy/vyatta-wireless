@@ -21,6 +21,7 @@ import os
 import re
 import sys
 import string
+import subprocess
 
 
 # Constants
@@ -66,6 +67,33 @@ def replace_in_file(fname = None, fstring = "", fpattern = "", code = ""):
     return
 
 
+# A nicer version of os.system('iw reg get')
+def get_iw():
+    iw_cmd_get = ["iw", "reg", "get"]
+    try:
+        output = subprocess.check_output(iw_cmd_get)
+        print('\n' + output.decode('UTF-8'))
+    except subprocess.CalledProcessError as e:
+        die(e)
+    return
+
+
+# A nicer version of os.system('iw reg set ' + code)
+def set_iw(cmd = None):
+    output = b''
+    iw_cmd_set = ["iw", "reg", "set"]
+    if cmd and type(cmd) is str:
+        iw_cmd_set.append(cmd)
+        try:
+            output = subprocess.check_output(iw_cmd_set)
+            get_iw()
+        except subprocess.CalledProcessError as e:
+            die(e)
+    else:
+        die("Invalid country code!")
+    return
+
+
 # void main(), this is where stuff happens
 def main(code):
     # test if this may be a country code
@@ -76,6 +104,8 @@ def main(code):
     replace_in_file(CRDA_FILE, CRDA_STR, CRDA_PAT, code.upper())
     # rewrite CFG80211_FILE
     replace_in_file(CFG80211_FILE, CFG80211_STR, CFG80211_PAT, code.upper())
+    # try to set regdom via 'iw reg set XX'
+    set_iw(code.upper())
     return
 
 
