@@ -1,0 +1,15 @@
+priority: 305 # Prior to wireless system, list prios: /opt/vyatta/sbin/priority.pl 
+type: txt
+help: Wireless regulatory domain (mandatory if using the VyOS wireless subsystem)
+comp_help: This setting makes persistent changes to system files. You need to reboot VyOS after committing to make the changes effective.
+syntax:expression: pattern $VAR(@) "^[A-Z][A-Z]$"; "invalid country code"
+allowed: echo "US EU JP DE UK ..."
+val_help: <code>; Country code (ISO/IEC 3166-1).
+
+
+create: sudo /opt/vyatta/sbin/vyos-wireless-cfg-regdom.py $VAR(@)
+
+update: sudo /opt/vyatta/sbin/vyos-wireless-cfg-regdom.py $VAR(@)
+
+delete: sudo /opt/vyatta/sbin/vyos-wireless-cfg-regdom.py --delete
+

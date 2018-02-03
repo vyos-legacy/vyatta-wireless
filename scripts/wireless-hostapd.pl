@@ -52,13 +52,18 @@ die "Usage: $0 wlanX\n"
 my $wlan   = $ARGV[0];
 my $config = new Vyatta::Config;
 my $level  = "interfaces wireless $wlan";
+my $regdom_level = "system";
 $config->setLevel($level);
 
 # Mandatory values
+# regulatory-domain
+$config->setLevel($regdom_level);
+my $country = $config->returnValue('wifi-regulatory-domain');
+die "$regdom_level : missing regulatory domain country code\n" unless $country;
+# ssid
+$config->setLevel($level);
 my $ssid = $config->returnValue('ssid');
 die "$level : missing SSID\n" unless $ssid;
-my $country = $config->returnValue('country');
-die "$level : missing country\n" unless $country;
 
 my $hostap_dir = "/var/run/hostapd";
 mkdir $hostap_dir
