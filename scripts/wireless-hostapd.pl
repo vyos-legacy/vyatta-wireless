@@ -32,10 +32,6 @@ use strict;
 use warnings;
 use Switch;
 
-# TODO: Find a better way than using smartmatch 
-#       to easily match strings against custom lists
-use experimental 'smartmatch';
-
 use lib "/opt/vyatta/share/perl5/";
 use Vyatta::Config;
 use Vyatta::Misc;
