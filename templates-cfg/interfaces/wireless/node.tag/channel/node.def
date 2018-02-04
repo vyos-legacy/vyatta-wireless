@@ -1,5 +1,7 @@
 type: u32
 help: Wireless radio channel
+comp_help: If 'channel 0' is set here and SSH is configured to listen to this device, SSH may crash on reboot. You may need to set the SSH listen address to 0.0.0.0 as DFS-enabled WiFi interface waiting time of 60 secs is too long to stay below the SSH address bind timeout border. This is a know bug, see: https://phabricator.vyos.net/T521
+
 syntax:expression: ( $VAR(@) >= 0 && $VAR(@) <= 173 ) \
         ; "Channel must be between 0 and 173"
 	; "Channel 0 means acs auto channel selection (needed for DFS)"
