@@ -1,8 +1,0 @@
-help: Set regulatory domain (country code) globally for all WiFi interfaces. You must restart VyOS for the settings to take effect!
-
-syntax:expression: pattern $VAR(@) "^[A-Z][A-Z]$" ; "Invalid country code"
-
-run:
-        code=$3
-        sudo /opt/vyatta/sbin/vyos-wireless-set-regdom.py $code
-

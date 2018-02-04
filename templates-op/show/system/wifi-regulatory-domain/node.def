@@ -1,0 +1,6 @@
+help: Show the currently active regulatory domain
+
+run:
+        sudo /opt/vyatta/sbin/vyos-wireless-op-regdom.py
+
+
