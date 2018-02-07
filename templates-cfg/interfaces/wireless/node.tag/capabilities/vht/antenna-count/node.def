@@ -1,0 +1,10 @@
+type: u32
+help: Number of antennas on this card
+
+syntax:expression: ( $VAR(@) >= 1 && $VAR(@) <= 9 ) \
+        ; "Number of antennas must be between 1 and 9"
+
+val_help:<1-9>; Number of antennas for this card
+
+# TODO: set vht_capab=[BF-ANTENNA-n][SOUNDING-DIMENSION-n]
+

@@ -76,8 +76,10 @@ sub get_chan {
 	or die "$IW phy command failed: $!";
 
     my @chans;
+    push @chans, 0;
     while (<$iwcmd>) {
 	chomp;
+        #  Band 1:
 	next unless /Frequencies:/;
 
 	while (<$iwcmd>) {
@@ -86,6 +88,15 @@ sub get_chan {
 	    last unless /\* \d+ MHz \[(\d+)\]/;
 	    push @chans, $1;
 	}
+        #  Band 2:
+        next unless /Frequencies:/;
+
+        while (<$iwcmd>) {
+            chomp;
+            next if /\(disabled\)/;
+            last unless /\* \d+ MHz \[(\d+)\]/;
+            push @chans, $1;
+        }
 	last;
     }
     close $iwcmd;
@@ -213,6 +224,11 @@ sub check_config {
 	    my $omac = getmac($intf);
 	    die "$wlan: Duplicate MAC address with $intf\n"
 		if (defined($omac) && $omac eq $mac);
+            $config->setLevel("system");
+	    my $country = $config->returnValue("wifi-regulatory-domain");
+	    $config->setLevel("interfaces wireless");
+	    die ("$wlan: regulatory domain must be set for access points\n")
+	            unless defined($country);
 	}
 
 	my $ophy = get_phy($intf);
@@ -277,7 +293,7 @@ GetOptions(
 die "$0: missing device argument\n" unless $dev;
 
 list_chan($dev) 		if $list_chan;
-check_chan($dev, $check_chan)	if $check_chan;
+check_chan($dev, $check_chan)	if defined($check_chan);
 
 list_type($dev)			if $list_type;
 check_type($dev, $check_type)	if $check_type;

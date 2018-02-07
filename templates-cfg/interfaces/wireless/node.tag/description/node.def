@@ -1,4 +1,5 @@
 type: txt
 help: Description for this interface
+syntax:expression: pattern $VAR(@) "^[[:print:]]{0,32}$" ; "Description length can be max 32 utf-8 chars (hostapd device_name option)"
 update: sudo ip link set $VAR(../@) alias "$VAR(@)"
 delete: sudo sh -c "echo '' >/sys/class/net/$VAR(../@)/ifalias"

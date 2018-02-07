@@ -1,9 +1,12 @@
 type: u32
 help: Wireless radio channel
-syntax:expression: ( $VAR(@) >= 1 && $VAR(@) <= 165 ) \
-        ; "Channel must be between 1 and 165"
+comp_help: If selecting DFS channels here and SSH is configured to listen to this device, SSH may crash on reboot. You may need to set the SSH listen address to 0.0.0.0 as DFS-enabled WiFi interface waiting time of 60 secs is too long to stay below the SSH address bind timeout border. This is a know bug, see: https://phabricator.vyos.net/T521
 
-commit:expression: exec "/opt/vyatta/sbin/wireless-config.pl --dev=$VAR(../@) --check-chan $VAR(@)"
+syntax:expression: ( $VAR(@) >= 0 && $VAR(@) <= 173 ) \
+        ; "Channel must be between 0 and 173"
+	; "Channel 0 means acs auto channel selection (needed for DFS)"
+
+commit:expression: exec "/opt/vyatta/sbin/wireless-config.pl --dev=$VAR(../@) --check-chan=$VAR(@)"
 
 val_help:<1-14>; 2.4Ghz (802.11 b/g/n) Channel
-val_help:<34-165>; 5Ghz (802.11 a/h/j/n) Channel
+val_help:<0,34-173>; 5Ghz (802.11 a/h/j/n/ac) Channel

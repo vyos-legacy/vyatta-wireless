@@ -1,0 +1,10 @@
+multi:
+type: txt
+help: Supported channel set width
+
+syntax:expression: $VAR(@) in "ht20","ht40+","ht40-"; "Invalid capability item"
+
+val_help: ht20; Supported channel set width both 20 MHz only
+val_help: ht40+; Supported channel set width both 20 MHz and 40 MHz with secondary channel above the primary channel
+val_help: ht40-; Supported channel set width both 20 MHz and 40 MHz with secondary channel below the primary channel
+

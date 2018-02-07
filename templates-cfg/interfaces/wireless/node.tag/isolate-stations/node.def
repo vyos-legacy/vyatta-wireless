@@ -1,0 +1,10 @@
+type: bool
+help: Isolate stations on the AP so they cannot see each other
+
+default: false
+
+syntax:expression: $VAR(@) in true,false; "Not a boolean value"
+
+val_help: true; Isolate stations
+val_help: false; Allow stations to see each other (default)
+

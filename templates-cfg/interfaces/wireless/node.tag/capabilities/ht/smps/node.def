@@ -1,0 +1,8 @@
+type: txt
+help: Spatial Multiplexing Power Save (SMPS) settings
+
+syntax:expression: $VAR(@) in "static","dynamic"; "Invalid capability item"
+
+val_help: static; Spatial Multiplexing (SM) Power Save: STATIC
+val_help: dynamic; Spatial Multiplexing (SM) Power Save: DYNAMIC
+

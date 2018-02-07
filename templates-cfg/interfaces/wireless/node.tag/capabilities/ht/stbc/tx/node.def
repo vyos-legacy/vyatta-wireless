@@ -1,0 +1,10 @@
+type: bool
+help: Support for sending PPDU using STBC (Space Time Block Coding)
+
+default: false
+
+syntax:expression: $VAR(@) in true,false; "Not a boolean value"
+
+val_help: true; enable TX-STBC
+val_help: false; disable TX-STBC (default)
+

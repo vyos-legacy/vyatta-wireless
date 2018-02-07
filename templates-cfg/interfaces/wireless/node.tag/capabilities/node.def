@@ -1,0 +1,2 @@
+help: HT and VHT capabilities for your card
+comp_help: It is up to you to find out which features your card supports. hostapd.conf reference: https://gist.github.com/renaudcerrato/db053d96991aba152cc17d71e7e0f63c

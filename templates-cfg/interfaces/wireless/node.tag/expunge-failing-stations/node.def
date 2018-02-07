@@ -1,0 +1,10 @@
+type: bool
+help: Disassociate stations based on excessive transmission failures.
+comp_help: Disassociate stations based on excessive transmission failures. This capability may not be available with all drivers.
+
+default: false
+
+syntax:expression: $VAR(@) in true,false; "Not a boolean value"
+
+val_help: true; Disassociate upon connection loss
+val_help: false; Keep associated (default)

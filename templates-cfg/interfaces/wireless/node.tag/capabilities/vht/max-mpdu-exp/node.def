@@ -1,0 +1,10 @@
+type: u32
+help: Set the maximum length of A-MPDU pre-EOF padding that the station can receive
+
+syntax:expression: ( $VAR(@) >= 0 && $VAR(@) <= 7 ) \
+        ; "Exponent x must be between 0 and 7"
+
+val_help:<0-7>; maximum length of A-MPDU pre-EOF padding = 2 pow(13 + x) -1 octets
+
+# TODO: set vht_capab=[MAX-A-MPDU-LEN-EXP0]..[MAX-A-MPDU-LEN-EXP7]
+

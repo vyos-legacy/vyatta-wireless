@@ -1,0 +1,10 @@
+type: txt
+help: Increase Maximum MPDU length to 7991 or 11454 octets (otherwise: 3895 octets)
+
+syntax:expression: $VAR(@) in "7991", "11454"; "Invalid capability item"
+
+val_help: 7991; Increase Maximum MPDU length to 7991 octets
+val_help: 11454; Increase Maximum MPDU length to 11454 octets
+
+# TODO: set vht_capab=[MAX-MPDU-7991]|[MAX-MPDU-11454]
+

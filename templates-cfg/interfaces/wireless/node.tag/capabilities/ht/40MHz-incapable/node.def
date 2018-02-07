@@ -1,0 +1,9 @@
+type: bool
+help: 40MHz intolerance, use 20MHz only
+
+default: false
+
+syntax:expression: $VAR(@) in true,false; "Not a boolean value"
+
+val_help: true; disable 40MHz channel sets
+val_help: false; enable 40MHz channel sets (default)

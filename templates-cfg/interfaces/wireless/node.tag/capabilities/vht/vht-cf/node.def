@@ -1,0 +1,12 @@
+type: bool
+help: STA supports receiving a VHT variant HT Control field
+
+default: false
+
+syntax:expression: $VAR(@) in true,false; "Not a boolean value"
+
+val_help: true; Station supports receiving VHT variant HT Control field
+val_help: false; Station does not support VHT HT Control field (default)
+
+# TODO: set vht_capab=[HTC-VHT]
+
