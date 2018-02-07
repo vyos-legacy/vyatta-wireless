@@ -1,0 +1,8 @@
+help: Set regulatory domain (country code) globally for all WiFi interfaces. This is a wrapper for 'iw reg set XX' and does no persistent changes. This setting will be undone by a reboot. To persist a regulatory domain setting, please use this in config mode: 'set system wifi-regulatory-domain XX' 
+
+syntax:expression: pattern $4 "^[A-Z][A-Z]$" ; "Invalid country code"
+
+run:
+	code=$4
+        sudo /opt/vyatta/sbin/vyos-wireless-op-regdom.py --set $code
+
