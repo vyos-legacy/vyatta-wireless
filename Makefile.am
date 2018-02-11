@@ -6,6 +6,8 @@ sbin_SCRIPTS += scripts/wireless-hostapd.pl
 sbin_SCRIPTS += scripts/hostapd-init
 sbin_SCRIPTS += scripts/wireless-wpa_supplicant.pl
 sbin_SCRIPTS += scripts/wpa_supplicant-init
+sbin_SCRIPTS += scripts/vyos-wireless-cfg-regdom.py
+sbin_SCRIPTS += scripts/vyos-wireless-op-regdom.py
 
 bin_SCRIPTS = scripts/show-wireless.pl
 
