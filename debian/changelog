@@ -1,3 +1,9 @@
+vyatta-wireless (0.3.42+vyos2+current1) unstable; urgency=medium
+
+  * T743, T744 bugfix, hostapd not restarted when wifi is being updated
+
+ -- hagbard <vyosdev@derith.de>  Sun, 29 Jul 2018 14:37:34 -0700
+
 vyatta-wireless (0.3.41+vyos2+current1) unstable; urgency=medium
 
   [ Thomas Jepp ]
