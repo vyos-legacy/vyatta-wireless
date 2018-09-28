@@ -1,3 +1,9 @@
+vyatta-wireless (1.2.0-1) stable; urgency=medium
+
+  * New branch.
+
+ -- Daniil Baturin <daniil@baturin.org>  Fri, 28 Sep 2018 22:24:14 +0200
+
 vyatta-wireless (0.3.42+vyos2+current1) unstable; urgency=medium
 
   * T743, T744 bugfix, hostapd not restarted when wifi is being updated
