@@ -1,2 +1,0 @@
-help: Monitor specified wireless interface
-allowed: ${vyatta_sbindir}/vyatta-interfaces.pl --show wireless --vif ${COMP_WORDS[COMP_CWORD-2]}
