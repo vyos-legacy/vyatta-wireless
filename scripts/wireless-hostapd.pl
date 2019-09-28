@@ -330,7 +330,7 @@ if ($max_stations) {
 
 # hostapd-option: ap_isolate=[0|1]
 my $isolate_stations = $config->returnValue("isolate-stations");
-if ($isolate_stations) {
+if ($isolate_stations eq "true") {
     print "ap_isolate=1\n";
 }
 
