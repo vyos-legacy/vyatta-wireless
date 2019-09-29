@@ -90,7 +90,6 @@ print "driver=nl80211\n";
 # hostapd option: bridge=<string>
 # hostapd option: wds_sta=[0|1]
 my $bridge = $config->returnValue('bridge-group bridge');
-print "bridge=$bridge\n"  if $bridge;
 if ($bridge) {
     print "bridge=$bridge\n";
     print "wds_sta=1\n";
