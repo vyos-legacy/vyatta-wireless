@@ -59,7 +59,8 @@ $config->setLevel($level);
 # regulatory-domain
 $config->setLevel($regdom_level);
 my $country = $config->returnValue('wifi-regulatory-domain');
-die "$regdom_level : missing regulatory domain country code\n" unless $country;
+# Show only warning message for migration reason
+print "Warning! $regdom_level : missing regulatory domain country code\n" unless $country;
 # ssid
 $config->setLevel($level);
 my $ssid = $config->returnValue('ssid');
